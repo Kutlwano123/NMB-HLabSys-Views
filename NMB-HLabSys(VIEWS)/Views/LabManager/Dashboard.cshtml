@@ -1,0 +1,202 @@
+﻿@{
+    ViewData["Title"] = "Lab Manager Dashboard";
+    Layout = "~/Views/Shared/_ManagersLayout.cshtml";
+}
+
+<style>
+    :root {
+        --mgr-bg: #f4f2ef;
+        --mgr-surface: #faf9f7;
+        --mgr-border: #ddd9d2;
+        --mgr-accent: #7a3030;
+        --mgr-accent-2: #9a4040;
+        --mgr-accent-pale: #f0e8e8;
+        --mgr-text-dark: #1e2420;
+        --mgr-text-mid: #4a5248;
+        --mgr-text-light: #7a857a;
+    }
+
+    .lm-dashboard {
+        padding: 24px 48px 40px;
+    }
+
+    .lm-header {
+        margin-bottom: 24px;
+    }
+
+    .lm-title {
+        font-family: 'DM Serif Display', serif;
+        font-size: 28px;
+        color: var(--mgr-text-dark);
+        margin-bottom: 8px;
+    }
+
+    .lm-subtitle {
+        font-size: 14px;
+        color: var(--mgr-text-mid);
+        max-width: 720px;
+    }
+
+    .lm-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 16px;
+        margin-bottom: 24px;
+    }
+
+    .lm-stat {
+        background: var(--mgr-surface);
+        border: 1px solid var(--mgr-border);
+        border-radius: 12px;
+        padding: 18px;
+    }
+
+    .lm-stat-label {
+        font-size: 12px;
+        color: var(--mgr-text-light);
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .lm-stat-value {
+        font-family: 'DM Serif Display', serif;
+        font-size: 26px;
+        color: var(--mgr-text-dark);
+    }
+
+    .lm-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 16px;
+        margin-bottom: 24px;
+    }
+
+    .lm-card {
+        background: #fff;
+        border: 1px solid var(--mgr-border);
+        border-radius: 12px;
+        padding: 18px;
+    }
+
+    .lm-card-title {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--mgr-text-dark);
+        margin-bottom: 12px;
+    }
+
+    .lm-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: grid;
+        gap: 8px;
+    }
+
+    .lm-list-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 13px;
+        color: var(--mgr-text-mid);
+        padding: 8px 10px;
+        background: var(--mgr-bg);
+        border-radius: 8px;
+    }
+
+    .lm-chip {
+        font-size: 11px;
+        font-weight: 600;
+        padding: 4px 10px;
+        border-radius: 999px;
+        background: var(--mgr-accent-pale);
+        color: var(--mgr-accent);
+    }
+
+    .lm-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    .lm-btn {
+        background: var(--mgr-accent);
+        color: #fff;
+        padding: 10px 16px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+        .lm-btn:hover {
+            background: var(--mgr-accent-2);
+            color: #fff;
+        }
+</style>
+
+<section class="lm-dashboard">
+    <div class="lm-header">
+        <h1 class="lm-title">Lab Manager Dashboard</h1>
+        <p class="lm-subtitle">Track laboratory operations, monitor workloads, and keep quality and inventory metrics visible at a glance.</p>
+    </div>
+
+    <div class="lm-stats">
+        <div class="lm-stat">
+            <div class="lm-stat-label"><i class="fas fa-vial"></i> Active Test Requests</div>
+            <div class="lm-stat-value">48</div>
+        </div>
+        <div class="lm-stat">
+            <div class="lm-stat-label"><i class="fas fa-check-circle"></i> Results Awaiting Review</div>
+            <div class="lm-stat-value">12</div>
+        </div>
+        <div class="lm-stat">
+            <div class="lm-stat-label"><i class="fas fa-exclamation-triangle"></i> Urgent Cases (STAT)</div>
+            <div class="lm-stat-value">5</div>
+        </div>
+        <div class="lm-stat">
+            <div class="lm-stat-label"><i class="fas fa-boxes"></i> Inventory Alerts</div>
+            <div class="lm-stat-value">3</div>
+        </div>
+    </div>
+
+    <div class="lm-grid">
+        <div class="lm-card">
+            <div class="lm-card-title">Test Management</div>
+            <ul class="lm-list">
+                <li class="lm-list-item">Pending assignment <span class="lm-chip">14</span></li>
+                <li class="lm-list-item">In progress <span class="lm-chip">22</span></li>
+                <li class="lm-list-item">Ready for verification <span class="lm-chip">8</span></li>
+                <li class="lm-list-item">Completed today <span class="lm-chip">19</span></li>
+            </ul>
+        </div>
+        <div class="lm-card">
+            <div class="lm-card-title">Quality & Compliance</div>
+            <ul class="lm-list">
+                <li class="lm-list-item">External audits scheduled <span class="lm-chip">2</span></li>
+                <li class="lm-list-item">Internal reviews due <span class="lm-chip">4</span></li>
+                <li class="lm-list-item">Pending incident reports <span class="lm-chip">1</span></li>
+                <li class="lm-list-item">SOP updates required <span class="lm-chip">3</span></li>
+            </ul>
+        </div>
+        <div class="lm-card">
+            <div class="lm-card-title">Staff Task Assignment</div>
+            <ul class="lm-list">
+                <li class="lm-list-item">Technicians on shift <span class="lm-chip">6</span></li>
+                <li class="lm-list-item">Unassigned tasks <span class="lm-chip">9</span></li>
+                <li class="lm-list-item">Pending approvals <span class="lm-chip">3</span></li>
+                <li class="lm-list-item">Overdue tasks <span class="lm-chip">2</span></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="lm-actions">
+        <a asp-controller="LabManager" asp-action="Index" class="lm-btn">Manage Test Categories</a>
+        <a asp-controller="LabManager" asp-action="Inventory" class="lm-btn">Inventory & Procurement</a>
+        @*         <a asp-controller="LabManager" asp-action="AuditTrail" class="lm-btn">Quality Audit</a>
+        <a asp-controller="LabManager" asp-action="Reports" class="lm-btn">Performance Reports</a> *@
+        <a asp-controller="LabManager" asp-action="Settings" class="lm-btn">System Settings</a>
+    </div>
+</section>

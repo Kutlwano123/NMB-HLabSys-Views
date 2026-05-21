@@ -1,0 +1,151 @@
+﻿@{
+    ViewData["Title"] = "Consumable Details";
+    Layout = "~/Views/Shared/_ManagersLayout.cshtml";
+
+    var consumable = new
+    {
+        ConsumableID = 1,
+        ConsumableName = "Syringes 5ml",
+        SupplierName = "MedSupply Co.",
+        ReorderLevel = 20,
+        QuantityOnHand = 15
+    };
+}
+
+<style>
+    .mgr-detail-card {
+        background: #fff;
+        border: 1px solid var(--mgr-border, #ddd9d2);
+        border-radius: 12px;
+        padding: 24px;
+        max-width: 960px;
+        margin: 0 auto;
+    }
+
+    .mgr-detail-title {
+        font-family: 'DM Serif Display', serif;
+        font-size: 22px;
+        color: var(--mgr-text-dark, #1e2420);
+        margin-bottom: 6px;
+    }
+
+    .mgr-detail-subtitle {
+        font-size: 13px;
+        color: var(--mgr-text-mid, #4a5248);
+        margin-bottom: 20px;
+    }
+
+    .mgr-detail-list {
+        list-style: none;
+        padding: 0;
+        margin: 0 0 20px 0;
+        display: grid;
+        gap: 8px;
+    }
+
+    .mgr-detail-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 10px;
+        background: var(--mgr-bg, #f4f2ef);
+        border-radius: 8px;
+        font-size: 13px;
+        color: var(--mgr-text-mid, #4a5248);
+    }
+
+    .mgr-chip {
+        background: var(--mgr-accent-pale, #f0e8e8);
+        color: var(--mgr-accent, #7a3030);
+        font-weight: 600;
+        font-size: 11px;
+        padding: 4px 10px;
+        border-radius: 999px;
+    }
+
+    .mgr-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+    }
+
+    .mgr-btn-primary {
+        background: var(--mgr-accent, #7a3030);
+        border-color: var(--mgr-accent, #7a3030);
+        color: #fff;
+    }
+
+        .mgr-btn-primary:hover {
+            background: var(--mgr-accent-2, #9a4040);
+            border-color: var(--mgr-accent-2, #9a4040);
+            color: #fff;
+        }
+
+    .mgr-stock-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 16px;
+        margin-bottom: 20px;
+    }
+
+    .mgr-stock-card {
+        background: #fff;
+        border: 1px solid var(--mgr-border, #ddd9d2);
+        border-radius: 12px;
+        padding: 16px;
+    }
+</style>
+
+<div class="mgr-detail-card">
+    <h5 class="mgr-detail-title">@consumable.ConsumableName</h5>
+    <p class="mgr-detail-subtitle">Review consumable details and adjust stock levels.</p>
+
+    <ul class="mgr-detail-list">
+        <li class="mgr-detail-item"><span>Supplier</span><strong>@consumable.SupplierName</strong></li>
+        <li class="mgr-detail-item"><span>Reorder Level</span><strong>@consumable.ReorderLevel</strong></li>
+        <li class="mgr-detail-item">
+            <span>Quantity on Hand</span>
+            <strong><span class="mgr-chip">@consumable.QuantityOnHand</span></strong>
+        </li>
+    </ul>
+
+    <div class="mgr-stock-grid">
+        <div class="mgr-stock-card">
+            <div class="mgr-detail-subtitle">Increase Stock</div>
+            <form asp-action="IncreaseStock" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="ConsumableID" value="@consumable.ConsumableID" />
+                <div class="mb-2">
+                    <input type="number" name="AdjustAmount" class="form-control" min="1" placeholder="Add quantity" />
+                </div>
+                <button type="submit" class="btn btn-sm mgr-btn-primary">Increase</button>
+            </form>
+        </div>
+        <div class="mgr-stock-card">
+            <div class="mgr-detail-subtitle">Decrease Stock</div>
+            <form asp-action="DecreaseStock" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="ConsumableID" value="@consumable.ConsumableID" />
+                <div class="mb-2">
+                    <input type="number" name="AdjustAmount" class="form-control" min="1" placeholder="Remove quantity" />
+                </div>
+                <button type="submit" class="btn btn-sm btn-outline-secondary">Decrease</button>
+            </form>
+        </div>
+        <div class="mgr-stock-card">
+            <div class="mgr-detail-subtitle">Set Stock Level</div>
+            <form asp-action="SetStock" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="ConsumableID" value="@consumable.ConsumableID" />
+                <div class="mb-2">
+                    <input type="number" name="NewQuantity" class="form-control" min="0" placeholder="New quantity" />
+                </div>
+                <button type="submit" class="btn btn-sm btn-outline-secondary">Set Quantity</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="mgr-actions">
+        <a asp-action="Consumables" class="btn btn-outline-secondary">Back</a>
+        <a asp-action="EditConsumable" asp-route-id="@consumable.ConsumableID" class="btn mgr-btn-primary">Edit</a>
+    </div>
+</div>
