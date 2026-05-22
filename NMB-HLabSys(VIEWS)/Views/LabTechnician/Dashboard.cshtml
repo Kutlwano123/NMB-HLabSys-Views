@@ -91,3 +91,96 @@
         </div>
     </div>
 </div>
+
+<!-- Recent Notifications Section -->
+@if (Model.UnreadNotificationCount > 0)
+{
+    <div class="row g-3 mb-4">
+        <div class="col-12">
+            <div class="card border-danger">
+                <div class="card-header bg-danger text-white fw-bold">
+                    <i class="bi bi-bell"></i> 
+                    Alerts & Notifications 
+                    <span class="badge bg-light text-danger float-end">@Model.UnreadNotificationCount Unread</span>
+                </div>
+                <div class="card-body">
+                    @if (Model.RecentNotifications.Any())
+                    {
+                        <div class="list-group list-group-flush">
+                            @foreach (var notif in Model.RecentNotifications.Take(5))
+                            {
+                                <div class="list-group-item">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div class="flex-grow-1">
+                                            <h6 class="mb-1">
+                                                @notif.Title
+                                                <span class="@notif.TypeBadgeClass">@notif.NotificationType</span>
+                                            </h6>
+                                            <p class="text-muted mb-0 small">@notif.Message</p>
+                                        </div>
+                                        @if (notif.RelatedTestRequestId.HasValue)
+                                        {
+                                            <a href="/LabTechnician/CaptureResultForm?requestId=@notif.RelatedTestRequestId" class="btn btn-sm btn-primary">
+                                                View
+                                            </a>
+                                        }
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                        <a href="/LabTechnician/Notifications" class="btn btn-sm btn-outline-danger mt-2">
+                            <i class="bi bi-bell"></i> View All Notifications
+                        </a>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<!-- Low Stock Consumables Section -->
+@if (Model.CriticalConsumables.Any())
+{
+    <div class="row g-3 mb-4">
+        <div class="col-12">
+            <div class="card border-warning">
+                <div class="card-header bg-warning text-dark fw-bold">
+                    <i class="bi bi-exclamation-triangle"></i> Low Stock Consumables
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-sm table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Consumable</th>
+                                    <th class="text-center">In Stock</th>
+                                    <th class="text-center">Minimum</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var cons in Model.CriticalConsumables.Take(5))
+                                {
+                                    <tr class="table-warning">
+                                        <td>@cons.ConsumableName</td>
+                                        <td class="text-center">
+                                            <span class="badge bg-danger">@cons.QuantityInStock @cons.Unit</span>
+                                        </td>
+                                        <td class="text-center">@cons.MinimumThreshold @cons.Unit</td>
+                                        <td class="text-end">
+                                            <small class="text-muted">Reorder needed</small>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <a href="/LabTechnician/ConsumableInventory" class="btn btn-sm btn-outline-warning mt-2">
+                        <i class="bi bi-droplet"></i> Full Inventory
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+

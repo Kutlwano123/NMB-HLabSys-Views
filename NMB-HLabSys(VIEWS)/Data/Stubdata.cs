@@ -4,6 +4,7 @@
 // ============================================================
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace NMB_HLabSys_VIEWS.Data
 {
@@ -106,6 +107,39 @@ namespace NMB_HLabSys_VIEWS.Data
         public int AssignmentId { get; set; }
         public string TechnicianUserId { get; set; } = "";
         public int TestTypeId { get; set; }
+    }
+
+    public class StubConsumable
+    {
+        public int ConsumableId { get; set; }
+        public string ConsumableName { get; set; } = "";
+        public string Unit { get; set; } = "";  // e.g., "ml", "units", "boxes"
+        public int QuantityInStock { get; set; }
+        public int MinimumThreshold { get; set; }
+    }
+
+    public class StubTestConsumableRequirement
+    {
+        public int RequirementId { get; set; }
+        public int TestTypeId { get; set; }
+        public int ConsumableId { get; set; }
+        public int QuantityRequired { get; set; }
+
+        public StubTestType? TestType { get; set; }
+        public StubConsumable? Consumable { get; set; }
+    }
+
+    public class StubNotification
+    {
+        public int NotificationId { get; set; }
+        public string TechnicianUserId { get; set; } = "";
+        public string Title { get; set; } = "";
+        public string Message { get; set; } = "";
+        public string NotificationType { get; set; } = "";  // "Urgent", "TAT", "Overdue", "Rejection"
+        public DateTime CreatedAt { get; set; }
+        public bool IsRead { get; set; }
+        public int? RelatedTestRequestId { get; set; }
+        public int? RelatedTestResultId { get; set; }
     }
 
     // ── Status name constants ─────────────────────────────────
@@ -617,15 +651,128 @@ namespace NMB_HLabSys_VIEWS.Data
             },
         };
 
+        // ── Consumables ────────────────────────────────────────
+
+        public static List<StubConsumable> Consumables { get; } = new()
+        {
+            new() { ConsumableId = 1, ConsumableName = "EDTA Tubes (2ml)", Unit = "boxes", QuantityInStock = 15, MinimumThreshold = 5 },
+            new() { ConsumableId = 2, ConsumableName = "Serum Separator Tubes (5ml)", Unit = "boxes", QuantityInStock = 8, MinimumThreshold = 3 },
+            new() { ConsumableId = 3, ConsumableName = "Citrate Tubes (3.2%)", Unit = "boxes", QuantityInStock = 10, MinimumThreshold = 4 },
+            new() { ConsumableId = 4, ConsumableName = "Sterile Needles (21G)", Unit = "boxes", QuantityInStock = 20, MinimumThreshold = 8 },
+            new() { ConsumableId = 5, ConsumableName = "Safety Lancets", Unit = "boxes", QuantityInStock = 12, MinimumThreshold = 5 },
+            new() { ConsumableId = 6, ConsumableName = "Centrifuge Caps", Unit = "packs", QuantityInStock = 6, MinimumThreshold = 2 },
+            new() { ConsumableId = 7, ConsumableName = "Alcohol Swabs 70%", Unit = "boxes", QuantityInStock = 25, MinimumThreshold = 10 },
+            new() { ConsumableId = 8, ConsumableName = "Gloves (Nitrile)", Unit = "boxes", QuantityInStock = 18, MinimumThreshold = 6 },
+        };
+
+        // ── Test-Consumable Requirements ───────────────────────
+
+        public static List<StubTestConsumableRequirement> TestConsumableRequirements { get; } = new()
+        {
+            // Full Blood Count (TestTypeId = 1)
+            new() { RequirementId = 1, TestTypeId = 1, ConsumableId = 1, QuantityRequired = 1 },
+            new() { RequirementId = 2, TestTypeId = 1, ConsumableId = 4, QuantityRequired = 1 },
+            new() { RequirementId = 3, TestTypeId = 1, ConsumableId = 7, QuantityRequired = 1 },
+            new() { RequirementId = 4, TestTypeId = 1, ConsumableId = 8, QuantityRequired = 1 },
+
+            // Haemoglobin (TestTypeId = 2)
+            new() { RequirementId = 5, TestTypeId = 2, ConsumableId = 1, QuantityRequired = 1 },
+            new() { RequirementId = 6, TestTypeId = 2, ConsumableId = 4, QuantityRequired = 1 },
+            new() { RequirementId = 7, TestTypeId = 2, ConsumableId = 7, QuantityRequired = 1 },
+            new() { RequirementId = 8, TestTypeId = 2, ConsumableId = 8, QuantityRequired = 1 },
+
+            // Platelet Count (TestTypeId = 3)
+            new() { RequirementId = 9, TestTypeId = 3, ConsumableId = 1, QuantityRequired = 2 },
+            new() { RequirementId = 10, TestTypeId = 3, ConsumableId = 4, QuantityRequired = 1 },
+            new() { RequirementId = 11, TestTypeId = 3, ConsumableId = 7, QuantityRequired = 2 },
+            new() { RequirementId = 12, TestTypeId = 3, ConsumableId = 8, QuantityRequired = 1 },
+
+            // Prothrombin Time (TestTypeId = 4)
+            new() { RequirementId = 13, TestTypeId = 4, ConsumableId = 3, QuantityRequired = 1 },
+            new() { RequirementId = 14, TestTypeId = 4, ConsumableId = 4, QuantityRequired = 1 },
+            new() { RequirementId = 15, TestTypeId = 4, ConsumableId = 7, QuantityRequired = 1 },
+            new() { RequirementId = 16, TestTypeId = 4, ConsumableId = 8, QuantityRequired = 1 },
+
+            // ESR (TestTypeId = 5)
+            new() { RequirementId = 17, TestTypeId = 5, ConsumableId = 1, QuantityRequired = 1 },
+            new() { RequirementId = 18, TestTypeId = 5, ConsumableId = 4, QuantityRequired = 1 },
+            new() { RequirementId = 19, TestTypeId = 5, ConsumableId = 7, QuantityRequired = 1 },
+            new() { RequirementId = 20, TestTypeId = 5, ConsumableId = 8, QuantityRequired = 1 },
+        };
+
+        // ── Notifications ──────────────────────────────────────
+
+        public static List<StubNotification> Notifications { get; } = new()
+        {
+            new()
+            {
+                NotificationId          = 1,
+                TechnicianUserId        = "demo-tech",
+                Title                   = "Urgent STAT Request Received",
+                Message                 = "New STAT request REQ-2026-006 from Dr. Patel - Emergency patient assessment",
+                NotificationType        = "Urgent",
+                CreatedAt               = DateTime.Now.AddHours(-2),
+                IsRead                  = false,
+                RelatedTestRequestId    = 6,
+            },
+            new()
+            {
+                NotificationId          = 2,
+                TechnicianUserId        = "demo-tech",
+                Title                   = "Test Approaching TAT Limit",
+                Message                 = "REQ-2026-002 due in 4 hours. Please prioritize completion.",
+                NotificationType        = "TAT",
+                CreatedAt               = DateTime.Now.AddHours(-1),
+                IsRead                  = false,
+                RelatedTestRequestId    = 2,
+            },
+            new()
+            {
+                NotificationId          = 3,
+                TechnicianUserId        = "demo-tech",
+                Title                   = "Overdue Test",
+                Message                 = "REQ-2026-001 is now 6 hours overdue. Immediate action required.",
+                NotificationType        = "Overdue",
+                CreatedAt               = DateTime.Now.AddHours(-1),
+                IsRead                  = false,
+                RelatedTestRequestId    = 1,
+            },
+            new()
+            {
+                NotificationId          = 4,
+                TechnicianUserId        = "demo-tech",
+                Title                   = "Result Rejected",
+                Message                 = "Result for REQ-2026-006 was rejected by S. Dlamini. Please recapture with new sample.",
+                NotificationType        = "Rejection",
+                CreatedAt               = DateTime.Now.AddHours(-3),
+                IsRead                  = true,
+                RelatedTestRequestId    = 6,
+                RelatedTestResultId     = 3,
+            },
+            new()
+            {
+                NotificationId          = 5,
+                TechnicianUserId        = "demo-tech",
+                Title                   = "Urgent STAT Request",
+                Message                 = "New STAT request REQ-2026-011 from Dr. Fischer - Acute kidney injury assessment",
+                NotificationType        = "Urgent",
+                CreatedAt               = DateTime.Now.AddHours(-3),
+                IsRead                  = true,
+                RelatedTestRequestId    = 11,
+            },
+        };
+
         // ── Next ID counter (thread-unsafe but fine for demo) ──
 
         private static int _nextRequestId = 16;
         private static int _nextResultId = 13;
         private static int _nextRejectionId = 2;
+        private static int _nextNotificationId = 1;
 
         public static int NextRequestId() => _nextRequestId++;
         public static int NextResultId() => _nextResultId++;
         public static int NextRejectionId() => _nextRejectionId++;
+        public static int NextNotificationId() => _nextNotificationId++;
 
         // ── Helpers ────────────────────────────────────────────
 
@@ -679,6 +826,133 @@ namespace NMB_HLabSys_VIEWS.Data
                                      ? Hydrate(req) : null;
                     return r;
                 });
+        }
+
+        // ── Consumables helpers ────────────────────────────────
+
+        /// <summary>Returns consumables required for a specific test type.</summary>
+        public static List<StubTestConsumableRequirement> ConsumablesForTestType(int testTypeId)
+        {
+            return TestConsumableRequirements
+                .FindAll(r => r.TestTypeId == testTypeId)
+                .ConvertAll(r => {
+                    r.TestType = TestTypeById(testTypeId);
+                    r.Consumable = Consumables.Find(c => c.ConsumableId == r.ConsumableId);
+                    return r;
+                });
+        }
+
+        /// <summary>Returns summary of consumables assigned to technician's test types.</summary>
+        public static List<StubConsumable> ConsumablesForTechnician(string userId)
+        {
+            var assignedTypeIds = TechnicianAssignments
+                .FindAll(a => a.TechnicianUserId == userId || userId == "demo-tech")
+                .ConvertAll(a => a.TestTypeId);
+
+            var consumableIds = TestConsumableRequirements
+                .FindAll(r => assignedTypeIds.Contains(r.TestTypeId))
+                .ConvertAll(r => r.ConsumableId)
+                .Distinct()
+                .ToList();
+
+            return Consumables.FindAll(c => consumableIds.Contains(c.ConsumableId));
+        }
+
+        // ── Notifications helpers ──────────────────────────────
+
+        /// <summary>Returns unread notifications for a technician.</summary>
+        public static List<StubNotification> UnreadNotificationsForTechnician(string userId)
+        {
+            return Notifications
+                .FindAll(n => n.TechnicianUserId == userId && !n.IsRead)
+                .OrderByDescending(n => n.CreatedAt)
+                .ToList();
+        }
+
+        /// <summary>Returns all notifications for a technician, ordered by most recent.</summary>
+        public static List<StubNotification> AllNotificationsForTechnician(string userId)
+        {
+            return Notifications
+                .FindAll(n => n.TechnicianUserId == userId)
+                .OrderByDescending(n => n.CreatedAt)
+                .ToList();
+        }
+
+        /// <summary>Generates notifications based on current test state.</summary>
+        public static void GenerateNotificationsForTechnician(string userId)
+        {
+            var all = RequestsForTechnician(userId);
+            var completedId = RequestStatusId(StatusNames.Completed);
+
+            // Clear stale auto-generated notifications (keep manual ones)
+            Notifications.RemoveAll(n => n.TechnicianUserId == userId && n.NotificationType != "Rejection");
+
+            // STAT/Urgent tests
+            foreach (var req in all.Where(r => (r.Urgency == "STAT" || r.Urgency == "Urgent") && r.RequestStatusLookupId != completedId))
+            {
+                if (!Notifications.Any(n => n.RelatedTestRequestId == req.TestRequestId && n.NotificationType == "Urgent"))
+                {
+                    Notifications.Add(new()
+                    {
+                        NotificationId = NextNotificationId(),
+                        TechnicianUserId = userId,
+                        Title = $"{req.Urgency} Request: {req.RequestNumber}",
+                        Message = $"{req.PatientName} - {req.TestType?.TestName ?? "Test"}",
+                        NotificationType = "Urgent",
+                        CreatedAt = DateTime.Now,
+                        IsRead = false,
+                        RelatedTestRequestId = req.TestRequestId,
+                    });
+                }
+            }
+
+            // Tests nearing TAT (within 2 days)
+            foreach (var req in all.Where(r => r.DueDate.HasValue && r.DueDate.Value <= DateTime.Now.AddDays(2) && r.DueDate.Value > DateTime.Now && r.RequestStatusLookupId != completedId))
+            {
+                if (!Notifications.Any(n => n.RelatedTestRequestId == req.TestRequestId && n.NotificationType == "TAT"))
+                {
+                    var hoursRemaining = (req.DueDate.Value - DateTime.Now).TotalHours;
+                    Notifications.Add(new()
+                    {
+                        NotificationId = NextNotificationId(),
+                        TechnicianUserId = userId,
+                        Title = "Test Approaching TAT Limit",
+                        Message = $"{req.RequestNumber} due in {(int)hoursRemaining} hours.",
+                        NotificationType = "TAT",
+                        CreatedAt = DateTime.Now,
+                        IsRead = false,
+                        RelatedTestRequestId = req.TestRequestId,
+                    });
+                }
+            }
+
+            // Overdue tests
+            foreach (var req in all.Where(r => r.DueDate.HasValue && r.DueDate.Value < DateTime.Now && r.RequestStatusLookupId != completedId))
+            {
+                if (!Notifications.Any(n => n.RelatedTestRequestId == req.TestRequestId && n.NotificationType == "Overdue"))
+                {
+                    var hoursOverdue = (DateTime.Now - req.DueDate.Value).TotalHours;
+                    Notifications.Add(new()
+                    {
+                        NotificationId = NextNotificationId(),
+                        TechnicianUserId = userId,
+                        Title = "Overdue Test",
+                        Message = $"{req.RequestNumber} is now {(int)hoursOverdue} hours overdue.",
+                        NotificationType = "Overdue",
+                        CreatedAt = DateTime.Now,
+                        IsRead = false,
+                        RelatedTestRequestId = req.TestRequestId,
+                    });
+                }
+            }
+        }
+
+        /// <summary>Marks a notification as read.</summary>
+        public static void MarkNotificationAsRead(int notificationId)
+        {
+            var notif = Notifications.Find(n => n.NotificationId == notificationId);
+            if (notif != null)
+                notif.IsRead = true;
         }
     }
 }

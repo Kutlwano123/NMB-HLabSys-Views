@@ -51,6 +51,44 @@
                 <p><strong>Doctor's Notes:</strong> <em>@Model.ClinicalNotes</em></p>
             </div>
         </div>
+
+        <!-- Required Consumables Section -->
+        <div class="card mt-3">
+            <div class="card-header bg-info text-white fw-bold">
+                <i class="bi bi-droplet"></i> Required Consumables
+            </div>
+            <div class="card-body">
+                @if (Model.RequiredConsumables.Any())
+                {
+                    <div class="list-group list-group-sm">
+                        @foreach (var item in Model.RequiredConsumables)
+                        {
+                            <div class="list-group-item @(item.IsSufficientStock ? "" : "list-group-item-danger")">
+                                <div class="d-flex w-100 justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="mb-1">@item.ConsumableName</h6>
+                                        <small class="text-muted">Need: @item.QuantityRequired @item.Unit</small>
+                                    </div>
+                                    <div class="text-end">
+                                        <span class="@(item.IsSufficientStock ? "badge bg-success" : "badge bg-danger")">
+                                            @item.AvailableQuantity @item.Unit
+                                        </span>
+                                    </div>
+                                </div>
+                                @if (!item.IsSufficientStock)
+                                {
+                                    <small class="text-danger">⚠️ Insufficient stock</small>
+                                }
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <p class="text-muted small">No specific consumables required for this test.</p>
+                }
+            </div>
+        </div>
     </div>
 
     <div class="col-md-8">
@@ -58,6 +96,13 @@
             <div class="card-body">
                 <h3>Capture — @Model.RequestNumber</h3>
                 <h5 class="text-muted">@Model.TestName</h5>
+
+                @if (Model.IsRecapture)
+                {
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i> <strong>Re-capture Mode:</strong> The fields below are pre-populated with previous data for your reference.
+                    </div>
+                }
 
                 <div class="alert alert-info">
                     Normal range: <strong>@Model.MinNormalRange – @Model.MaxNormalRange @Model.UnitOfMeasurement</strong>
@@ -86,6 +131,7 @@
                     <div class="mb-3">
                         <label class="form-label">Technician notes</label>
                         <textarea class="form-control" asp-for="TechnicianNotes" rows="3"></textarea>
+                        <small class="form-text text-muted">Document sample condition, technique, any issues encountered, etc.</small>
                     </div>
 
                     <button class="btn btn-success" type="submit">Submit for verification</button>
