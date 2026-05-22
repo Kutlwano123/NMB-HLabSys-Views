@@ -33,5 +33,6 @@ namespace NMB_HLabSys.ViewComponents
     {
         public string Email { get; set; }
         public string PhotoPath { get; set; }
+        public bool HasValidPhoto => !string.IsNullOrWhiteSpace(PhotoPath) && !PhotoPath.Contains("default");
     }
 }

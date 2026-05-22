@@ -1,0 +1,133 @@
+@{
+    ViewData["Title"] = "Profile Setting";
+    Layout = "~/Views/Shared/_TechnicianLayout.cshtml";
+    ViewData["ActivePage"] = "ProfileSetting";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-8 col-xl-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header" style="background:var(--accent-pale);border-bottom:1px solid var(--border);">
+                    <h5 style="margin:0;color:var(--accent,#7a3030);"><i class="bi bi-gear"></i> Profile Settings</h5>
+                </div>
+                <div class="card-body">
+                    @if (TempData["Success"] != null)
+                    {
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            @TempData["Success"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    }
+
+                    <form method="post" asp-action="UpdateSettings">
+                        <div class="mb-3">
+                            <label for="displayName" class="form-label">Display Name</label>
+                            <input type="text" class="form-control" id="displayName" name="DisplayName" placeholder="Enter your full name" value="@ViewBag.DisplayName">
+                            <small class="form-text text-muted">Your name as it appears in the system.</small>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email Address</label>
+                            <input type="email" class="form-control" id="email" name="Email" placeholder="your.email@nmbhdl.co.za" value="@ViewBag.Email">
+                            <small class="form-text text-muted">Used for notifications and login.</small>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="phone" class="form-label">Phone Number</label>
+                            <input type="tel" class="form-control" id="phone" name="Phone" placeholder="+27 (0) 21 123 4567" value="@ViewBag.Phone">
+                            <small class="form-text text-muted">Optional contact number.</small>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="specialty" class="form-label">Laboratory Specialty</label>
+                            <select class="form-select" id="specialty" name="Specialty">
+                                <option value="">-- Select Specialty --</option>
+                                <option value="Haematology" selected="@(ViewBag.Specialty == "Haematology")">Haematology</option>
+                                <option value="Coagulation" selected="@(ViewBag.Specialty == "Coagulation")">Coagulation</option>
+                                <option value="Biochemistry" selected="@(ViewBag.Specialty == "Biochemistry")">Biochemistry</option>
+                                <option value="Microbiology" selected="@(ViewBag.Specialty == "Microbiology")">Microbiology</option>
+                                <option value="General" selected="@(ViewBag.Specialty == "General")">General</option>
+                            </select>
+                            <small class="form-text text-muted">Your primary area of expertise.</small>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="notes" class="form-label">Professional Notes</label>
+                            <textarea class="form-control" id="notes" name="Notes" rows="3" placeholder="Add any additional professional information...">@ViewBag.Notes</textarea>
+                            <small class="form-text text-muted">Optional: Any certifications, qualifications, or notes.</small>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-circle"></i> Save Changes
+                            </button>
+                            <a href="/LabTechnician/Dashboard" class="btn btn-secondary">
+                                <i class="bi bi-x-circle"></i> Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card border-0 shadow-sm mt-4">
+                <div class="card-header" style="background:var(--accent-pale);border-bottom:1px solid var(--border);">
+                    <h5 style="margin:0;color:var(--accent,#7a3030);"><i class="bi bi-shield-lock"></i> Account Security</h5>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted">Password and security settings can be managed through your account portal.</p>
+                    <a href="/Account/ChangePassword" class="btn btn-outline-secondary btn-sm">Change Password</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-xl-3">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header" style="background:var(--accent-pale);border-bottom:1px solid var(--border);">
+                    <h5 style="margin:0;color:var(--accent,#7a3030);"><i class="bi bi-info-circle"></i> Quick Info</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <small class="text-muted d-block">User ID</small>
+                        <code style="font-size:12px;">@User.Identity?.Name</code>
+                    </div>
+                    <div class="mb-3">
+                        <small class="text-muted d-block">Last Updated</small>
+                        <span style="font-size:12px;">@(ViewBag.LastUpdated ?? "Not yet updated")</span>
+                    </div>
+                    <hr />
+                    <p style="font-size:12px;color:var(--text-mid);margin:0;">
+                        <i class="bi bi-lightbulb"></i>
+                        Settings are stored in memory for demonstration purposes and will reset on application restart.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        border-radius: 12px;
+        transition: box-shadow 0.3s ease;
+    }
+    .card:hover {
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1) !important;
+    }
+    .form-control, .form-select {
+        border-radius: 8px;
+        border: 1px solid var(--border, #ddd9d2);
+    }
+    .form-control:focus, .form-select:focus {
+        border-color: var(--accent, #7a3030);
+        box-shadow: 0 0 0 0.2rem rgba(122, 48, 48, 0.15);
+    }
+    .btn-primary {
+        background-color: var(--accent, #7a3030);
+        border-color: var(--accent, #7a3030);
+    }
+    .btn-primary:hover {
+        background-color: #5e2525;
+        border-color: #5e2525;
+    }
+</style>
