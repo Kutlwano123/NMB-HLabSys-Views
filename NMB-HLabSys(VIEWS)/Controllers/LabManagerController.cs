@@ -171,6 +171,10 @@ namespace NMB_HLabSys_VIEWS_.Controllers
         {
             return View("Orders/Details");
         }
+        public IActionResult Profile()
+        {
+            return View("Profile");
+        }
     }
 
 }
