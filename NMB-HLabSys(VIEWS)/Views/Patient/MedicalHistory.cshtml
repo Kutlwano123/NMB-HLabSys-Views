@@ -1,0 +1,253 @@
+﻿@{
+    ViewData["Title"] = "Medical History";
+    ViewData["ActivePage"] = "MedicalHistory";
+    Layout = "~/Views/Shared/_PatientLayout.cshtml";
+}
+
+@section Styles {
+    <style>
+        .history-section {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 22px;
+            margin-bottom: 20px;
+        }
+
+        .history-heading {
+            font-family: 'DM Serif Display',serif;
+            font-size: 16px;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .checkbox-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill,minmax(200px,1fr));
+            gap: 10px;
+        }
+
+        .check-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--bg);
+        }
+
+        .check-item input {
+            accent-color: var(--accent);
+        }
+
+        .check-item label {
+            font-size: 13px;
+        }
+
+        .custom-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.45);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .custom-modal-content {
+            background: white;
+            width: 100%;
+            max-width: 550px;
+            padding: 24px;
+            border-radius: 14px;
+        }
+
+        .summary-section {
+            border: 1px solid var(--border);
+            padding: 12px;
+            margin-bottom: 12px;
+            border-radius: 10px;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-cancel {
+            flex: 1;
+            background: #eee;
+            border: none;
+            padding: 10px;
+        }
+
+        .btn-save {
+            flex: 1;
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 10px;
+        }
+    </style>
+}
+
+<h2>Medical History</h2>
+<p style="color:gray;">Select your medical information</p>
+
+<form id="medicalHistoryForm">
+
+    <!-- CONDITIONS -->
+    <div class="history-section">
+        <div class="history-heading">
+            <i class="bi bi-heart-pulse"></i> Conditions
+        </div>
+
+        <div class="checkbox-grid">
+
+            <div class="check-item">
+                <input type="checkbox" name="conditions">
+                <label>Type 2 Diabetes</label>
+            </div>
+
+            <div class="check-item">
+                <input type="checkbox" name="conditions">
+                <label>Hypertension</label>
+            </div>
+
+            <div class="check-item">
+                <input type="checkbox" name="conditions">
+                <label>Asthma</label>
+            </div>
+
+            <div class="check-item">
+                <input type="checkbox" name="conditions">
+                <label>Heart Disease</label>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ALLERGIES -->
+    <div class="history-section">
+        <div class="history-heading">
+            <i class="bi bi-exclamation-triangle"></i> Allergies
+        </div>
+
+        <div class="checkbox-grid">
+
+            <div class="check-item">
+                <input type="checkbox" name="allergies">
+                <label>Penicillin</label>
+            </div>
+
+            <div class="check-item">
+                <input type="checkbox" name="allergies">
+                <label>Latex</label>
+            </div>
+
+            <div class="check-item">
+                <input type="checkbox" name="allergies">
+                <label>Dust</label>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- MEDICATIONS -->
+    <div class="history-section">
+        <div class="history-heading">
+            <i class="bi bi-capsule"></i> Medications
+        </div>
+
+        <div class="checkbox-grid">
+
+            <div class="check-item">
+                <input type="checkbox" name="meds">
+                <label>Metformin</label>
+            </div>
+
+            <div class="check-item">
+                <input type="checkbox" name="meds">
+                <label>Insulin</label>
+            </div>
+
+            <div class="check-item">
+                <input type="checkbox" name="meds">
+                <label>Ventolin</label>
+            </div>
+
+        </div>
+    </div>
+
+    <button type="button" onclick="openModal()" class="btn-primary">
+        Save Medical History
+    </button>
+
+</form>
+
+<!-- MODAL -->
+<div id="modal" class="custom-modal">
+
+    <div class="custom-modal-content">
+
+        <h3>Confirm Selection</h3>
+
+        <div class="summary-section">
+            <strong>Conditions</strong>
+            <ul id="cList"></ul>
+        </div>
+
+        <div class="summary-section">
+            <strong>Allergies</strong>
+            <ul id="aList"></ul>
+        </div>
+
+        <div class="summary-section">
+            <strong>Medications</strong>
+            <ul id="mList"></ul>
+        </div>
+
+        <div class="modal-actions">
+            <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+            <button class="btn-save" onclick="save()">Confirm</button>
+        </div>
+
+    </div>
+</div>
+
+<script>
+
+    function getSelected(name) {
+        return Array.from(document.querySelectorAll(`input[name="${name}"]:checked`))
+            .map(x => x.nextElementSibling.innerText);
+    }
+
+    function fill(id, items) {
+        const el = document.getElementById(id);
+        el.innerHTML = items.length ? items.map(i => `<li>${i}</li>`).join("") : "<li>None</li>";
+    }
+
+    function openModal() {
+        fill("cList", getSelected("conditions"));
+        fill("aList", getSelected("allergies"));
+        fill("mList", getSelected("meds"));
+
+        document.getElementById("modal").style.display = "flex";
+    }
+
+    function closeModal() {
+        document.getElementById("modal").style.display = "none";
+    }
+
+    function save() {
+        closeModal();
+        alert("Saved (prototype only — no backend)");
+    }
+
+    window.onclick = function (e) {
+        if (e.target.id === "modal") closeModal();
+    };
+
+</script>

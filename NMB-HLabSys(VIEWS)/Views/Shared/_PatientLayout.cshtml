@@ -1,0 +1,422 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - NMB-HLabSys</title>
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <style>
+
+        /* ── CSS VARIABLES ─────────────────────────────── */
+        :root {
+            --accent:      #7a3030;
+            --accent-pale: rgba(122,48,48,0.08);
+            --gold:        #a07820;
+            --gold-pale:   rgba(160,120,32,0.10);
+            --surface:     #ffffff;
+            --surface-2:   #f5f5f5;
+            --bg:          #f8f7f5;
+            --border:      #ececec;
+            --text-dark:   #1a1a1a;
+            --text-mid:    #444444;
+            --text-light:  #888888;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            color: var(--text-dark);
+            margin: 0;
+        }
+
+        /* ── GLOBAL COMPONENTS ─────────────────────────── */
+        .btn-primary {
+            background: var(--accent);
+            color: #fff !important;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 20px;
+            font-weight: 600;
+            font-family: 'DM Sans', sans-serif;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: opacity 0.2s;
+        }
+        .btn-primary:hover { opacity: 0.9; }
+
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .table thead th {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            color: var(--text-light);
+            background: var(--bg);
+            padding: 10px 14px;
+        }
+        .table tbody td { padding: 12px 14px; vertical-align: middle; }
+        .table tbody tr:hover { background: var(--bg); }
+
+        .form-control {
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 10px 12px;
+            font-size: 13px;
+            font-family: 'DM Sans', sans-serif;
+            width: 100%;
+        }
+        .form-control:focus { outline: none; border-color: var(--accent); }
+
+        /* ── SIDEBAR ───────────────────────────────────── */
+        .sidebar {
+            height: 100vh;
+            position: fixed;
+            top: 0; left: 0;
+            width: 240px;
+            background: var(--surface);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            transition: width 0.3s ease;
+            z-index: 100;
+            overflow: hidden;
+        }
+        .sidebar.collapsed { width: 64px; }
+
+        .sidebar-brand {
+            display: flex; align-items: center; gap: 10px;
+            padding: 18px 20px 12px;
+            border-bottom: 1px solid var(--border);
+            text-decoration: none;
+        }
+        .brand-icon {
+            width: 36px; height: 36px;
+            background: var(--accent);
+            border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+        .brand-icon i { color: #fff; font-size: 16px; }
+        .brand-text {
+            font-family: 'DM Serif Display', serif;
+            font-size: 15px; color: var(--text-dark);
+            white-space: nowrap; overflow: hidden;
+        }
+        .brand-text span { color: var(--accent); }
+
+        .sidebar-toggle {
+            background: none; border: none;
+            padding: 10px 20px;
+            color: var(--text-mid); cursor: pointer;
+            display: flex; align-items: center; gap: 8px;
+            font-size: 13px; font-family: 'DM Sans', sans-serif;
+            transition: color 0.2s; text-align: left;
+        }
+        .sidebar-toggle:hover { color: var(--accent); }
+
+        .sidebar-label {
+            font-size: 10px; font-weight: 700; letter-spacing: 0.8px;
+            text-transform: uppercase; color: var(--text-light);
+            padding: 12px 20px 4px; white-space: nowrap; overflow: hidden;
+        }
+        .sidebar.collapsed .sidebar-label { opacity: 0; }
+
+        .sidebar-nav { flex: 1; overflow-y: auto; padding-bottom: 12px; }
+
+        .sidebar-link {
+            display: flex; align-items: center; gap: 12px;
+            padding: 10px 20px;
+            color: var(--text-mid); text-decoration: none;
+            font-size: 14px; font-weight: 500;
+            transition: background 0.2s, color 0.2s;
+            white-space: nowrap; overflow: hidden;
+            border-left: 3px solid transparent;
+        }
+        .sidebar-link i { font-size: 16px; flex-shrink: 0; }
+        .sidebar-link:hover {
+            background: var(--accent-pale); color: var(--accent);
+            border-left-color: var(--accent);
+        }
+        .sidebar-link.active {
+            background: var(--accent-pale); color: var(--accent);
+            border-left-color: var(--accent); font-weight: 600;
+        }
+        .sidebar.collapsed .link-text { display: none; }
+        .sidebar.collapsed .sidebar-link { justify-content: center; padding: 12px; border-left: none; }
+        .sidebar.collapsed .sidebar-toggle { justify-content: center; padding: 12px; }
+
+        .sidebar-user {
+            border-top: 1px solid var(--border);
+            padding: 14px 20px;
+            display: flex; align-items: center; gap: 10px;
+        }
+        .user-avatar {
+            width: 36px; height: 36px; border-radius: 50%;
+            background: var(--accent); color: #fff;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 13px; font-weight: 700; flex-shrink: 0;
+        }
+        .user-info { overflow: hidden; }
+        .user-name {
+            font-size: 13px; font-weight: 600; color: var(--text-dark);
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .user-role { font-size: 11px; color: var(--text-light); }
+        .sidebar.collapsed .user-info { display: none; }
+        .sidebar.collapsed .sidebar-user { justify-content: center; padding: 12px; }
+
+        /* ── MAIN CONTENT ──────────────────────────────── */
+        .main-content {
+            margin-left: 240px;
+            min-height: 100vh;
+            display: flex; flex-direction: column;
+            transition: margin-left 0.3s ease;
+        }
+        .main-content.collapsed { margin-left: 64px; }
+
+        .topnav {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 12px 28px;
+            display: flex; align-items: center; justify-content: space-between;
+            position: sticky; top: 0; z-index: 50;
+        }
+        .topnav-title { font-family: 'DM Serif Display', serif; font-size: 18px; color: var(--text-dark); }
+        .topnav-right { display: flex; align-items: center; gap: 12px; }
+
+        .topnav-icon-btn {
+            width: 36px; height: 36px; border-radius: 8px;
+            border: 1px solid var(--border); background: var(--bg);
+            display: flex; align-items: center; justify-content: center;
+            color: var(--text-mid); cursor: pointer; transition: all 0.2s;
+            text-decoration: none; font-size: 14px;
+        }
+        .topnav-icon-btn:hover {
+            border-color: var(--accent); color: var(--accent); background: var(--accent-pale);
+        }
+
+        .logout-btn {
+            display: flex; align-items: center; gap: 6px;
+            padding: 8px 16px;
+            background: var(--accent-pale); color: var(--accent);
+            border: 1px solid rgba(122,48,48,0.2); border-radius: 8px;
+            font-size: 13px; font-weight: 600;
+            font-family: 'DM Sans', sans-serif;
+            cursor: pointer; transition: all 0.2s;
+        }
+        .logout-btn:hover { background: var(--accent); color: #fff; }
+
+        .page-body { padding: 28px; flex: 1; }
+
+        /* ── LOGOUT MODAL ──────────────────────────────── */
+        .logout-modal {
+            display: none; position: fixed; inset: 0; z-index: 99999;
+            background: rgba(0,0,0,0.45); backdrop-filter: blur(4px);
+            justify-content: center; align-items: center; padding: 20px;
+        }
+        .logout-modal-content {
+            background: white; width: 100%; max-width: 420px;
+            border-radius: 18px; padding: 30px; text-align: center;
+            animation: modalFade .25s ease;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+        }
+        .logout-icon {
+            width: 75px; height: 75px; margin: 0 auto 18px;
+            border-radius: 50%; background: var(--accent-pale);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .logout-icon i { font-size: 32px; color: var(--accent); }
+        .logout-modal-content h3 { margin-bottom: 8px; }
+        .logout-modal-content p { color: var(--text-mid); font-size: 13px; margin-bottom: 24px; }
+        .logout-actions { display: flex; gap: 12px; }
+        .logout-actions button {
+            width: 100%; border: none; border-radius: 10px;
+            padding: 12px; cursor: pointer; font-weight: 600; transition: 0.2s ease;
+        }
+        .btn-cancel { background: #ececec; }
+        .btn-logout  { background: var(--accent); color: white; }
+        .btn-logout:hover { opacity: 0.92; }
+
+        @@keyframes modalFade {
+            from { opacity: 0; transform: scale(.94); }
+            to   { opacity: 1; transform: scale(1);   }
+        }
+
+        /* ── RESPONSIVE ────────────────────────────────── */
+        @@media (max-width: 768px) {
+            .sidebar { width: 64px; }
+            .sidebar .link-text,
+            .sidebar .sidebar-label,
+            .sidebar .user-info,
+            .sidebar .brand-text { display: none; }
+            .sidebar-link  { justify-content: center; padding: 12px; }
+            .sidebar-toggle { justify-content: center; padding: 12px; }
+            .sidebar-user  { justify-content: center; padding: 12px; }
+            .main-content  { margin-left: 64px; }
+        }
+
+    </style>
+
+    @RenderSection("Styles", required: false)
+
+</head>
+
+<body>
+
+    <!-- ====================================================
+         SIDEBAR
+    ==================================================== -->
+    <div class="sidebar" id="sidebar">
+
+        <a class="sidebar-brand" href="/Patient/Dashboard">
+            <div class="brand-icon"><i class="bi bi-flask"></i></div>
+            <span class="brand-text">NMB-<span>HLab</span>Sys</span>
+        </a>
+
+        <button class="sidebar-toggle" onclick="toggleSidebar()">
+            <i class="bi bi-layout-sidebar"></i>
+            <span class="link-text" style="font-size:12px;">Collapse</span>
+        </button>
+
+        <div class="sidebar-nav">
+
+            <div class="sidebar-label">My Portal</div>
+
+            <a href="/Patient/Dashboard"
+               class="sidebar-link @(ViewData["ActivePage"]?.ToString() == "Dashboard" ? "active" : "")">
+                <i class="bi bi-speedometer2"></i>
+                <span class="link-text">Dashboard</span>
+            </a>
+
+            <a href="/Patient/Profile"
+               class="sidebar-link @(ViewData["ActivePage"]?.ToString() == "Profile" ? "active" : "")">
+                <i class="bi bi-person-circle"></i>
+                <span class="link-text">My Profile</span>
+            </a>
+
+            <div class="sidebar-label">Lab Results</div>
+
+            <a href="/Patient/TestRequests"
+               class="sidebar-link @(ViewData["ActivePage"]?.ToString() == "TestRequests" ? "active" : "")">
+                <i class="bi bi-file-medical"></i>
+                <span class="link-text">Test Requests</span>
+            </a>
+
+            <a href="/Patient/Reports"
+               class="sidebar-link @(ViewData["ActivePage"]?.ToString() == "Reports" ? "active" : "")">
+                <i class="bi bi-file-pdf"></i>
+                <span class="link-text">My Reports</span>
+            </a>
+
+            <div class="sidebar-label">Health</div>
+
+            <a href="/Patient/MedicalHistory"
+               class="sidebar-link @(ViewData["ActivePage"]?.ToString() == "MedicalHistory" ? "active" : "")">
+                <i class="bi bi-heart-pulse"></i>
+                <span class="link-text">Medical History</span>
+            </a>
+
+            <a href="/Patient/Consent"
+               class="sidebar-link @(ViewData["ActivePage"]?.ToString() == "Consent" ? "active" : "")">
+                <i class="bi bi-shield-check"></i>
+                <span class="link-text">Consent</span>
+            </a>
+
+        </div>
+
+        @* ── Dummy user footer (no auth required) ── *@
+        <div class="sidebar-user">
+            <div class="user-avatar">NM</div>
+            <div class="user-info">
+                <div class="user-name">Ntando Mbeki</div>
+                <div class="user-role">Patient</div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ====================================================
+         MAIN CONTENT
+    ==================================================== -->
+    <div class="main-content" id="main-content">
+
+        <div class="topnav">
+            <span class="topnav-title">@ViewData["Title"]</span>
+            <div class="topnav-right">
+                <a href="/Patient/Profile" class="topnav-icon-btn" title="My Profile">
+                    <i class="bi bi-person"></i>
+                </a>
+                <button type="button" onclick="openLogoutModal()" class="logout-btn">
+                    <i class="bi bi-box-arrow-right"></i> Logout
+                </button>
+            </div>
+        </div>
+
+        <div class="page-body">
+            @RenderBody()
+        </div>
+
+    </div>
+
+    <!-- ====================================================
+         LOGOUT MODAL
+    ==================================================== -->
+    <div id="logoutModal" class="logout-modal">
+        <div class="logout-modal-content">
+            <div class="logout-icon"><i class="bi bi-box-arrow-right"></i></div>
+            <h3>Confirm Logout</h3>
+            <p>Are you sure you want to logout from your account?</p>
+            <div class="logout-actions">
+                <button type="button" class="btn-cancel" onclick="closeLogoutModal()">Cancel</button>
+                @* Static prototype: logout just redirects to Home *@
+                <a href="/Home/Index" class="btn-logout"
+                   style="display:flex;align-items:center;justify-content:center;gap:6px;text-decoration:none;border-radius:10px;">
+                    <i class="bi bi-box-arrow-right"></i> Logout
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('collapsed');
+            document.getElementById('main-content').classList.toggle('collapsed');
+            localStorage.setItem(
+                'patientSidebarCollapsed',
+                document.getElementById('sidebar').classList.contains('collapsed')
+            );
+        }
+        window.addEventListener('DOMContentLoaded', () => {
+            if (localStorage.getItem('patientSidebarCollapsed') === 'true') {
+                document.getElementById('sidebar').classList.add('collapsed');
+                document.getElementById('main-content').classList.add('collapsed');
+            }
+        });
+        function openLogoutModal()  { document.getElementById("logoutModal").style.display = "flex"; }
+        function closeLogoutModal() { document.getElementById("logoutModal").style.display = "none"; }
+        window.addEventListener("click", function (e) {
+            const modal = document.getElementById("logoutModal");
+            if (e.target === modal) closeLogoutModal();
+        });
+    </script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+
+</body>
+</html>

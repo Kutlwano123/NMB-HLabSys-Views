@@ -1,0 +1,266 @@
+﻿@{
+    ViewData["Title"] = "My Dashboard";
+    ViewData["ActivePage"] = "Dashboard";
+    Layout = "~/Views/Shared/_PatientLayout.cshtml";
+}
+
+@section Styles {
+    <style>
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+
+        .stat-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 18px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            transition: 0.2s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .stat-icon {
+            width: 46px;
+            height: 46px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .stat-icon.red { background: var(--accent-pale); color: var(--accent); }
+        .stat-icon.gold { background: #fff3cd; color: #b58900; }
+        .stat-icon.green { background: #e8f5e9; color: #2e7d32; }
+        .stat-icon.slate { background: #eef2f7; color: #3b4a5a; }
+
+        .stat-value {
+            font-family: 'DM Serif Display', serif;
+            font-size: 26px;
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @@media (max-width: 900px) {
+            .two-col {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .section-heading {
+            font-family: 'DM Serif Display', serif;
+            font-size: 16px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-badge {
+            font-size: 11px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .status-pending { background: #fff3cd; color: #b58900; }
+        .status-completed { background: #e8f5e9; color: #2e7d32; }
+        .status-processing { background: #e8ecf3; color: #415a77; }
+
+        .tag {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            background: var(--accent-pale);
+            color: var(--accent);
+            margin: 2px;
+        }
+
+        .panel {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 20px;
+            color: var(--text-light);
+            font-size: 13px;
+        }
+
+    </style>
+}
+
+<!-- HEADER -->
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+
+    <div>
+        <h2 style="margin:0;">
+            Welcome, Ntando 👋
+        </h2>
+        <div style="font-size:12px;color:var(--text-light);">
+            Friday, 22 May 2026
+        </div>
+    </div>
+
+    <a href="/Patient/TestRequests"
+       style="background:var(--accent);color:#fff;padding:8px 14px;border-radius:8px;text-decoration:none;font-size:13px;">
+        View Tests
+    </a>
+
+</div>
+
+<!-- STATS -->
+<div class="stat-grid">
+
+    <div class="stat-card">
+        <div class="stat-icon red"><i class="bi bi-file-medical"></i></div>
+        <div>
+            <div class="stat-value">4</div>
+            <div class="stat-label">Total Requests</div>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon gold"><i class="bi bi-hourglass-split"></i></div>
+        <div>
+            <div class="stat-value">2</div>
+            <div class="stat-label">Pending</div>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon green"><i class="bi bi-check-circle"></i></div>
+        <div>
+            <div class="stat-value">2</div>
+            <div class="stat-label">Completed</div>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon slate"><i class="bi bi-shield-check"></i></div>
+        <div>
+            <div class="stat-value">2</div>
+            <div class="stat-label">Consents</div>
+        </div>
+    </div>
+
+</div>
+
+<!-- TWO COLUMN -->
+<div class="two-col">
+
+    <!-- TEST REQUESTS -->
+    <div>
+
+        <div class="section-heading">
+            <i class="bi bi-file-medical" style="color:var(--accent);"></i>
+            Recent Test Requests
+        </div>
+
+        <div class="panel">
+
+            <table class="table table-sm">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    <tr>
+                        <td>10 May 2026</td>
+                        <td><span class="status-badge status-completed">Completed</span></td>
+                        <td><a href="/Patient/ViewResult/1">View</a></td>
+                    </tr>
+
+                    <tr>
+                        <td>15 May 2026</td>
+                        <td><span class="status-badge status-pending">Pending</span></td>
+                        <td>Waiting</td>
+                    </tr>
+
+                    <tr>
+                        <td>18 May 2026</td>
+                        <td><span class="status-badge status-processing">Processing</span></td>
+                        <td>In progress</td>
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        <a href="/Patient/TestRequests"
+           style="font-size:12px;color:var(--accent);display:block;margin-top:8px;">
+            View all →
+        </a>
+
+    </div>
+
+    <!-- MEDICAL SUMMARY -->
+    <div>
+
+        <div class="section-heading">
+            <i class="bi bi-heart-pulse" style="color:var(--accent);"></i>
+            Medical Summary
+        </div>
+
+        <div class="panel">
+
+            <div style="margin-bottom:12px;">
+                <strong style="font-size:12px;">Conditions</strong><br />
+                <span class="tag">Diabetes</span>
+                <span class="tag">Hypertension</span>
+            </div>
+
+            <div style="margin-bottom:12px;">
+                <strong style="font-size:12px;">Allergies</strong><br />
+                <span class="tag" style="background:#fff3cd;color:#b58900;">Penicillin</span>
+                <span class="tag" style="background:#fff3cd;color:#b58900;">Latex</span>
+            </div>
+
+            <div>
+                <strong style="font-size:12px;">Medications</strong><br />
+                <span class="tag" style="background:#eef2f7;color:#3b4a5a;">Metformin</span>
+                <span class="tag" style="background:#eef2f7;color:#3b4a5a;">Aspirin</span>
+            </div>
+
+        </div>
+
+        <a href="/Patient/MedicalHistory"
+           style="font-size:12px;color:var(--accent);display:block;margin-top:8px;">
+            Update history →
+        </a>
+
+    </div>
+
+</div>
