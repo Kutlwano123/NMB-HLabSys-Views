@@ -9,6 +9,14 @@ var builder = WebApplication.CreateBuilder(args);
 // ── MVC ────────────────────────────────────────────────────
 builder.Services.AddControllersWithViews();
 
+// ── Session (for storing technician settings) ──────────────
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromHours(1);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+
 // ── Cookie authentication (replaces Identity entirely) ─────
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
@@ -36,6 +44,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 
+app.UseSession();           // must come before UseAuthentication
 app.UseAuthentication();   // must come before UseAuthorization
 app.UseAuthorization();
 

@@ -1,0 +1,100 @@
+﻿@model List<NMB_HLabSys_Views.Controllers.PatientRecord>
+@{
+    ViewData["Title"] = "Patient Records - NMB-HLabSys";
+    ViewData["ActiveNav"] = "patients";
+    Layout = "_DoctorLayout";
+}
+
+<div class="page-header">
+    <div class="page-tag"><span class="tag-dot"></span> Patients</div>
+    <h1 class="doctor-title">Patient Records</h1>
+    <p class="doctor-sub">Create and maintain patient demographic and medical history details.</p>
+</div>
+
+<section class="panel-card">
+    <h3>Add / Update Patient</h3>
+
+    <form asp-controller="Doctor" asp-action="Patients" method="post">
+        @Html.AntiForgeryToken()
+
+        <!-- Input names altered to link directly into primitive parameter mappings -->
+        <input type="hidden" id="patientId" name="patientId" value="0" />
+
+        <p class="form-section-title">Demographics</p>
+        <div class="form-row cols-5">
+            <div class="form-group"><label for="firstName">Name</label><input type="text" id="firstName" name="firstName" placeholder="First name" required /></div>
+            <div class="form-group"><label for="lastName">Surname</label><input type="text" id="lastName" name="lastName" placeholder="Last name" required /></div>
+            <div class="form-group"><label for="saIdNumber">SA ID Number</label><input type="text" id="saIdNumber" name="saIdNumber" placeholder="Unique SA ID" required /></div>
+            <div class="form-group"><label for="dateOfBirth">Date of Birth</label><input type="date" id="dateOfBirth" name="dateOfBirth" required /></div>
+            <div class="form-group">
+                <label for="gender">Gender</label>
+                <select id="gender" name="gender" class="form-control">
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-row cols-5" style="margin-top: 12px;">
+            <div class="form-group"><label for="cellphone">Cellphone</label><input type="text" id="cellphone" name="cellphone" placeholder="+27 …" /></div>
+            <div class="form-group"><label for="email">Email</label><input type="email" id="email" name="email" placeholder="patient@example.com" /></div>
+            <div class="form-group"><label for="address">Address</label><input type="text" id="address" name="address" placeholder="Street address" /></div>
+            <div class="form-group"><label for="city">City</label><input type="text" id="city" name="city" placeholder="Gqeberha" /></div>
+            <div class="form-group"><label for="postalCode">Postal Code</label><input type="text" id="postalCode" name="postalCode" placeholder="6001" /></div>
+        </div>
+
+        <p class="form-section-title" style="margin-top: 16px;">Medical History</p>
+        <div class="form-row cols-3">
+            <div class="form-group"><label for="knownMedicalConditions">Medical Conditions</label><textarea id="knownMedicalConditions" name="knownMedicalConditions" placeholder="Diabetes, hypertension…"></textarea></div>
+            <div class="form-group"><label for="knownAllergies">Allergies</label><textarea id="knownAllergies" name="knownAllergies" placeholder="Penicillin, nuts…"></textarea></div>
+            <div class="form-group"><label for="currentMedications">Current Medication</label><textarea id="currentMedications" name="currentMedications" placeholder="List medications…"></textarea></div>
+        </div>
+
+        <div class="form-actions" style="margin-top: 16px;">
+            <button class="btn" type="submit">Save Patient</button>
+            <button class="btn btn-outline" type="reset">Clear Form</button>
+        </div>
+    </form>
+</section>
+
+<section class="panel-card" style="margin-top:18px">
+    <h3>Existing Patients</h3>
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>SA ID</th>
+                    <th>Cellphone</th>
+                    <th>Email</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null && Model.Any())
+                {
+                    foreach (var p in Model)
+                    {
+                        <tr>
+                            <td>@p.Name @p.Surname</td>
+                            <td class="mono">@p.SAIdNumber</td>
+                            <td>@p.CellphoneNumber</td>
+                            <td>@p.Email</td>
+                            <td>
+                                <a asp-controller="Doctor" asp-action="Patients" asp-route-id="@p.PatientID" class="btn btn-outline btn-sm">Edit</a>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="5" class="td-sm text-center text-muted italic" style="padding: 20px;">
+                            No patients found on record.
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</section>

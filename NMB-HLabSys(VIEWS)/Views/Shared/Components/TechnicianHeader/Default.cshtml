@@ -1,7 +1,16 @@
 @model NMB_HLabSys.ViewComponents.TechnicianHeaderModel
 <div class="d-flex align-items-center gap-3">
-    <a href="/Account/AccountSettings" class="d-flex align-items-center gap-2 text-decoration-none text-dark" title="Profile settings">
-        <img src="@Model.PhotoPath" alt="Profile" style="width:36px;height:36px;border-radius:50%;object-fit:cover;border:2px solid var(--border,#ddd9d2);" />
+    <a href="/LabTechnician/Settings" class="d-flex align-items-center gap-2 text-decoration-none text-dark" title="Profile settings">
+        @if (Model.HasValidPhoto)
+        {
+            <img src="@Model.PhotoPath" alt="Profile" style="width:36px;height:36px;border-radius:50%;object-fit:cover;border:2px solid var(--border,#ddd9d2);" />
+        }
+        else
+        {
+            <div style="width:36px;height:36px;border-radius:50%;border:2px solid var(--border,#ddd9d2);display:flex;align-items:center;justify-content:center;background:#f0e8e8;">
+                <i class="bi bi-person-circle" style="font-size:24px;color:var(--accent,#7a3030);"></i>
+            </div>
+        }
         <span class="d-none d-md-inline" style="font-size:14px;">@Model.Email</span>
     </a>
     <form method="post" asp-controller="Home" asp-action="Index" style="display:inline;">

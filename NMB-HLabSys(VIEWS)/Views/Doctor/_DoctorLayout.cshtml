@@ -1,0 +1,30 @@
+﻿@{
+    var activeNav = ViewData["ActiveNav"]?.ToString() ?? "";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@(ViewData["Title"] ?? "NMB-HLabSys — Doctor Portal")</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/doctor-ui.css" asp-append-version="true" />
+</head>
+<body data-doctor-name="@ViewData["DoctorDisplayName"]"
+      data-doctor-initials="@ViewData["DoctorInitials"]"
+      data-doctor-role="@ViewData["DoctorRoleSubtitle"]">
+    <div class="doctor-app">
+        <partial name="_DoctorSidebar" model="activeNav" />
+        <div class="doctor-main-wrapper">
+            <partial name="_DoctorTopbar" />
+            <main class="doctor-main">
+                @RenderBody()
+            </main>
+        </div>
+    </div>
+
+    <script src="~/js/doctor-ui.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

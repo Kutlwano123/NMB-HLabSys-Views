@@ -1,0 +1,82 @@
+﻿@model List<(string RequestNumber, string PatientName, string Status, DateTime UpdatedAt)>
+@{
+    ViewData["Title"] = "Doctor Reports - NMB-HLabSys";
+    ViewData["ActiveNav"] = "reports";
+    Layout = "_DoctorLayout";
+
+    // Read the fallback string keys assigned inside DoctorController safely
+    string fromDateString = ViewBag.FromDate as string ?? string.Empty;
+    string toDateString = ViewBag.ToDate as string ?? string.Empty;
+}
+
+<div class="page-header">
+    <div class="page-tag"><span class="tag-dot"></span> Reports</div>
+    <h1 class="doctor-title">Doctor Reports</h1>
+    <p class="doctor-sub">Generate date-range reports for all submitted test requests.</p>
+</div>
+
+<section class="panel-card">
+    <h3>Generate Report</h3>
+
+    <div class="quick-range-bar">
+        <span class="filter-bar-label">Quick range:</span>
+        <button type="button" class="filter-btn" data-report-range="7">Last 7 days</button>
+        <button type="button" class="filter-btn active" data-report-range="30">Last 30 days</button>
+        <button type="button" class="filter-btn" data-report-range="90">Last 90 days</button>
+        <button type="button" class="filter-btn" data-report-range="365">This year</button>
+    </div>
+
+    <form asp-action="GenerateReport" method="post" class="form-row cols-2">
+        <div class="form-group">
+            <label for="reportFrom">From Date</label>
+            <input type="date" id="reportFrom" name="FromDate" value="@fromDateString" />
+        </div>
+
+        <div class="form-group">
+            <label for="reportTo">To Date</label>
+            <input type="date" id="reportTo" name="ToDate" value="@toDateString" />
+        </div>
+        <div class="form-actions" style="grid-column: 1 / -1; margin-top: 12px;">
+            <button class="btn" type="submit">Generate PDF</button>
+            <button class="btn btn-outline" type="button" onclick="location.reload()">Reset</button>
+        </div>
+    </form>
+
+    <div class="preview-section" style="margin-top:18px;">
+        <h4>Preview <span id="reportPreviewCount" style="font-weight:400;color:var(--text-light)">@(Model?.Count ?? 0)</span></h4>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Request #</th>
+                        <th>Patient</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody id="reportPreviewBody">
+                    @if (Model != null && Model.Any())
+                    {
+                        foreach (var r in Model)
+                        {
+                            <tr data-date="@r.UpdatedAt.ToString("yyyy-MM-dd")">
+                                <td>@r.RequestNumber</td>
+                                <td>@r.PatientName</td>
+                                <td><span class="chip">@r.Status</span></td>
+                                <td class="td-sm">@r.UpdatedAt.ToString("dd MMM yyyy")</td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="4" class="td-sm text-center text-muted symmetric-padding" style="padding: 20px;">
+                                No preview data for selected range.
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>

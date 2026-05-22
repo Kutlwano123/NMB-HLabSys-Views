@@ -398,6 +398,35 @@ namespace NMB_HLabSys_VIEWS.Controllers
             return v < min || v > max;
         }
 
+        // ── Settings ───────────────────────────────────────────
+
+        public IActionResult Settings()
+        {
+            ViewBag.DisplayName = HttpContext.Session.GetString("TechDisplayName") ?? UserName;
+            ViewBag.Email = HttpContext.Session.GetString("TechEmail") ?? User.Identity?.Name ?? "technician@nmbhdl.co.za";
+            ViewBag.Phone = HttpContext.Session.GetString("TechPhone") ?? "";
+            ViewBag.Specialty = HttpContext.Session.GetString("TechSpecialty") ?? "";
+            ViewBag.Notes = HttpContext.Session.GetString("TechNotes") ?? "";
+            ViewBag.LastUpdated = HttpContext.Session.GetString("TechLastUpdated");
+            ViewData["ActivePage"] = "Settings";
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult UpdateSettings(string displayName, string email, string phone, string specialty, string notes)
+        {
+            // Store settings in session (mocked persistence)
+            HttpContext.Session.SetString("TechDisplayName", displayName ?? "");
+            HttpContext.Session.SetString("TechEmail", email ?? "");
+            HttpContext.Session.SetString("TechPhone", phone ?? "");
+            HttpContext.Session.SetString("TechSpecialty", specialty ?? "");
+            HttpContext.Session.SetString("TechNotes", notes ?? "");
+            HttpContext.Session.SetString("TechLastUpdated", DateTime.Now.ToString("g"));
+
+            TempData["Success"] = "Your profile settings have been updated successfully.";
+            return RedirectToAction(nameof(Settings));
+        }
+
         private static List<string> SplitSnapshot(string? value) =>
             string.IsNullOrWhiteSpace(value)
                 ? new List<string>()
