@@ -1,0 +1,268 @@
+﻿@{
+    ViewData["Title"] = "Laboratory Report";
+    ViewData["ActivePage"] = "TestRequests";
+    Layout = "~/Views/Shared/_PatientLayout.cshtml";
+
+    // =========================
+    // STATIC DUMMY DATA
+    // =========================
+    var report = new
+    {
+        TestName = "Full Blood Count",
+        Category = "Haematology",
+        ResultDate = new DateTime(2026, 4, 5, 14, 30, 0),
+        RequestId = 12,
+        Unit = "g/dL",
+
+        ResultValue = "13.8",
+        MinRange = 12.0,
+        MaxRange = 16.0,
+
+        Verified = true
+    };
+
+    double value = 13.8;
+
+    string status =
+        value >= report.MinRange && value <= report.MaxRange
+        ? "Normal"
+        : "Abnormal";
+}
+
+<style>
+
+    .report-container {
+        background: #fff;
+        border: 1px solid #e6e6e6;
+        border-radius: 14px;
+        padding: 25px;
+        max-width: 900px;
+        margin: auto;
+    }
+
+    .report-header {
+        display: flex;
+        justify-content: space-between;
+        border-bottom: 2px solid #eee;
+        padding-bottom: 15px;
+        margin-bottom: 20px;
+    }
+
+    .hospital-title {
+        font-size: 18px;
+        font-weight: 700;
+    }
+
+    .sub-text {
+        font-size: 12px;
+        color: #666;
+    }
+
+    .badge-status {
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .verified {
+        background: #d4edda;
+        color: #155724;
+    }
+
+    .pending {
+        background: #fff3cd;
+        color: #856404;
+    }
+
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+        margin-bottom: 20px;
+    }
+
+    .box {
+        background: #f8f9fa;
+        padding: 12px;
+        border-radius: 10px;
+    }
+
+    .label {
+        font-size: 11px;
+        color: #777;
+    }
+
+    .value {
+        font-weight: 600;
+        font-size: 13px;
+        color: #222;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+    }
+
+    th, td {
+        border-bottom: 1px solid #eee;
+        padding: 12px;
+        font-size: 13px;
+        text-align: left;
+    }
+
+    th {
+        background: #fafafa;
+    }
+
+    .normal {
+        color: green;
+        font-weight: 600;
+    }
+
+    .abnormal {
+        color: red;
+        font-weight: 600;
+    }
+
+    .section-title {
+        margin-top: 20px;
+        font-weight: 700;
+        font-size: 14px;
+    }
+
+    .interpretation-box {
+        margin-top: 10px;
+        padding: 14px;
+        border-radius: 10px;
+        border: 1px solid #eee;
+        background: #fafafa;
+        font-size: 13px;
+    }
+
+</style>
+
+<!-- BACK BUTTON -->
+<a href="/Patient/TestRequests"
+   class="btn btn-light"
+   style="margin-bottom:15px;">
+
+    <i class="bi bi-arrow-left"></i>
+    Back to Results
+
+</a>
+
+<div class="report-container">
+
+    <!-- HEADER -->
+    <div class="report-header">
+
+        <div>
+            <div class="hospital-title">NMB Laboratory Services</div>
+            <div class="sub-text">Haematology Report</div>
+        </div>
+
+        <div>
+            @if (report.Verified)
+            {
+                <span class="badge-status verified">VERIFIED</span>
+            }
+            else
+            {
+                <span class="badge-status pending">PENDING</span>
+            }
+        </div>
+
+    </div>
+
+    <!-- TEST INFO -->
+    <div class="info-grid">
+
+        <div class="box">
+            <div class="label">Test Name</div>
+            <div class="value">@report.TestName</div>
+        </div>
+
+        <div class="box">
+            <div class="label">Category</div>
+            <div class="value">@report.Category</div>
+        </div>
+
+        <div class="box">
+            <div class="label">Result Date</div>
+            <div class="value">@report.ResultDate.ToString("dd MMM yyyy HH:mm")</div>
+        </div>
+
+        <div class="box">
+            <div class="label">Request ID</div>
+            <div class="value">#@report.RequestId</div>
+        </div>
+
+        <div class="box">
+            <div class="label">Unit</div>
+            <div class="value">@report.Unit</div>
+        </div>
+
+    </div>
+
+    <!-- RESULT TABLE -->
+    <div class="section-title">Laboratory Results</div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Test</th>
+                <th>Result</th>
+                <th>Reference Range</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr>
+                <td>@report.TestName</td>
+
+                <td>
+                    @report.ResultValue @report.Unit
+                </td>
+
+                <td>
+                    @report.MinRange - @report.MaxRange
+                </td>
+
+                <td>
+                    @if (status == "Normal")
+                    {
+                        <span class="normal">Normal</span>
+                    }
+                    else
+                    {
+                        <span class="abnormal">Abnormal</span>
+                    }
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- INTERPRETATION -->
+    <div class="section-title">Clinical Interpretation</div>
+
+    <div class="interpretation-box">
+
+        @if (status == "Normal")
+        {
+            <span class="normal">
+                Result is within expected physiological reference range.
+            </span>
+        }
+        else
+        {
+            <span class="abnormal">
+                Result is outside normal reference range. Clinical correlation is recommended.
+            </span>
+        }
+
+    </div>
+
+</div>
