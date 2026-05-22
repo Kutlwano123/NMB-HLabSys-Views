@@ -23,7 +23,7 @@
             <div class="card-body text-center">
                 <div class="h1">@Model.SelectedByTechnician</div>
                 <p class="text-muted">Selected by Me</p>
-                <a class="btn btn-sm btn-primary mt-2" href="/LabTechnician/SelectedTests">View</a>
+                <a class="btn btn-sm btn-primary mt-2" href="~/LabTechnician/SelectedTests">View</a>
             </div>
         </div>
     </div>
@@ -32,7 +32,7 @@
             <div class="card-body text-center">
                 <div class="h1">@Model.WaitingToBeSelected</div>
                 <p class="text-muted">Pending / Awaiting Samples</p>
-                <a class="btn btn-sm btn-primary mt-2" href="/LabTechnician/PendingTests">Manage</a>
+                <a class="btn btn-sm btn-primary mt-2" href="~/LabTechnician/PendingTests">Manage</a>
             </div>
         </div>
     </div>
@@ -41,7 +41,7 @@
             <div class="card-body text-center">
                 <div class="h1">@Model.WaitingToBeVerified</div>
                 <p class="text-muted">Awaiting Verification</p>
-                <a class="btn btn-sm btn-primary mt-2" href="/LabTechnician/VerifyTests">Verify</a>
+                <a class="btn btn-sm btn-primary mt-2" href="~/LabTechnician/VerifyTests">Verify</a>
             </div>
         </div>
     </div>
@@ -50,7 +50,7 @@
             <div class="card-body text-center">
                 <div class="h1">@Model.WaitingToBeReviewed</div>
                 <p class="text-muted">Rejected — Re-capture</p>
-                <a class="btn btn-sm btn-warning mt-2" href="/LabTechnician/ReviewTests">Review</a>
+                <a class="btn btn-sm btn-warning mt-2" href="~/LabTechnician/ReviewTests">Review</a>
             </div>
         </div>
     </div>
@@ -59,7 +59,7 @@
             <div class="card-body text-center">
                 <div class="h1 text-danger">@Model.UrgentTests</div>
                 <p class="text-muted">Urgent (STAT)</p>
-                <a class="btn btn-sm btn-danger mt-2" href="/LabTechnician/UrgentTests">Open</a>
+                <a class="btn btn-sm btn-danger mt-2" href="~/LabTechnician/UrgentTests">Open</a>
             </div>
         </div>
     </div>
@@ -68,7 +68,7 @@
             <div class="card-body text-center">
                 <div class="h1 text-warning">@Model.OverdueTests</div>
                 <p class="text-muted">Overdue (TAT)</p>
-                <a class="btn btn-sm btn-outline-warning mt-2" href="/LabTechnician/OverdueTests">Open</a>
+                <a class="btn btn-sm btn-outline-warning mt-2" href="~/LabTechnician/OverdueTests">Open</a>
             </div>
         </div>
     </div>
@@ -77,7 +77,7 @@
             <div class="card-body text-center">
                 <div class="h1">@Model.NearingLimit</div>
                 <p class="text-muted">Nearing TAT Limit</p>
-                <a class="btn btn-sm btn-secondary mt-2" href="/LabTechnician/NearingLimit">Open</a>
+                <a class="btn btn-sm btn-secondary mt-2" href="~/LabTechnician/NearingLimit">Open</a>
             </div>
         </div>
     </div>
@@ -86,7 +86,7 @@
             <div class="card-body text-center">
                 <i class="bi bi-file-earmark-bar-graph fs-1"></i>
                 <p class="text-muted mt-2">Productivity Report</p>
-                <a class="btn btn-sm btn-outline-primary mt-2" href="/LabTechnician/ProductivityReport">Download</a>
+                <a class="btn btn-sm btn-outline-primary mt-2" href="~/LabTechnician/ProductivityReport">Download</a>
             </div>
         </div>
     </div>
@@ -120,7 +120,7 @@
                                         </div>
                                         @if (notif.RelatedTestRequestId.HasValue)
                                         {
-                                            <a href="/LabTechnician/CaptureResultForm?requestId=@notif.RelatedTestRequestId" class="btn btn-sm btn-primary">
+                                            <a href="~/LabTechnician/CaptureResultForm?requestId=@notif.RelatedTestRequestId" class="btn btn-sm btn-primary">
                                                 View
                                             </a>
                                         }
@@ -128,7 +128,7 @@
                                 </div>
                             }
                         </div>
-                        <a href="/LabTechnician/Notifications" class="btn btn-sm btn-outline-danger mt-2">
+                        <a href="~/LabTechnician/Notifications" class="btn btn-sm btn-outline-danger mt-2">
                             <i class="bi bi-bell"></i> View All Notifications
                         </a>
                     }
@@ -175,7 +175,7 @@
                             </tbody>
                         </table>
                     </div>
-                    <a href="/LabTechnician/ConsumableInventory" class="btn btn-sm btn-outline-warning mt-2">
+                    <a href="~/LabTechnician/ConsumableInventory" class="btn btn-sm btn-outline-warning mt-2">
                         <i class="bi bi-droplet"></i> Full Inventory
                     </a>
                 </div>

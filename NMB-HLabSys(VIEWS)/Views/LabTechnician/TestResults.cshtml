@@ -47,12 +47,12 @@
                 <td>
                     @if (status == "Captured")
                     {
-                        <a class="btn btn-sm btn-info text-white" href="/LabTechnician/VerifyResultForm?resultId=@r.TestResultId">Verify</a>
+                        <a class="btn btn-sm btn-info text-white" href="~/LabTechnician/VerifyResultForm?resultId=@r.TestResultId">Verify</a>
                     }
                     @if (status == "To Be Reviewed")
                     {
-                        <a class="btn btn-sm btn-warning" href="/LabTechnician/CaptureResultForm?requestId=@r.TestRequestId">Re-capture</a>
-                        <a class="btn btn-sm btn-outline-secondary ms-1" href="/LabTechnician/RejectionHistory?resultId=@r.TestResultId">History</a>
+                        <a class="btn btn-sm btn-warning" href="~/LabTechnician/CaptureResultForm?requestId=@r.TestRequestId">Re-capture</a>
+                        <a class="btn btn-sm btn-outline-secondary ms-1" href="~/LabTechnician/RejectionHistory?resultId=@r.TestResultId">History</a>
                     }
                     @if (status == "Verified")
                     {
