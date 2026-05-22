@@ -1,7 +1,7 @@
 @{
     ViewData["Title"] = "NMB-HLabSys - Haematology Laboratory System";
-    Layout = null; 
 }
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,226 +12,1025 @@
     <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        :root {
-            --bg:         #f4f2ef;
-            --surface:    #faf9f7;
-            --surface-2:  #eeeae4;
-            --border:     #ddd9d2;
-            --accent:     #7a3030;
-            --accent-2:   #9a4040;
-            --accent-pale:#f0e8e8;
-            --text-dark:  #1e2420;
-            --text-mid:   #4a5248;
-            --text-light: #7a857a;
-            --red-dark:   #7a3030;
-            --red-pale:   #f0e8e8;
-            --gold:       #8a7340;
-            --gold-pale:  #f0ebe0;
-        }
+            :root {
+                --bg: #f4f2ef;
+                --surface: #faf9f7;
+                --surface-2: #eeeae4;
+                --border: #ddd9d2;
+                --accent: #7a3030;
+                --accent-2: #9a4040;
+                --accent-pale: #f0e8e8;
+                --text-dark: #1e2420;
+                --text-mid: #4a5248;
+                --text-light: #7a857a;
+                --red-dark: #7a3030;
+                --red-pale: #f0e8e8;
+                --gold: #8a7340;
+                --gold-pale: #f0ebe0;
+            }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+            * {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+            }
 
-        body {
-            font-family: 'DM Sans', sans-serif;
-            background-color: var(--bg);
-            color: var(--text-dark);
-        }
+            body {
+                font-family: 'DM Sans', sans-serif;
+                background-color: var(--bg);
+                color: var(--text-dark);
+            }
 
-        nav {
-            position: fixed;
-            top: 0; left: 0; right: 0;
-            z-index: 100;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 48px;
-            height: 64px;
-            background: rgba(244,242,239,0.92);
-            backdrop-filter: blur(12px);
-            border-bottom: 1px solid var(--border);
-        }
+            /* ── NAVBAR ── */
+            nav {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                z-index: 100;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 0 48px;
+                height: 64px;
+                background: rgba(244,242,239,0.92);
+                backdrop-filter: blur(12px);
+                border-bottom: 1px solid var(--border);
+            }
 
-        .nav-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; }
-        .nav-logo { width: 36px; height: 36px; background: var(--accent); border-radius: 8px; display: flex; align-items: center; justify-content: center; }
-        .nav-logo i { color: #fff; font-size: 16px; }
-        .nav-brand-text { font-family: 'DM Serif Display', serif; font-size: 18px; color: var(--text-dark); letter-spacing: -0.3px; }
-        .nav-brand-text span { color: var(--accent); }
+            .nav-brand {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                text-decoration: none;
+            }
 
-        .nav-links { display: flex; align-items: center; gap: 32px; list-style: none; }
-        .nav-links a { text-decoration: none; font-size: 14px; font-weight: 500; color: var(--text-mid); transition: color 0.2s; }
-        .nav-links a:hover { color: var(--accent); }
+            .nav-logo {
+                width: 36px;
+                height: 36px;
+                background: var(--accent);
+                border-radius: 8px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
 
-        .nav-cta { padding: 9px 22px; background: var(--accent); color: #fff !important; border-radius: 6px; font-weight: 600 !important; font-size: 13px !important; transition: background 0.2s !important; }
-        .nav-cta:hover { background: var(--accent-2) !important; color: #fff !important; }
+                .nav-logo i {
+                    color: #fff;
+                    font-size: 16px;
+                }
 
-        .hero { min-height: 100vh; display: grid; grid-template-columns: 1fr 1fr; align-items: center; padding: 100px 48px 60px; gap: 60px; max-width: 1200px; margin: 0 auto; }
-        .hero-left { animation: fadeUp 0.8s ease both; }
+            .nav-brand-text {
+                font-family: 'DM Serif Display', serif;
+                font-size: 18px;
+                color: var(--text-dark);
+                letter-spacing: -0.3px;
+            }
 
-        .hero-eyebrow { display: inline-flex; align-items: center; gap: 8px; background: var(--accent-pale); color: var(--accent); font-size: 12px; font-weight: 600; letter-spacing: 0.8px; text-transform: uppercase; padding: 6px 14px; border-radius: 20px; margin-bottom: 24px; border: 1px solid rgba(122,48,48,0.2); }
-        .hero-eyebrow i { font-size: 10px; }
+                .nav-brand-text span {
+                    color: var(--accent);
+                }
 
-        .hero h1 { font-family: 'DM Serif Display', serif; font-size: clamp(2.4rem, 4vw, 3.4rem); line-height: 1.15; color: var(--text-dark); margin-bottom: 20px; letter-spacing: -0.5px; }
-        .hero h1 em { font-style: italic; color: var(--accent); }
+            .nav-links {
+                display: flex;
+                align-items: center;
+                gap: 32px;
+                list-style: none;
+            }
 
-        .hero-desc { font-size: 16px; line-height: 1.7; color: var(--text-mid); max-width: 480px; margin-bottom: 36px; }
-        .hero-actions { display: flex; gap: 14px; flex-wrap: wrap; }
+                .nav-links a {
+                    text-decoration: none;
+                    font-size: 14px;
+                    font-weight: 500;
+                    color: var(--text-mid);
+                    transition: color 0.2s;
+                }
 
-        .btn-primary { padding: 13px 28px; background: var(--accent); color: #fff; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: background 0.2s, transform 0.2s; display: inline-flex; align-items: center; gap: 8px; text-decoration: none; }
-        .btn-primary:hover { background: var(--accent-2); transform: translateY(-1px); color: #fff; }
+                    .nav-links a:hover {
+                        color: var(--accent);
+                    }
 
-        .btn-secondary { padding: 13px 28px; background: transparent; color: var(--text-dark); border: 1.5px solid var(--border); border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; transition: border-color 0.2s, background 0.2s; display: inline-flex; align-items: center; gap: 8px; text-decoration: none; }
-        .btn-secondary:hover { border-color: var(--accent); background: var(--accent-pale); }
+            .nav-cta {
+                padding: 9px 22px;
+                background: var(--accent);
+                color: #fff !important;
+                border-radius: 6px;
+                font-weight: 600 !important;
+                font-size: 13px !important;
+                transition: background 0.2s !important;
+            }
 
-        .hero-stats { display: flex; gap: 32px; margin-top: 48px; padding-top: 32px; border-top: 1px solid var(--border); }
-        .stat-item { text-align: left; }
-        .stat-value { font-family: 'DM Serif Display', serif; font-size: 28px; color: var(--text-dark); }
-        .stat-label { font-size: 12px; color: var(--text-light); margin-top: 2px; }
+                .nav-cta:hover {
+                    background: var(--accent-2) !important;
+                    color: #fff !important;
+                }
 
-        .hero-right { animation: fadeUp 0.8s 0.2s ease both; }
-        .hero-visual { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; box-shadow: 0 4px 32px rgba(0,0,0,0.06); height: 420px; }
-        .hero-visual img { width: 100%; height: 100%; object-fit: cover; }
+            /* ── HERO ── */
+            .hero {
+                min-height: 100vh;
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                align-items: center;
+                padding: 100px 48px 60px;
+                gap: 60px;
+                max-width: 1200px;
+                margin: 0 auto;
+            }
 
-        .sdg-banner { background: var(--accent); color: #fff; padding: 16px 48px; display: flex; align-items: center; justify-content: center; gap: 12px; }
-        .sdg-banner i { font-size: 18px; opacity: 0.8; }
-        .sdg-banner p { font-size: 13px; font-weight: 500; opacity: 0.9; }
-        .sdg-banner strong { opacity: 1; }
+            .hero-left {
+                animation: fadeUp 0.8s ease both;
+            }
 
-        .section { max-width: 1100px; margin: 0 auto; padding: 80px 48px; }
-        .section-label { font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; }
-        .section-heading { font-family: 'DM Serif Display', serif; font-size: clamp(1.8rem, 3vw, 2.4rem); color: var(--text-dark); margin-bottom: 14px; letter-spacing: -0.3px; }
-        .section-sub { font-size: 15px; color: var(--text-mid); max-width: 560px; line-height: 1.7; margin-bottom: 48px; }
+            .hero-eyebrow {
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                background: var(--accent-pale);
+                color: var(--accent);
+                font-size: 12px;
+                font-weight: 600;
+                letter-spacing: 0.8px;
+                text-transform: uppercase;
+                padding: 6px 14px;
+                border-radius: 20px;
+                margin-bottom: 24px;
+                border: 1px solid rgba(74,103,65,0.2);
+            }
 
-        .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
-        .feature-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 28px 24px; transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s; opacity: 0; transform: translateY(20px); }
-        .feature-card.visible { opacity: 1; transform: translateY(0); transition: opacity 0.5s ease, transform 0.5s ease, box-shadow 0.25s, border-color 0.25s; }
-        .feature-card:hover { transform: translateY(-4px); box-shadow: 0 12px 28px rgba(0,0,0,0.08); border-color: rgba(122,48,48,0.3); }
+                .hero-eyebrow i {
+                    font-size: 10px;
+                }
 
-        .feature-icon-wrap { width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 18px; }
-        .feature-icon-wrap.green { background: var(--accent-pale); color: var(--accent); }
-        .feature-icon-wrap.red   { background: var(--red-pale);    color: var(--red-dark); }
-        .feature-icon-wrap.gold  { background: var(--gold-pale);   color: var(--gold); }
-        .feature-icon-wrap.slate { background: #e8eaee;            color: #4a5060; }
-        .feature-icon-wrap.teal  { background: #e0ecec;            color: #2e6b6b; }
-        .feature-icon-wrap.mauve { background: #ede8f0;            color: #6b4a7a; }
-        .feature-icon-wrap i { font-size: 18px; }
+            .hero h1 {
+                font-family: 'DM Serif Display', serif;
+                font-size: clamp(2.4rem, 4vw, 3.4rem);
+                line-height: 1.15;
+                color: var(--text-dark);
+                margin-bottom: 20px;
+                letter-spacing: -0.5px;
+            }
 
-        .feature-card h3 { font-family: 'DM Serif Display', serif; font-size: 17px; color: var(--text-dark); margin-bottom: 10px; }
-        .feature-card p  { font-size: 14px; line-height: 1.65; color: var(--text-mid); }
+                .hero h1 em {
+                    font-style: italic;
+                    color: var(--accent);
+                }
 
-        .roles-section { background: var(--surface-2); padding: 80px 0; }
-        .roles-inner   { max-width: 1100px; margin: 0 auto; padding: 0 48px; }
-        .roles-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; margin-top: 48px; }
+            .hero-desc {
+                font-size: 16px;
+                line-height: 1.7;
+                color: var(--text-mid);
+                max-width: 480px;
+                margin-bottom: 36px;
+            }
 
-        .role-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 28px 20px; text-align: center; opacity: 0; transform: translateY(24px); transition: transform 0.25s, box-shadow 0.25s; text-decoration: none; color: inherit; display: block; cursor: pointer; }
-        .role-card.visible { opacity: 1; transform: translateY(0); transition: opacity 0.5s ease, transform 0.5s ease, box-shadow 0.25s; }
-        .role-card:hover { transform: translateY(-4px); box-shadow: 0 12px 28px rgba(0,0,0,0.08); }
+            .hero-actions {
+                display: flex;
+                gap: 14px;
+                flex-wrap: wrap;
+            }
 
-        .role-icon { width: 56px; height: 56px; border-radius: 14px; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; }
-        .role-icon i { font-size: 22px; color: #fff; }
-        .role-icon.admin   { background: var(--accent); }
-        .role-icon.doctor  { background: var(--accent); }
-        .role-icon.tech    { background: var(--red-dark); }
-        .role-icon.manager { background: var(--gold); }
-        .role-icon.patient { background: #3a6080; }
+            .btn-primary {
+                padding: 13px 28px;
+                background: var(--accent);
+                color: #fff;
+                border: none;
+                border-radius: 8px;
+                font-size: 14px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: background 0.2s, transform 0.2s;
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                text-decoration: none;
+            }
 
-        .role-card h4 { font-family: 'DM Serif Display', serif; font-size: 16px; color: var(--text-dark); margin-bottom: 10px; }
-        .role-card p  { font-size: 12px; color: var(--text-mid); line-height: 1.6; margin-bottom: 18px; }
+                .btn-primary:hover {
+                    background: var(--accent-2);
+                    transform: translateY(-1px);
+                }
 
-        .role-btn { display: inline-block; padding: 8px 18px; border-radius: 7px; font-size: 12px; font-weight: 600; cursor: pointer; text-decoration: none; border: 1.5px solid var(--border); color: var(--text-dark); background: var(--bg); transition: all 0.2s; }
-        .role-btn:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+            .btn-secondary {
+                padding: 13px 28px;
+                background: transparent;
+                color: var(--text-dark);
+                border: 1.5px solid var(--border);
+                border-radius: 8px;
+                font-size: 14px;
+                font-weight: 500;
+                cursor: pointer;
+                transition: border-color 0.2s, background 0.2s;
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                text-decoration: none;
+            }
 
-        .workflow-section { max-width: 1100px; margin: 0 auto; padding: 80px 48px; }
-        .workflow-steps { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0; margin-top: 48px; position: relative; }
-        .workflow-steps::before { content: ''; position: absolute; top: 28px; left: 10%; right: 10%; height: 1px; background: var(--border); z-index: 0; }
+                .btn-secondary:hover {
+                    border-color: var(--accent);
+                    background: var(--accent-pale);
+                }
 
-        .workflow-step { text-align: center; position: relative; z-index: 1; padding: 0 12px; opacity: 0; transform: translateY(16px); }
-        .workflow-step.visible { opacity: 1; transform: translateY(0); transition: opacity 0.5s ease, transform 0.5s ease; }
+            .hero-stats {
+                display: flex;
+                gap: 32px;
+                margin-top: 48px;
+                padding-top: 32px;
+                border-top: 1px solid var(--border);
+            }
 
-        .step-num { width: 56px; height: 56px; border-radius: 50%; background: var(--surface); border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; font-family: 'DM Serif Display', serif; font-size: 20px; color: var(--accent); position: relative; }
-        .workflow-step.active .step-num { background: var(--accent); border-color: var(--accent); color: #fff; }
-        .step-title { font-size: 13px; font-weight: 600; color: var(--text-dark); margin-bottom: 6px; }
-        .step-desc  { font-size: 12px; color: var(--text-light); line-height: 1.5; }
+            .stat-item {
+                text-align: left;
+            }
 
-        .team-section { background: var(--surface-2); padding: 90px 0; }
-        .team-inner   { max-width: 1200px; margin: 0 auto; padding: 0 48px; }
-        .team-grid    { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin-top: 50px; }
+            .stat-value {
+                font-family: 'DM Serif Display', serif;
+                font-size: 28px;
+                color: var(--text-dark);
+            }
 
-        .team-card { background: var(--surface); border: 1px solid var(--border); border-radius: 18px; overflow: hidden; transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease; }
-        .team-card:hover { transform: translateY(-6px); box-shadow: 0 18px 38px rgba(0,0,0,0.08); border-color: rgba(122,48,48,0.2); }
+            .stat-label {
+                font-size: 12px;
+                color: var(--text-light);
+                margin-top: 2px;
+            }
 
-        .team-image-wrap { height: 260px; overflow: hidden; background: var(--bg); }
-        .team-image      { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; }
-        .team-card:hover .team-image { transform: scale(1.04); }
+            /* Hero Right — Visual Panel */
+            .hero-right {
+                animation: fadeUp 0.8s 0.2s ease both;
+            }
 
-        .team-info   { padding: 24px; }
-        .team-info h3 { font-family: 'DM Serif Display', serif; font-size: 20px; color: var(--text-dark); margin-bottom: 6px; }
-        .team-role   { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; color: var(--accent); margin-bottom: 12px; }
-        .team-info p { font-size: 13px; line-height: 1.7; color: var(--text-mid); margin-bottom: 16px; }
+            .hero-visual {
+                background: var(--surface);
+                border: 1px solid var(--border);
+                border-radius: 16px;
+                padding: 28px;
+                box-shadow: 0 4px 32px rgba(0,0,0,0.06);
+            }
 
-        .team-socials     { display: flex; gap: 10px; }
-        .team-socials a   { width: 34px; height: 34px; border-radius: 8px; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; color: var(--text-mid); text-decoration: none; transition: all 0.2s ease; }
-        .team-socials a:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+            .visual-header {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                margin-bottom: 20px;
+            }
 
-        .testimonial-section { background: var(--text-dark); padding: 80px 48px; text-align: center; }
-        .testimonial-section blockquote { font-family: 'DM Serif Display', serif; font-style: italic; font-size: clamp(1.2rem, 2.5vw, 1.7rem); color: #e8e4de; max-width: 720px; margin: 0 auto 24px; line-height: 1.5; }
-        .testimonial-section cite { display: block; font-size: 13px; color: var(--accent-2); font-weight: 600; font-style: normal; }
+            .visual-title {
+                font-size: 13px;
+                font-weight: 600;
+                color: var(--text-mid);
+            }
 
-        footer { background: var(--surface); border-top: 1px solid var(--border); padding: 28px 48px; display: flex; align-items: center; justify-content: space-between; }
-        .footer-brand { display: flex; align-items: center; gap: 8px; }
-        .footer-logo  { width: 28px; height: 28px; background: var(--accent); border-radius: 6px; display: flex; align-items: center; justify-content: center; }
-        .footer-logo i { color: #fff; font-size: 12px; }
-        .footer-name  { font-family: 'DM Serif Display', serif; font-size: 15px; color: var(--text-dark); }
-        .footer-copy  { font-size: 12px; color: var(--text-light); }
-        .footer-sdg   { font-size: 12px; color: var(--accent); font-weight: 600; }
+            .status-dot {
+                width: 8px;
+                height: 8px;
+                background: #6abf69;
+                border-radius: 50%;
+                display: inline-block;
+                margin-right: 6px;
+                animation: pulse 2s infinite;
+            }
 
-        @@keyframes fadeUp {
-            from { opacity: 0; transform: translateY(24px); }
-            to   { opacity: 1; transform: translateY(0); }
-        }
+            .status-text {
+                font-size: 11px;
+                color: var(--text-light);
+            }
 
-        @@media (max-width: 1100px) {
-            .roles-grid { grid-template-columns: repeat(3, 1fr); }
-            .team-grid  { grid-template-columns: repeat(2, 1fr); }
-        }
-        @@media (max-width: 900px) {
-            nav { padding: 0 24px; }
-            .nav-links { display: none; }
-            .hero { grid-template-columns: 1fr; padding: 100px 24px 60px; }
-            .hero-right { display: none; }
-            .section, .workflow-section { padding: 60px 24px; }
-            .features-grid { grid-template-columns: 1fr; }
-            .workflow-steps { grid-template-columns: 1fr; gap: 20px; }
-            .workflow-steps::before { display: none; }
-            footer { flex-direction: column; gap: 12px; text-align: center; padding: 24px; }
-            .sdg-banner { padding: 16px 24px; flex-direction: column; text-align: center; gap: 6px; }
-        }
-        @@media (max-width: 700px) {
-            .roles-grid { grid-template-columns: 1fr; }
-            .team-grid  { grid-template-columns: 1fr; }
-            .team-inner, .roles-inner { padding: 0 24px; }
-        }
+            .request-list {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .request-item {
+                display: flex;
+                align-items: center;
+                gap: 14px;
+                padding: 14px 16px;
+                background: var(--bg);
+                border-radius: 10px;
+                border: 1px solid var(--border);
+                transition: transform 0.2s;
+            }
+
+                .request-item:hover {
+                    transform: translateX(3px);
+                }
+
+            .request-icon {
+                width: 36px;
+                height: 36px;
+                border-radius: 8px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-shrink: 0;
+            }
+
+                .request-icon.green {
+                    background: var(--accent-pale);
+                    color: var(--accent);
+                }
+
+                .request-icon.red {
+                    background: var(--red-pale);
+                    color: var(--red-dark);
+                }
+
+                .request-icon.gold {
+                    background: var(--gold-pale);
+                    color: var(--gold);
+                }
+
+                .request-icon i {
+                    font-size: 14px;
+                }
+
+            .request-info {
+                flex: 1;
+            }
+
+            .request-name {
+                font-size: 13px;
+                font-weight: 600;
+                color: var(--text-dark);
+            }
+
+            .request-sub {
+                font-size: 11px;
+                color: var(--text-light);
+                margin-top: 2px;
+            }
+
+            .request-badge {
+                font-size: 11px;
+                font-weight: 600;
+                padding: 3px 10px;
+                border-radius: 12px;
+            }
+
+            .badge-complete {
+                background: var(--accent-pale);
+                color: var(--accent);
+            }
+
+            .badge-pending {
+                background: var(--gold-pale);
+                color: var(--gold);
+            }
+
+            .badge-urgent {
+                background: var(--red-pale);
+                color: var(--red-dark);
+            }
+
+            .visual-footer {
+                margin-top: 18px;
+                padding-top: 16px;
+                border-top: 1px solid var(--border);
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+            }
+
+            .mini-stat {
+                text-align: center;
+            }
+
+            .mini-stat-val {
+                font-family: 'DM Serif Display', serif;
+                font-size: 20px;
+                color: var(--text-dark);
+            }
+
+            .mini-stat-lbl {
+                font-size: 10px;
+                color: var(--text-light);
+                margin-top: 2px;
+            }
+
+            /* ── SDG BANNER ── */
+            .sdg-banner {
+                background: var(--accent);
+                color: #fff;
+                padding: 16px 48px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 12px;
+            }
+
+                .sdg-banner i {
+                    font-size: 18px;
+                    opacity: 0.8;
+                }
+
+                .sdg-banner p {
+                    font-size: 13px;
+                    font-weight: 500;
+                    opacity: 0.9;
+                }
+
+                .sdg-banner strong {
+                    opacity: 1;
+                }
+
+            /* ── FEATURES ── */
+            .section {
+                max-width: 1100px;
+                margin: 0 auto;
+                padding: 80px 48px;
+                color: var(--text-light);
+            }
+
+            .section-label {
+                font-size: 11px;
+                font-weight: 600;
+                letter-spacing: 1px;
+                text-transform: uppercase;
+                color: var(--accent);
+                margin-bottom: 10px;
+            }
+
+            .section-heading {
+                font-family: 'DM Serif Display', serif;
+                font-size: clamp(1.8rem, 3vw, 2.4rem);
+                color: var(--text-dark);
+                margin-bottom: 14px;
+                letter-spacing: -0.3px;
+            }
+
+            .section-sub {
+                font-size: 15px;
+                color: var(--text-mid);
+                max-width: 560px;
+                line-height: 1.7;
+                margin-bottom: 48px;
+            }
+
+            .features-grid {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 20px;
+            }
+
+            .feature-card {
+                background: var(--surface);
+                border: 1px solid var(--border);
+                border-radius: 12px;
+                padding: 28px 24px;
+                transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s;
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+                .feature-card.visible {
+                    opacity: 1;
+                    transform: translateY(0);
+                    transition: opacity 0.5s ease, transform 0.5s ease, box-shadow 0.25s, border-color 0.25s;
+                }
+
+                .feature-card:hover {
+                    transform: translateY(-4px);
+                    box-shadow: 0 12px 28px rgba(0,0,0,0.08);
+                    border-color: rgba(74,103,65,0.3);
+                }
+
+            .feature-icon-wrap {
+                width: 44px;
+                height: 44px;
+                border-radius: 10px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-bottom: 18px;
+            }
+
+                .feature-icon-wrap.green {
+                    background: var(--accent-pale);
+                    color: var(--accent);
+                }
+
+                .feature-icon-wrap.red {
+                    background: var(--red-pale);
+                    color: var(--red-dark);
+                }
+
+                .feature-icon-wrap.gold {
+                    background: var(--gold-pale);
+                    color: var(--gold);
+                }
+
+                .feature-icon-wrap.slate {
+                    background: #e8eaee;
+                    color: #4a5060;
+                }
+
+                .feature-icon-wrap.teal {
+                    background: #e0ecec;
+                    color: #2e6b6b;
+                }
+
+                .feature-icon-wrap.mauve {
+                    background: #ede8f0;
+                    color: #6b4a7a;
+                }
+
+                .feature-icon-wrap i {
+                    font-size: 18px;
+                }
+
+            .feature-card h3 {
+                font-family: 'DM Serif Display', serif;
+                font-size: 17px;
+                color: var(--text-dark);
+                margin-bottom: 10px;
+            }
+
+            .feature-card p {
+                font-size: 14px;
+                line-height: 1.65;
+                color: var(--text-mid);
+            }
+
+            /* ── ROLES SECTION ── */
+            .roles-section {
+                background: var(--surface-2);
+                padding: 80px 0;
+            }
+
+            .roles-inner {
+                max-width: 1100px;
+                margin: 0 auto;
+                padding: 0 48px;
+            }
+
+            .roles-grid {
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                gap: 16px;
+                margin-top: 48px;
+            }
+
+            .role-card {
+                background: var(--surface);
+                border: 1px solid var(--border);
+                border-radius: 12px;
+                padding: 28px 20px;
+                text-align: center;
+                opacity: 0;
+                transform: translateY(24px);
+                transition: transform 0.25s, box-shadow 0.25s;
+                text-decoration: none;
+                color: inherit;
+                display: block;
+                cursor: pointer;
+            }
+
+                .role-card.visible {
+                    opacity: 1;
+                    transform: translateY(0);
+                    transition: opacity 0.5s ease, transform 0.5s ease, box-shadow 0.25s;
+                }
+
+                .role-card:hover {
+                    transform: translateY(-4px);
+                    box-shadow: 0 12px 28px rgba(0,0,0,0.08);
+                }
+
+            .role-icon {
+                width: 56px;
+                height: 56px;
+                border-radius: 14px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin: 0 auto 16px;
+            }
+
+                .role-icon i {
+                    font-size: 22px;
+                    color: #fff;
+                }
+
+                .role-icon.admin {
+                    background: var(--accent);
+                }
+
+                .role-icon.doctor {
+                    background: var(--accent);
+                }
+
+                .role-icon.tech {
+                    background: var(--red-dark);
+                }
+
+                .role-icon.manager {
+                    background: var(--gold);
+                }
+
+                .role-icon.patient {
+                    background: #3a6080;
+                }
+
+            .role-card h4 {
+                font-family: 'DM Serif Display', serif;
+                font-size: 18px;
+                color: var(--text-dark);
+                margin-bottom: 10px;
+            }
+
+            .role-card p {
+                font-size: 13px;
+                color: var(--text-mid);
+                line-height: 1.6;
+                margin-bottom: 20px;
+            }
+
+            .role-btn {
+                display: inline-block;
+                padding: 9px 22px;
+                border-radius: 7px;
+                font-size: 13px;
+                font-weight: 600;
+                cursor: pointer;
+                text-decoration: none;
+                border: 1.5px solid var(--border);
+                color: var(--text-dark);
+                background: var(--bg);
+                transition: all 0.2s;
+            }
+
+                .role-btn:hover {
+                    background: var(--accent);
+                    color: #fff;
+                    border-color: var(--accent);
+                }
+
+            /* ── WORKFLOW ── */
+            .workflow-section {
+                max-width: 1100px;
+                margin: 0 auto;
+                padding: 80px 48px;
+            }
+
+            .workflow-steps {
+                display: grid;
+                grid-template-columns: repeat(5, 1fr);
+                gap: 0;
+                margin-top: 48px;
+                position: relative;
+            }
+
+                .workflow-steps::before {
+                    content: '';
+                    position: absolute;
+                    top: 28px;
+                    left: 10%;
+                    right: 10%;
+                    height: 1px;
+                    background: var(--border);
+                    z-index: 0;
+                }
+
+            .workflow-step {
+                text-align: center;
+                position: relative;
+                z-index: 1;
+                padding: 0 12px;
+                opacity: 0;
+                transform: translateY(16px);
+            }
+
+                .workflow-step.visible {
+                    opacity: 1;
+                    transform: translateY(0);
+                    transition: opacity 0.5s ease, transform 0.5s ease;
+                }
+
+            .step-num {
+                width: 56px;
+                height: 56px;
+                border-radius: 50%;
+                background: var(--surface);
+                border: 2px solid var(--border);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin: 0 auto 16px;
+                font-family: 'DM Serif Display', serif;
+                font-size: 20px;
+                color: var(--accent);
+                position: relative;
+            }
+
+            .workflow-step.active .step-num {
+                background: var(--accent);
+                border-color: var(--accent);
+                color: #fff;
+            }
+
+            .step-title {
+                font-size: 13px;
+                font-weight: 600;
+                color: var(--text-dark);
+                margin-bottom: 6px;
+            }
+
+            .step-desc {
+                font-size: 12px;
+                color: var(--text-light);
+                line-height: 1.5;
+            }
+
+            /* ── TESTIMONIAL ── */
+            .testimonial-section {
+                background: var(--text-dark);
+                padding: 80px 48px;
+                text-align: center;
+            }
+
+                .testimonial-section blockquote {
+                    font-family: 'DM Serif Display', serif;
+                    font-style: italic;
+                    font-size: clamp(1.2rem, 2.5vw, 1.7rem);
+                    color: #e8e4de;
+                    max-width: 720px;
+                    margin: 0 auto 24px;
+                    line-height: 1.5;
+                }
+
+                .testimonial-section cite {
+                    display: block;
+                    font-size: 13px;
+                    color: var(--accent-2);
+                    font-weight: 600;
+                    font-style: normal;
+                }
+
+            /* ── FOOTER ── */
+            footer {
+                background: var(--surface);
+                border-top: 1px solid var(--border);
+                padding: 28px 48px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+            }
+
+            .footer-brand {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+            .footer-logo {
+                width: 28px;
+                height: 28px;
+                background: var(--accent);
+                border-radius: 6px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+                .footer-logo i {
+                    color: #fff;
+                    font-size: 12px;
+                }
+
+            .footer-name {
+                font-family: 'DM Serif Display', serif;
+                font-size: 15px;
+                color: var(--text-dark);
+            }
+
+            .footer-copy {
+                font-size: 12px;
+                color: var(--text-light);
+            }
+
+            .footer-sdg {
+                font-size: 12px;
+                color: var(--accent);
+                font-weight: 600;
+            }
+
+            /* ── ANIMATIONS ── */
+            @@keyframes fadeUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(24px);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            @@keyframes pulse {
+                0%, 100% {
+                    opacity: 1;
+                }
+
+                50% {
+                    opacity: 0.4;
+                }
+            }
+
+            /* ── RESPONSIVE ── */
+            @@media (max-width: 900px) {
+                nav {
+                    padding: 0 24px;
+                }
+
+                .nav-links {
+                    display: none;
+                }
+
+                .hero {
+                    grid-template-columns: 1fr;
+                    padding: 100px 24px 60px;
+                }
+
+                .hero-right {
+                    display: none;
+                }
+
+                .section, .workflow-section {
+                    padding: 60px 24px;
+                }
+
+                .features-grid {
+                    grid-template-columns: 1fr;
+                }
+
+                .workflow-steps {
+                    grid-template-columns: 1fr;
+                    gap: 20px;
+                }
+
+                    .workflow-steps::before {
+                        display: none;
+                    }
+
+                footer {
+                    flex-direction: column;
+                    gap: 12px;
+                    text-align: center;
+                    padding: 24px;
+                }
+
+                .sdg-banner {
+                    padding: 16px 24px;
+                    flex-direction: column;
+                    text-align: center;
+                    gap: 6px;
+                }
+            }
+            /* ── TEAM SECTION ── */
+            .team-section {
+                background: var(--surface-2);
+                padding: 90px 0;
+            }
+
+            .team-inner {
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 0 48px;
+            }
+
+            .team-grid {
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                gap: 24px;
+                margin-top: 50px;
+            }
+
+            .team-card {
+                background: var(--surface);
+                border: 1px solid var(--border);
+                border-radius: 18px;
+                overflow: hidden;
+                transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+            }
+
+                .team-card:hover {
+                    transform: translateY(-6px);
+                    box-shadow: 0 18px 38px rgba(0,0,0,0.08);
+                    border-color: rgba(122,48,48,0.2);
+                }
+
+            .team-image-wrap {
+                height: 260px;
+                overflow: hidden;
+                background: var(--bg);
+            }
+
+            .team-image {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                transition: transform 0.4s ease;
+            }
+
+            .team-card:hover .team-image {
+                transform: scale(1.04);
+            }
+
+            .team-info {
+                padding: 24px;
+            }
+
+                .team-info h3 {
+                    font-family: 'DM Serif Display', serif;
+                    font-size: 22px;
+                    color: var(--text-dark);
+                    margin-bottom: 6px;
+                }
+
+            .team-role {
+                display: inline-block;
+                font-size: 12px;
+                font-weight: 700;
+                letter-spacing: 0.5px;
+                text-transform: uppercase;
+                color: var(--accent);
+                margin-bottom: 14px;
+            }
+
+            .team-info p {
+                font-size: 14px;
+                line-height: 1.7;
+                color: var(--text-mid);
+                margin-bottom: 18px;
+            }
+
+            .team-socials {
+                display: flex;
+                gap: 10px;
+            }
+
+                .team-socials a {
+                    width: 34px;
+                    height: 34px;
+                    border-radius: 8px;
+                    border: 1px solid var(--border);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: var(--text-mid);
+                    text-decoration: none;
+                    transition: all 0.2s ease;
+                }
+
+                    .team-socials a:hover {
+                        background: var(--accent);
+                        color: #fff;
+                        border-color: var(--accent);
+                    }
+
+            /* Responsive */
+            @@media (max-width: 1100px) {
+                .team-grid {
+                    grid-template-columns: repeat(2, 1fr);
+                }
+            }
+
+            @@media (max-width: 700px) {
+                .team-grid {
+                    grid-template-columns: 1fr;
+                }
+
+                .team-inner {
+                    padding: 0 24px;
+                }
+            }
     </style>
 </head>
 <body>
 
+    <!-- NAVBAR -->
     <nav>
-        <a class="nav-brand" href="/">
+        <a class="nav-brand" href="#">
             <div class="nav-logo"><i class="fas fa-flask"></i></div>
             <span class="nav-brand-text">NMB-<span>HLab</span>Sys</span>
         </a>
         <ul class="nav-links">
             <li><a href="#features">Features</a></li>
             <li><a href="#workflow">How It Works</a></li>
-            <li><a href="#team">Team</a></li>
             <li><a href="#roles" class="nav-cta">Access Portal</a></li>
         </ul>
     </nav>
 
+    <!-- SDG BANNER -->
     <div class="sdg-banner">
         <i class="fas fa-heartbeat"></i>
         <p>Aligned with <strong>UN SDG 3 — Good Health and Well-Being</strong> &mdash; Ensuring healthy lives and promoting well-being for all at all ages</p>
     </div>
 
+    <!-- HERO -->
     <div class="hero">
         <div class="hero-left">
             <div class="hero-eyebrow">
@@ -255,75 +1054,334 @@
                     <i class="fas fa-play-circle"></i> See How It Works
                 </a>
             </div>
+            <div class="hero-stats">
+                <div class="stat-item">
+                    <div class="stat-value">4</div>
+                    <div class="stat-label">User Roles</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">100%</div>
+                    <div class="stat-label">Paperless Workflow</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">SDG 3</div>
+                    <div class="stat-label">UN Aligned</div>
+                </div>
+            </div>
         </div>
 
         <div class="hero-right">
-            <div class="hero-visual">
-                <img src="~/images/background.jpg" alt="NMB-HLabSys Laboratory" />
+            <div class="hero-visual" style="background-image: url('/images/background.jpg'); background-size: cover; background-position: center; height: 400px; border-radius: 16px;">
+                <!-- Background image box -->
             </div>
         </div>
     </div>
 
+    <!-- FEATURES -->
+    <section class="section" id="features">
+        <div class="section-label">Core Capabilities</div>
+        <h2 class="section-heading">Everything the Laboratory Needs</h2>
+        <p class="section-sub">
+            From test request submission to verified result delivery — NMB-HLabSys
+            digitises every step of the haematology workflow.
+        </p>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon-wrap green"><i class="fas fa-file-medical"></i></div>
+                <h3>Digital Test Requests</h3>
+                <p>Doctors submit structured, validated test requests online — eliminating paper forms and e-mail delays.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon-wrap red"><i class="fas fa-microscope"></i></div>
+                <h3>Technician Workflow</h3>
+                <p>Lab technicians view assigned requests, capture results, and flag urgent cases from a single interface.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon-wrap gold"><i class="fas fa-chart-line"></i></div>
+                <h3>Operational Oversight</h3>
+                <p>Managers monitor throughput, turnaround times, and resource allocation with live dashboards.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon-wrap teal"><i class="fas fa-user-shield"></i></div>
+                <h3>Secure Patient Access</h3>
+                <p>Patients securely view verified results and download official PDF lab reports at any time.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon-wrap slate"><i class="fas fa-history"></i></div>
+                <h3>Full Test History</h3>
+                <p>Complete longitudinal test history is tracked per patient — enabling trend analysis and informed diagnosis.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon-wrap mauve"><i class="fas fa-bell"></i></div>
+                <h3>Smart Notifications</h3>
+                <p>Automated alerts notify doctors when results are verified and patients when reports are ready to download.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ROLES -->
     <section class="roles-section" id="roles">
         <div class="roles-inner">
             <div class="section-label">Access Portal</div>
-            <h2 class="section-heading">Instant One-Click Login</h2>
+            <h2 class="section-heading">Sign In As Your Role</h2>
             <p class="section-sub">
-                Click any role below to bypass authentication and enter the view dashboards with pre-loaded mock telemetry data.
+                NMB-HLabSys is built for four distinct user types — each with a tailored
+                interface and permissions aligned to their responsibilities.
             </p>
             <div class="roles-grid">
-                <a class="role-card" href="/Account/DemoLogin?role=Admin">
+                <a class="role-card" asp-controller="Admin" asp-action="Dashboard">
                     <div class="role-icon admin"><i class="fas fa-user-cog"></i></div>
                     <h4>Admin</h4>
-                    <p>Maintain lists of medical conditions, allergies and medications.</p>
+                    <p>Maintain lists of medical conditions, allergies and medication</p>
                     <span class="role-btn">Admin Access</span>
                 </a>
-                <a class="role-card" href="/Account/DemoLogin?role=Doctor">
+                <a class="role-card" asp-controller="Doctor" asp-action="Index">
                     <div class="role-icon doctor"><i class="fas fa-user-md"></i></div>
                     <h4>Doctor</h4>
-                    <p>Submit test requests, review verified results, and manage patient consent.</p>
+                    <p>Submit test requests, review verified results, and manage patient consent for record access.</p>
                     <span class="role-btn">Doctor Access</span>
                 </a>
-                <a class="role-card" href="/Account/DemoLogin?role=LabTechnician">
+                <a class="role-card" asp-controller="LabTechnician" asp-action="Index">
                     <div class="role-icon tech"><i class="fas fa-flask"></i></div>
                     <h4>Lab Technician</h4>
-                    <p>Process assigned test requests, capture results, and escalate urgent findings.</p>
+                    <p>Process assigned test requests, capture results, and escalate urgent findings to supervising staff.</p>
                     <span class="role-btn">Lab Technician Access</span>
                 </a>
-                <a class="role-card" href="/Account/DemoLogin?role=LabManager">
+                <a class="role-card" asp-controller="LabManager" asp-action="Dashboard">
                     <div class="role-icon manager"><i class="fas fa-tasks"></i></div>
                     <h4>Laboratory Manager</h4>
-                    <p>Oversee operations, monitor KPIs, manage staff assignments, and generate reports.</p>
+                    <p>Oversee laboratory operations, monitor KPIs, manage staff assignments, and generate reports.</p>
                     <span class="role-btn">Lab Manager Access</span>
                 </a>
-                <a class="role-card" href="/Account/DemoLogin?role=Patient">
+                <a class="role-card" asp-controller="Patient" asp-action="Dashboard">
                     <div class="role-icon patient"><i class="fas fa-user"></i></div>
                     <h4>Patient</h4>
-                    <p>View verified lab results, track test history, and download official PDF reports.</p>
+                    <p>View your verified lab results, track test history over time, and download official PDF reports.</p>
                     <span class="role-btn">Patient Access</span>
                 </a>
             </div>
         </div>
     </section>
 
+    <!-- WORKFLOW -->
+    <section class="workflow-section" id="workflow">
+        <div class="section-label">How It Works</div>
+        <h2 class="section-heading">From Request to Report in Five Steps</h2>
+        <p class="section-sub">
+            A streamlined end-to-end process that replaces paper forms and e-mail chains
+            with a single, trackable digital workflow.
+        </p>
+        <div class="workflow-steps">
+            <div class="workflow-step active">
+                <div class="step-num">1</div>
+                <div class="step-title">Request Submitted</div>
+                <div class="step-desc">Doctor submits a structured test request via the portal</div>
+            </div>
+            <div class="workflow-step">
+                <div class="step-num">2</div>
+                <div class="step-title">Sample Collected</div>
+                <div class="step-desc">Laboratory receives and logs the patient sample</div>
+            </div>
+            <div class="workflow-step">
+                <div class="step-num">3</div>
+                <div class="step-title">Test Processed</div>
+                <div class="step-desc">Technician performs the test and captures results</div>
+            </div>
+            <div class="workflow-step">
+                <div class="step-num">4</div>
+                <div class="step-title">Results Verified</div>
+                <div class="step-desc">Manager or senior staff verify and approve results</div>
+            </div>
+            <div class="workflow-step">
+                <div class="step-num">5</div>
+                <div class="step-title">Report Issued</div>
+                <div class="step-desc">Doctor and patient are notified — PDF report available</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TEAM SECTION -->
+    <section class="team-section" id="team">
+        <div class="team-inner">
+
+            <div class="section-label">Development Team</div>
+
+            <h2 class="section-heading">
+                Meet the People Behind NMB-HLabSys
+            </h2>
+
+            <p class="section-sub">
+                NMB-HLabSys was collaboratively designed and developed by a dedicated student team,
+                with each member responsible for building and managing a specific subsystem within
+                the haematology laboratory platform.
+            </p>
+
+            <div class="team-grid">
+
+                <!-- PIETER -->
+                <div class="team-card">
+                    <div class="team-image-wrap">
+                        <img src="~/images/team/pieter.jpg"
+                             alt="Pieter Selekane"
+                             class="team-image" />
+                    </div>
+
+                    <div class="team-info">
+                        <h3>Pieter Selekane</h3>
+
+                        <span class="team-role">
+                            Admin & Patient Subsystem Developer
+                        </span>
+
+                        <p>
+                            Responsible for designing and developing the Admin and Patient subsystems,
+                            including dashboards, profile management, authentication workflows,
+                            modern UI/UX interfaces, and system integration using ASP.NET MVC.
+                        </p>
+
+                        <div class="team-socials">
+                            <a href="#"><i class="fab fa-github"></i></a>
+                            <a href="#"><i class="fab fa-linkedin"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- KUTLWANO -->
+                <div class="team-card">
+                    <div class="team-image-wrap">
+                        <img src="~/images/team/kutlwano.jpg"
+                             alt="Kutlwano Modise"
+                             class="team-image" />
+                    </div>
+
+                    <div class="team-info">
+                        <h3>Kutlwano Modise</h3>
+
+                        <span class="team-role">
+                            Lab Manager Subsystem Developer
+                        </span>
+
+                        <p>
+                            Developed the Lab Manager subsystem responsible for laboratory oversight,
+                            workflow coordination, reporting functionality, and operational management
+                            within the haematology laboratory environment.
+                        </p>
+
+                        <div class="team-socials">
+                            <a href="#"><i class="fab fa-github"></i></a>
+                            <a href="#"><i class="fab fa-linkedin"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- UNATHI -->
+                <div class="team-card">
+                    <div class="team-image-wrap">
+                        <img src="~/images/team/unathi.jpg"
+                             alt="Unathi Mzathu"
+                             class="team-image" />
+                    </div>
+
+                    <div class="team-info">
+                        <h3>Unathi Mzathu</h3>
+
+                        <span class="team-role">
+                            Doctor Subsystem Developer
+                        </span>
+
+                        <p>
+                            Developed the Doctor subsystem, enabling healthcare professionals to
+                            submit laboratory requests, manage patient records, review results,
+                            and streamline communication with the laboratory.
+                        </p>
+
+                        <div class="team-socials">
+                            <a href="#"><i class="fab fa-github"></i></a>
+                            <a href="#"><i class="fab fa-linkedin"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- KABELO -->
+                <div class="team-card">
+                    <div class="team-image-wrap">
+                        <img src="~/images/team/kabelo.jpg"
+                             alt="Kabelo Mabidikama"
+                             class="team-image" />
+                    </div>
+
+                    <div class="team-info">
+                        <h3>Kabelo Mabidikama</h3>
+
+                        <span class="team-role">
+                            Lab Technician Subsystem Developer
+                        </span>
+
+                        <p>
+                            Responsible for the Lab Technician subsystem, including test processing
+                            workflows, result capturing, laboratory task management, and support
+                            for efficient diagnostic operations.
+                        </p>
+
+                        <div class="team-socials">
+                            <a href="#"><i class="fab fa-github"></i></a>
+                            <a href="#"><i class="fab fa-linkedin"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- TESTIMONIAL -->
+    <section class="testimonial-section">
+        <blockquote>
+            "NMB-HLabSys has eliminated the paper trail entirely. We now track every request in real time —
+            turnaround times have improved significantly and nothing gets lost."
+        </blockquote>
+        <cite>— Dr. A. Petersen, Haematologist, NMBHDL</cite>
+    </section>
+
+    <!-- FOOTER -->
     <footer>
         <div class="footer-brand">
             <div class="footer-logo"><i class="fas fa-flask"></i></div>
             <span class="footer-name">NMB-HLabSys</span>
         </div>
         <span class="footer-copy">&copy; 2026 Nelson Mandela Bay Haematology Diagnostic Laboratories</span>
+        <span class="footer-sdg">&#9632; UN SDG 3 — Good Health & Well-Being</span>
     </footer>
 
     <script>
-        const observer = new IntersectionObserver(entries => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    setTimeout(() => entry.target.classList.add('visible'), entry.target.dataset.delay || 0);
-                }
-            });
-        }, { threshold: 0.15 });
+            // Intersection Observer for scroll-triggered animations
+            const observer = new IntersectionObserver(entries => {
+                entries.forEach((entry, i) => {
+                    if (entry.isIntersecting) {
+                        setTimeout(() => {
+                            entry.target.classList.add('visible');
+                        }, entry.target.dataset.delay || 0);
+                    }
+                });
+            }, { threshold: 0.15 });
 
-        document.querySelectorAll('.role-card').forEach((el, i)    => { el.dataset.delay = i * 100; observer.observe(el); });
+            // Feature cards staggered
+            document.querySelectorAll('.feature-card').forEach((el, i) => {
+                el.dataset.delay = i * 80;
+                observer.observe(el);
+            });
+
+            // Role cards staggered
+            document.querySelectorAll('.role-card').forEach((el, i) => {
+                el.dataset.delay = i * 100;
+                observer.observe(el);
+            });
+
+            // Workflow steps staggered
+            document.querySelectorAll('.workflow-step').forEach((el, i) => {
+                el.dataset.delay = i * 120;
+                observer.observe(el);
+            });
     </script>
 </body>
 </html>

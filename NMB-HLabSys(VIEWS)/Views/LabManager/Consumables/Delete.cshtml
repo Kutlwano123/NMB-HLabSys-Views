@@ -1,0 +1,49 @@
+﻿@{
+    ViewData["Title"] = "Delete Consumable";
+    Layout = "~/Views/Shared/_ManagersLayout.cshtml";
+
+    var consumable = new
+    {
+        Id = 2,
+        Name = "Latex Gloves",
+        Supplier = "HealthPro",
+        ReorderLevel = 50,
+        QuantityOnHand = 200
+    };
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow-sm border-danger">
+            <div class="card-header bg-danger text-white">
+                <h5 class="mb-0">Confirm Deletion</h5>
+            </div>
+            <div class="card-body">
+                <p>Are you sure you want to delete the following consumable?</p>
+                <dl class="row">
+                    <dt class="col-sm-4">Name</dt>
+                    <dd class="col-sm-8">@consumable.Name</dd>
+                    <dt class="col-sm-4">Supplier</dt>
+                    <dd class="col-sm-8">@consumable.Supplier</dd>
+                    <dt class="col-sm-4">Reorder Level</dt>
+                    <dd class="col-sm-8">@consumable.ReorderLevel</dd>
+                    <dt class="col-sm-4">Quantity on Hand</dt>
+                    <dd class="col-sm-8">@consumable.QuantityOnHand</dd>
+                </dl>
+                <div class="alert alert-warning">
+                    <i class="bi bi-exclamation-triangle"></i>
+                    This action cannot be undone.
+                </div>
+                <form asp-action="Delete" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="ConsumableID" value="@consumable.Id" />
+                    <div class="d-flex justify-content-between">
+                        <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+                        <button type="submit" class="btn btn-danger">Yes, Delete</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+

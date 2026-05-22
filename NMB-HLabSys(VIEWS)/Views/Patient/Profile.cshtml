@@ -1,0 +1,291 @@
+﻿@{
+    ViewData["Title"] = "My Profile";
+    ViewData["ActivePage"] = "Profile";
+    Layout = "~/Views/Shared/_PatientLayout.cshtml";
+}
+
+@section Styles {
+
+<style>
+
+    .success-alert {
+        background: var(--accent-pale);
+        border: 1px solid rgba(122,48,48,0.2);
+        border-radius: 8px;
+        padding: 10px 14px;
+        font-size: 13px;
+        color: var(--accent);
+        margin-bottom: 18px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .custom-modal {
+        display: none;
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        background: rgba(0,0,0,0.45);
+        backdrop-filter: blur(4px);
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+    }
+
+    .custom-modal-content {
+        background: var(--surface);
+        width: 100%;
+        max-width: 520px;
+        border-radius: 18px;
+        padding: 28px;
+        animation: modalFade .25s ease;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.18);
+    }
+
+    .modal-icon {
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        background: var(--accent-pale);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 18px;
+    }
+
+    .modal-icon i {
+        font-size: 30px;
+        color: var(--accent);
+    }
+
+    .summary-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        margin-bottom: 20px;
+    }
+
+    .summary-box {
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 12px;
+    }
+
+    .summary-label {
+        font-size: 11px;
+        color: var(--text-light);
+        margin-bottom: 4px;
+    }
+
+    .summary-value {
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .modal-actions {
+        display: flex;
+        gap: 12px;
+        margin-top: 24px;
+    }
+
+    .modal-actions button {
+        flex: 1;
+        border: none;
+        border-radius: 10px;
+        padding: 12px;
+        cursor: pointer;
+        font-weight: 600;
+    }
+
+    .btn-cancel { background: #ececec; }
+    .btn-save { background: var(--accent); color: white; }
+
+    .success-popup {
+        position: fixed;
+        top: 24px;
+        right: 24px;
+        background: #e8f5e9;
+        color: #2e7d32;
+        border: 1px solid #c8e6c9;
+        padding: 14px 18px;
+        border-radius: 10px;
+        display: none;
+        align-items: center;
+        gap: 10px;
+        z-index: 99999;
+    }
+
+    @@keyframes modalFade {
+        from { opacity: 0; transform: scale(.94); }
+        to { opacity: 1; transform: scale(1); }
+    }
+
+</style>
+
+}
+
+<div style="margin-bottom:20px;">
+    <h2 style="margin:0;">My Profile</h2>
+    <p style="color:var(--text-light);font-size:13px;margin-top:4px;">
+        View and update your personal details
+    </p>
+</div>
+
+<div class="card" style="max-width:700px;">
+
+    <form id="profileForm">
+
+        <!-- STATIC INPUTS -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+            <input id="nameInput" class="form-control" value="Ntando" placeholder="First Name" />
+            <input id="surnameInput" class="form-control" value="Mbeki" placeholder="Surname" />
+        </div>
+
+        <div style="margin-bottom:16px;">
+            <input id="saIdNumber" class="form-control" value="0203056123456" maxlength="13" placeholder="SA ID" />
+        </div>
+
+        <div style="margin-bottom:16px;">
+            <input id="dateOfBirth" class="form-control" value="2002-03-05" readonly />
+        </div>
+
+        <div style="margin-bottom:16px;">
+            <input id="phoneInput" class="form-control" value="0712345678" />
+        </div>
+
+        <div style="margin-bottom:16px;">
+            <input id="emailInput" class="form-control" value="ntando@email.com" />
+        </div>
+
+        <div style="margin-bottom:24px;">
+            <input id="addressInput" class="form-control" value="Cape Road, Gqeberha" />
+        </div>
+
+        <button type="button"
+                onclick="openProfileModal()"
+                class="btn-primary">
+            <i class="bi bi-save"></i>
+            Save Changes
+        </button>
+
+    </form>
+
+</div>
+
+<!-- MODAL -->
+<div id="profileModal" class="custom-modal">
+
+    <div class="custom-modal-content">
+
+        <div class="modal-icon">
+            <i class="bi bi-person-check"></i>
+        </div>
+
+        <h3 style="text-align:center;">Confirm Profile Update</h3>
+        <p style="text-align:center;">Review details before saving</p>
+
+        <div class="summary-grid">
+
+            <div class="summary-box">
+                <div class="summary-label">Name</div>
+                <div class="summary-value" id="summaryName"></div>
+            </div>
+
+            <div class="summary-box">
+                <div class="summary-label">Surname</div>
+                <div class="summary-value" id="summarySurname"></div>
+            </div>
+
+            <div class="summary-box">
+                <div class="summary-label">DOB</div>
+                <div class="summary-value" id="summaryDob"></div>
+            </div>
+
+            <div class="summary-box">
+                <div class="summary-label">Phone</div>
+                <div class="summary-value" id="summaryPhone"></div>
+            </div>
+
+            <div class="summary-box">
+                <div class="summary-label">Email</div>
+                <div class="summary-value" id="summaryEmail"></div>
+            </div>
+
+            <div class="summary-box">
+                <div class="summary-label">Address</div>
+                <div class="summary-value" id="summaryAddress"></div>
+            </div>
+
+        </div>
+
+        <div class="modal-actions">
+
+            <button class="btn-cancel" type="button" onclick="closeProfileModal()">
+                Cancel
+            </button>
+
+            <button class="btn-save" type="button" onclick="submitProfileForm()">
+                Confirm
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- SUCCESS -->
+<div id="successPopup" class="success-popup">
+    <i class="bi bi-check-circle-fill"></i>
+    Profile updated successfully.
+</div>
+
+<script>
+
+    function openProfileModal() {
+
+        document.getElementById("summaryName").innerText =
+            document.getElementById("nameInput").value;
+
+        document.getElementById("summarySurname").innerText =
+            document.getElementById("surnameInput").value;
+
+        document.getElementById("summaryDob").innerText =
+            document.getElementById("dateOfBirth").value;
+
+        document.getElementById("summaryPhone").innerText =
+            document.getElementById("phoneInput").value;
+
+        document.getElementById("summaryEmail").innerText =
+            document.getElementById("emailInput").value;
+
+        document.getElementById("summaryAddress").innerText =
+            document.getElementById("addressInput").value;
+
+        document.getElementById("profileModal").style.display = "flex";
+    }
+
+    function closeProfileModal() {
+        document.getElementById("profileModal").style.display = "none";
+    }
+
+    function submitProfileForm() {
+
+        closeProfileModal();
+
+        document.getElementById("successPopup").style.display = "flex";
+
+        setTimeout(() => {
+            // fake submit (prototype only)
+            document.getElementById("successPopup").style.display = "none";
+        }, 1500);
+    }
+
+    window.onclick = function (event) {
+        const modal = document.getElementById("profileModal");
+        if (event.target === modal) closeProfileModal();
+    };
+
+</script>

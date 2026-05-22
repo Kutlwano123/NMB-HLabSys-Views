@@ -1,0 +1,137 @@
+﻿@{
+    ViewData["Title"] = "My Reports";
+    ViewData["ActivePage"] = "Reports";
+    Layout = "~/Views/Shared/_PatientLayout.cshtml";
+}
+
+@section Styles {
+    <style>
+        .filter-bar {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px 20px;
+            display: flex;
+            gap: 12px;
+            align-items: end;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .filter-group label {
+            display: block;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-mid);
+            margin-bottom: 5px;
+        }
+
+        .filter-group input {
+            padding: 8px 12px;
+            border: 1px solid var(--border);
+            border-radius: 7px;
+            font-size: 13px;
+            background: var(--bg);
+            outline: none;
+        }
+
+        .filter-group input:focus {
+            border-color: var(--accent);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-light);
+        }
+    </style>
+}
+
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+    <div>
+        <h2 style="margin:0;">My Reports</h2>
+        <p style="color:var(--text-light);font-size:13px;margin-top:4px;">
+            Download your lab result PDF reports
+        </p>
+    </div>
+</div>
+
+<!-- FILTER (STATIC UI ONLY) -->
+<div class="filter-bar">
+    <div class="filter-group">
+        <label>From Date</label>
+        <input type="date" />
+    </div>
+
+    <div class="filter-group">
+        <label>To Date</label>
+        <input type="date" />
+    </div>
+
+    <button class="btn-primary" style="padding:9px 20px;font-size:13px;height:38px;">
+        <i class="bi bi-file-pdf"></i> Generate Report
+    </button>
+</div>
+
+<!-- STATIC TABLE -->
+<div class="card" style="padding:0;overflow:hidden;">
+    <table class="table" style="margin:0;">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Date Range</th>
+                <th>Generated</th>
+                <th>Download</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            <!-- DUMMY DATA 1 -->
+            <tr>
+                <td style="color:var(--text-light);font-size:12px;">1</td>
+                <td>01 Jan 2026 — 10 Jan 2026</td>
+                <td style="font-size:12px;color:var(--text-light);">
+                    10 Jan 2026
+                </td>
+                <td>
+                    <a href="#" download
+                       style="display:inline-flex;align-items:center;gap:6px;padding:4px 12px;background:var(--accent-pale);color:var(--accent);border:1px solid rgba(122,48,48,0.2);border-radius:6px;font-size:12px;font-weight:600;text-decoration:none;">
+                        <i class="bi bi-download"></i> Download
+                    </a>
+                </td>
+            </tr>
+
+            <!-- DUMMY DATA 2 -->
+            <tr>
+                <td style="color:var(--text-light);font-size:12px;">2</td>
+                <td>15 Feb 2026 — 20 Feb 2026</td>
+                <td style="font-size:12px;color:var(--text-light);">
+                    20 Feb 2026
+                </td>
+                <td>
+                    <a href="#" download
+                       style="display:inline-flex;align-items:center;gap:6px;padding:4px 12px;background:var(--accent-pale);color:var(--accent);border:1px solid rgba(122,48,48,0.2);border-radius:6px;font-size:12px;font-weight:600;text-decoration:none;">
+                        <i class="bi bi-download"></i> Download
+                    </a>
+                </td>
+            </tr>
+
+            <!-- DUMMY DATA 3 -->
+            <tr>
+                <td style="color:var(--text-light);font-size:12px;">3</td>
+                <td>01 Apr 2026 — 05 Apr 2026</td>
+                <td style="font-size:12px;color:var(--text-light);">
+                    05 Apr 2026
+                </td>
+                <td>
+                    <a href="#" download
+                       style="display:inline-flex;align-items:center;gap:6px;padding:4px 12px;background:var(--accent-pale);color:var(--accent);border:1px solid rgba(122,48,48,0.2);border-radius:6px;font-size:12px;font-weight:600;text-decoration:none;">
+                        <i class="bi bi-download"></i> Download
+                    </a>
+                </td>
+            </tr>
+
+        </tbody>
+    </table>
+</div>

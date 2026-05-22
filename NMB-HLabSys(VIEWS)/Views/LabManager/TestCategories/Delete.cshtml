@@ -1,0 +1,65 @@
+﻿@{
+    ViewData["Title"] = "Delete Test Category";
+    Layout = "~/Views/Shared/_ManagersLayout.cshtml";
+
+    var category = new
+    {
+        Id = 3,
+        Name = "Microbiology",
+        Description = "Culture and sensitivity testing",
+        TestTypeCount = 0   // set > 0 to show the "cannot delete" warning instead
+    };
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+
+        <div class="card shadow-sm border-danger">
+            <div class="card-header bg-danger text-white">
+                <h5 class="mb-0">Confirm Deletion</h5>
+            </div>
+            <div class="card-body">
+
+                @if (category.TestTypeCount > 0)
+                {
+                    <div class="alert alert-danger">
+                        <strong>Cannot delete this category.</strong>
+                        It has <strong>@category.TestTypeCount test type(s)</strong> linked to it.
+                        Remove or reassign those test types first.
+                    </div>
+                    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+                }
+                else
+                {
+                    <p>Are you sure you want to delete the following category?</p>
+
+                    <dl class="row">
+                        <dt class="col-sm-4">Category Name</dt>
+                        <dd class="col-sm-8">@category.Name</dd>
+
+                        <dt class="col-sm-4">Description</dt>
+                        <dd class="col-sm-8">@category.Description</dd>
+                    </dl>
+
+                    <div class="alert alert-warning">
+                        <i class="bi bi-exclamation-triangle"></i>
+                        This action cannot be undone.
+                    </div>
+
+                    <form asp-action="Delete" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="TestCategoryID" value="@category.Id" />
+
+                        <div class="d-flex justify-content-between">
+                            <a asp-controller="LabManager" asp-action="TestCategories" class="btn btn-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-danger">Yes, Delete</button>
+                        </div>
+                    </form>
+                }
+
+            </div>
+        </div>
+
+    </div>
+</div>
+

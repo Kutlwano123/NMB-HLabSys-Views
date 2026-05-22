@@ -1,0 +1,117 @@
+﻿@{
+    ViewData["Title"] = "Sample Types";
+    Layout = "~/Views/Shared/_ManagersLayout.cshtml";
+    var sampleTypes = new[] {
+        new { Id = 1, Name = "Blood", Description = "Blood samples for various tests." },
+        new { Id = 2, Name = "Urine", Description = "Urine samples for analysis." },
+        new { Id = 3, Name = "Tissue", Description = "Tissue samples for histology." }
+    };
+}
+<style>
+    .mgr-page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+
+    .mgr-page-title {
+        font-family: 'DM Serif Display', serif;
+        font-size: 24px;
+        color: var(--mgr-text-dark, #1e2420);
+        margin: 0;
+    }
+
+    .mgr-btn-primary {
+        background: var(--mgr-accent, #7a3030);
+        border-color: var(--mgr-accent, #7a3030);
+        color: #fff;
+    }
+
+        .mgr-btn-primary:hover {
+            background: var(--mgr-accent-2, #9a4040);
+            border-color: var(--mgr-accent-2, #9a4040);
+            color: #fff;
+        }
+
+    .mgr-table {
+        background: #fff;
+        border: 1px solid var(--mgr-border, #ddd9d2);
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+        .mgr-table thead {
+            background: var(--mgr-accent-pale, #f0e8e8);
+            color: var(--mgr-accent, #7a3030);
+        }
+
+        .mgr-table th,
+        .mgr-table td {
+            vertical-align: middle;
+            border-color: var(--mgr-border, #ddd9d2);
+        }
+
+    .mgr-badge {
+        background: var(--mgr-accent-pale, #f0e8e8);
+        color: var(--mgr-accent, #7a3030);
+        font-weight: 600;
+    }
+
+    .mgr-action-btn {
+        border-radius: 6px;
+        font-size: 12px;
+        padding: 6px 10px;
+    }
+
+        .mgr-action-btn.btn-outline-primary {
+            border-color: var(--mgr-accent, #7a3030);
+            color: var(--mgr-accent, #7a3030);
+        }
+
+            .mgr-action-btn.btn-outline-primary:hover {
+                background: var(--mgr-accent, #7a3030);
+                color: #fff;
+            }
+</style>
+
+<div class="mgr-page-header">
+    <h2 class="mgr-page-title">Sample Types</h2>
+    <a asp-action="CreateSampleType" class="btn mgr-btn-primary">
+        <i class="bi bi-plus-circle"></i> Add Sample Type
+    </a>
+</div>
+
+@if (!sampleTypes.Any())
+{
+    <div class="alert alert-info">No sample types found. Add one to get started.</div>
+}
+else
+{
+    <table class="table table-hover mgr-table">
+        <thead>
+            <tr>
+                <th>Sample Type</th>
+                <th>Description</th>
+                <th class="text-center">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var sampleType in sampleTypes)
+            {
+                <tr>
+                    <td>@sampleType.Name</td>
+                    <td>@sampleType.Description</td>
+                    <td class="text-center">
+                        <a asp-action="SampleTypeDetails" asp-route-id="@sampleType.Id"
+                           class="btn btn-sm btn-outline-primary mgr-action-btn">Details</a>
+                        <a asp-action="EditSampleType" asp-route-id="@sampleType.Id"
+                           class="btn btn-sm btn-outline-secondary mgr-action-btn">Edit</a>
+                        <a asp-action="DeleteSampleType" asp-route-id="@sampleType.Id"
+                           class="btn btn-sm btn-outline-danger mgr-action-btn">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
