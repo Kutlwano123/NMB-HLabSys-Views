@@ -1,0 +1,205 @@
+﻿@{
+    ViewData["Title"] = "Chronic Conditions";
+    ViewData["ActivePage"] = "Conditions";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+@section Styles {
+    <style>
+
+        /* =========================
+                   HEADER (PATIENT STYLE)
+                ========================= */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 22px;
+        }
+
+            .page-header h2 {
+                margin: 0;
+                font-size: 22px;
+            }
+
+            .page-header p {
+                font-size: 12px;
+                color: var(--text-light);
+                margin-top: 4px;
+            }
+
+        /* =========================
+                   PANEL
+                ========================= */
+        .panel {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        /* =========================
+                   TABLE ACTIONS
+                ========================= */
+        .action-btn {
+            font-size: 12px;
+            padding: 6px 10px;
+            border-radius: 6px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .edit-btn {
+            background: #e8eaee;
+            color: #3a4a5a;
+        }
+
+        .delete-btn {
+            background: var(--accent-pale);
+            color: var(--accent);
+            border: none;
+            cursor: pointer;
+        }
+
+        /* =========================
+                   MODALS (SHARED STYLE)
+                ========================= */
+        .modal-bg {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .modal-box {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            width: 340px;
+            text-align: center;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 24px;
+            font-size: 13px;
+            color: var(--text-light);
+        }
+
+    </style>
+}
+
+<!-- =========================
+HEADER
+========================= -->
+<div class="page-header">
+
+    <div>
+        <h2>Chronic Conditions</h2>
+        <p>Reference list used in patient records — static prototype view</p>
+    </div>
+
+    <button onclick="openAddModal()"
+            style="background:var(--accent);color:#fff;padding:8px 14px;border:none;border-radius:8px;font-size:13px;">
+        <i class="bi bi-plus-circle"></i> Add Condition
+    </button>
+
+</div>
+
+<!-- =========================
+STATIC INPUT BAR (PROTOTYPE ONLY)
+========================= -->
+<div class="panel" style="padding:14px;margin-bottom:16px;">
+
+    <div style="display:flex;gap:10px;flex-wrap:wrap;">
+
+        <input type="text"
+               placeholder="Search conditions..."
+               style="flex:1;min-width:200px;padding:10px;border:1px solid var(--border);border-radius:8px;" />
+
+        <button style="background:var(--accent);color:#fff;border:none;border-radius:8px;padding:10px 14px;">
+            <i class="bi bi-search"></i> Search
+        </button>
+
+    </div>
+
+</div>
+
+<!-- =========================
+TABLE
+========================= -->
+<div class="panel">
+
+    <table class="table table-sm" style="margin:0;">
+
+        <thead>
+            <tr>
+                <th>Condition</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            <tr id="row-1">
+                <td style="font-weight:600;">Diabetes Mellitus</td>
+                <td>
+                    <a href="/Admin/EditCondition/1" class="action-btn edit-btn">
+                        <i class="bi bi-pencil"></i> Edit
+                    </a>
+
+                    <button class="action-btn delete-btn" onclick="openDeleteModal(1)">
+                        <i class="bi bi-trash"></i> Delete
+                    </button>
+                </td>
+            </tr>
+
+            <tr id="row-2">
+                <td style="font-weight:600;">Hypertension</td>
+                <td>
+                    <a href="/Admin/EditCondition/2" class="action-btn edit-btn">
+                        <i class="bi bi-pencil"></i> Edit
+                    </a>
+
+                    <button class="action-btn delete-btn" onclick="openDeleteModal(2)">
+                        <i class="bi bi-trash"></i> Delete
+                    </button>
+                </td>
+            </tr>
+
+            <tr id="row-3">
+                <td style="font-weight:600;">Asthma</td>
+                <td>
+                    <a href="/Admin/EditCondition/3" class="action-btn edit-btn">
+                        <i class="bi bi-pencil"></i> Edit
+                    </a>
+
+                    <button class="action-btn delete-btn" onclick="openDeleteModal(3)">
+                        <i class="bi bi-trash"></i> Delete
+                    </button>
+                </td>
+            </tr>
+
+        </tbody>
+
+    </table>
+
+</div>
+
+<!-- =========================
+ADD MODAL
+========================= -->
+<div id="addModal" class="modal-bg">
+
+    <div class="modal-box">
+
+<h4>Add Condition</h4>
+
+<input type="text"
+       placeholder="Enter condition name"
+       style=" width:100%;padding:

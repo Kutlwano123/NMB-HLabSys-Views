@@ -1,0 +1,300 @@
+﻿@{
+    ViewData["Title"] = "Allergies";
+    ViewData["ActivePage"] = "Allergies";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+@section Styles {
+    <style>
+
+        /* =========================
+                   HEADER (Patient-style)
+                ========================= */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+            .page-header h2 {
+                margin: 0;
+                font-size: 22px;
+            }
+
+            .page-header p {
+                font-size: 12px;
+                color: var(--text-light);
+                margin-top: 4px;
+            }
+
+        /* =========================
+                   PANEL
+                ========================= */
+        .panel {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        /* =========================
+                   SEARCH BAR
+                ========================= */
+        .search-bar {
+            display: flex;
+            gap: 10px;
+            padding: 16px;
+            border-bottom: 1px solid var(--border);
+            flex-wrap: wrap;
+        }
+
+            .search-bar input {
+                flex: 1;
+                min-width: 220px;
+                padding: 10px 12px;
+                border: 1px solid var(--border);
+                border-radius: 10px;
+                font-size: 13px;
+            }
+
+        /* =========================
+                   TABLE STYLE
+                ========================= */
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+            .table th, .table td {
+                padding: 12px;
+                font-size: 13px;
+                border-bottom: 1px solid var(--border);
+            }
+
+            .table th {
+                text-align: left;
+                font-size: 12px;
+                color: var(--text-light);
+            }
+
+        /* =========================
+                   BADGES
+                ========================= */
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            background: var(--accent-pale);
+            color: var(--accent);
+        }
+
+        /* =========================
+                   ACTION BUTTONS
+                ========================= */
+        .btn {
+            font-size: 12px;
+            padding: 6px 10px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-edit {
+            background: #eef2f7;
+            color: #3b4a5a;
+        }
+
+        .btn-delete {
+            background: var(--accent-pale);
+            color: var(--accent);
+        }
+
+        /* =========================
+                   MODAL (STATIC)
+                ========================= */
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .modal-box {
+            background: var(--surface);
+            padding: 20px;
+            border-radius: 12px;
+            width: 340px;
+            text-align: center;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 14px;
+        }
+
+    </style>
+}
+
+<!-- =========================
+HEADER
+========================= -->
+<div class="page-header">
+
+    <div>
+        <h2>Allergies</h2>
+        <p>Manage system allergy reference data</p>
+    </div>
+
+    <button onclick="openAddModal()"
+            style="background:var(--accent);color:#fff;padding:8px 14px;border-radius:8px;border:none;font-size:13px;">
+        <i class="bi bi-plus-circle"></i> Add Allergy
+    </button>
+
+</div>
+
+<!-- =========================
+SEARCH (STATIC)
+========================= -->
+<div class="panel" style="margin-bottom:16px;">
+    <div class="search-bar">
+
+        <input type="text" placeholder="Search allergies..." />
+
+        <button class="btn btn-edit">
+            <i class="bi bi-search"></i> Search
+        </button>
+
+    </div>
+</div>
+
+<!-- =========================
+TABLE (DUMMY DATA)
+========================= -->
+<div class="panel">
+
+    <table class="table">
+
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Allergy</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            <tr>
+                <td>1</td>
+                <td>Penicillin</td>
+                <td><span class="badge">Active</span></td>
+                <td>
+                    <button class="btn btn-edit" onclick="openEditModal()">Edit</button>
+                    <button class="btn btn-delete" onclick="openDeleteModal()">Delete</button>
+                </td>
+            </tr>
+
+            <tr>
+                <td>2</td>
+                <td>Latex</td>
+                <td><span class="badge">Active</span></td>
+                <td>
+                    <button class="btn btn-edit" onclick="openEditModal()">Edit</button>
+                    <button class="btn btn-delete" onclick="openDeleteModal()">Delete</button>
+                </td>
+            </tr>
+
+            <tr>
+                <td>3</td>
+                <td>Peanuts</td>
+                <td><span class="badge">Active</span></td>
+                <td>
+                    <button class="btn btn-edit" onclick="openEditModal()">Edit</button>
+                    <button class="btn btn-delete" onclick="openDeleteModal()">Delete</button>
+                </td>
+            </tr>
+
+        </tbody>
+
+    </table>
+
+</div>
+
+<!-- =========================
+ADD MODAL
+========================= -->
+<div id="addModal" class="modal">
+    <div class="modal-box">
+
+        <h4>Add Allergy</h4>
+
+        <input type="text"
+               placeholder="Allergy name"
+               style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;margin-top:10px;" />
+
+        <p style="font-size:12px;color:var(--text-light);margin-top:10px;">
+            Confirm adding this allergy?
+        </p>
+
+        <div class="modal-actions">
+            <button onclick="closeAddModal()" class="btn btn-edit">Cancel</button>
+            <button class="btn btn-delete">Confirm</button>
+        </div>
+
+    </div>
+</div>
+
+<!-- =========================
+DELETE MODAL
+========================= -->
+<div id="deleteModal" class="modal">
+    <div class="modal-box">
+
+        <h4>Delete Allergy?</h4>
+
+        <p style="font-size:12px;color:var(--text-light);">
+            This action is part of a prototype and has no backend logic.
+        </p>
+
+        <div class="modal-actions">
+            <button onclick="closeDeleteModal()" class="btn btn-edit">Cancel</button>
+            <button class="btn btn-delete">Delete</button>
+        </div>
+
+    </div>
+</div>
+
+<!-- =========================
+SCRIPT (STATIC ONLY)
+========================= -->
+<script>
+
+    function openAddModal() {
+        document.getElementById("addModal").style.display = "flex";
+    }
+
+    function closeAddModal() {
+        document.getElementById("addModal").style.display = "none";
+    }
+
+    function openDeleteModal() {
+        document.getElementById("deleteModal").style.display = "flex";
+    }
+
+    function closeDeleteModal() {
+        document.getElementById("deleteModal").style.display = "none";
+    }
+
+    function openEditModal() {
+        alert("Edit modal placeholder (prototype only)");
+    }
+
+</script>

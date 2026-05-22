@@ -357,7 +357,7 @@
         <div class="topnav">
             <span class="topnav-title">@ViewData["Title"]</span>
             <div class="topnav-right">
-                <a href="/Patient/Profile" class="topnav-icon-btn" title="My Profile">
+                <a href="~/Patient/Profile" class="topnav-icon-btn" title="My Profile">
                     <i class="bi bi-person"></i>
                 </a>
                 <button type="button" onclick="openLogoutModal()" class="logout-btn">
@@ -383,7 +383,7 @@
             <div class="logout-actions">
                 <button type="button" class="btn-cancel" onclick="closeLogoutModal()">Cancel</button>
                 @* Static prototype: logout just redirects to Home *@
-                <a href="/Home/Index" class="btn-logout"
+                <a href="~/Home/Index" class="btn-logout"
                    style="display:flex;align-items:center;justify-content:center;gap:6px;text-decoration:none;border-radius:10px;">
                     <i class="bi bi-box-arrow-right"></i> Logout
                 </a>

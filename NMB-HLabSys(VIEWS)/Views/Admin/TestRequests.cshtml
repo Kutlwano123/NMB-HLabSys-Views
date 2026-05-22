@@ -1,0 +1,134 @@
+﻿@{
+    ViewData["Title"] = "Test Requests";
+    ViewData["ActivePage"] = "TestRequests";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<!-- =========================
+HEADER
+========================= -->
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px;">
+
+    <div>
+        <h2 style="margin:0;">Test Requests</h2>
+        <p style="color:var(--text-light);font-size:13px;margin-top:4px;">
+            All haematology test requests across the system
+        </p>
+    </div>
+
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+
+        <select style="padding:8px 12px;border:1px solid var(--border);border-radius:8px;background:var(--surface);font-size:13px;color:var(--text-mid);outline:none;">
+            <option>All Statuses</option>
+            <option>Pending</option>
+            <option>In Progress</option>
+            <option>Complete</option>
+            <option>Urgent</option>
+        </select>
+
+        <button onclick="showToast('Filter applied')"
+                style="padding:8px 14px;border:none;border-radius:8px;background:var(--accent);color:white;font-size:13px;cursor:pointer;">
+            <i class="bi bi-funnel"></i>
+            Filter
+        </button>
+
+    </div>
+</div>
+
+<!-- =========================
+TABLE
+========================= -->
+<div class="card" style="padding:0;overflow:hidden;">
+    <table class="table" style="margin:0;">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Patient</th>
+                <th>Doctor</th>
+                <th>Test Type</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            <!-- =========================
+            DUMMY DATA (PROTOTYPE)
+            ========================= -->
+
+            <tr>
+                <td>1</td>
+                <td>John Doe</td>
+                <td>Dr Smith</td>
+                <td>Full Blood Count</td>
+                <td>21 May 2026</td>
+                <td><span style="padding:4px 10px;border-radius:20px;background:#fff3cd;color:#856404;font-size:11px;font-weight:600;">Pending</span></td>
+                <td>
+                    <button onclick="showToast('Viewing request 1')"
+                            style="padding:6px 10px;border-radius:6px;border:1px solid var(--border);background:var(--surface);font-size:12px;">
+                        View
+                    </button>
+                </td>
+            </tr>
+
+            <tr>
+                <td>2</td>
+                <td>Sarah Khan</td>
+                <td>Dr Adams</td>
+                <td>Iron Studies</td>
+                <td>21 May 2026</td>
+                <td><span style="padding:4px 10px;border-radius:20px;background:#e8f0e8;color:#2f6b2f;font-size:11px;font-weight:600;">Complete</span></td>
+                <td>
+                    <button onclick="showToast('Viewing request 2')"
+                            style="padding:6px 10px;border-radius:6px;border:1px solid var(--border);background:var(--surface);font-size:12px;">
+                        View
+                    </button>
+                </td>
+            </tr>
+
+            <tr>
+                <td>3</td>
+                <td>Michael Brown</td>
+                <td>Dr Patel</td>
+                <td>Platelet Count</td>
+                <td>20 May 2026</td>
+                <td><span style="padding:4px 10px;border-radius:20px;background:#f8d7da;color:#721c24;font-size:11px;font-weight:600;">Urgent</span></td>
+                <td>
+                    <button onclick="showToast('Viewing request 3')"
+                            style="padding:6px 10px;border-radius:6px;border:1px solid var(--border);background:var(--surface);font-size:12px;">
+                        View
+                    </button>
+                </td>
+            </tr>
+
+        </tbody>
+    </table>
+</div>
+
+<!-- =========================
+TOAST
+========================= -->
+<div id="toast"
+     style="display:none;position:fixed;bottom:20px;right:20px;
+    background:#2ecc71;color:white;padding:10px 14px;
+    border-radius:8px;font-size:13px;z-index:9999;">
+</div>
+
+<!-- =========================
+SCRIPT
+========================= -->
+<script>
+
+    function showToast(message) {
+        const toast = document.getElementById("toast");
+        toast.innerText = message;
+        toast.style.display = "block";
+
+        setTimeout(() => {
+            toast.style.display = "none";
+        }, 2000);
+    }
+
+</script>

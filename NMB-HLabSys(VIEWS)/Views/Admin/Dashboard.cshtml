@@ -1,0 +1,335 @@
+﻿@{
+    ViewData["Title"] = "Admin Dashboard";
+    ViewData["ActivePage"] = "Dashboard";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+@section Styles {
+    <style>
+
+        /* =========================
+                   HEADER (MATCH PATIENT STYLE)
+                ========================= */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 22px;
+        }
+
+            .page-header h2 {
+                margin: 0;
+                font-size: 22px;
+            }
+
+            .page-header p {
+                font-size: 12px;
+                color: var(--text-light);
+                margin-top: 4px;
+            }
+
+        /* =========================
+                   STAT GRID (PATIENT STYLE)
+                ========================= */
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+            margin-bottom: 26px;
+        }
+
+        .stat-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 18px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            transition: 0.2s ease;
+        }
+
+            .stat-card:hover {
+                transform: translateY(-2px);
+            }
+
+        .stat-icon {
+            width: 46px;
+            height: 46px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+            .stat-icon.red {
+                background: var(--accent-pale);
+                color: var(--accent);
+            }
+
+            .stat-icon.green {
+                background: #e8f5e9;
+                color: #2e7d32;
+            }
+
+            .stat-icon.gold {
+                background: #fff3cd;
+                color: #b58900;
+            }
+
+            .stat-icon.slate {
+                background: #eef2f7;
+                color: #3b4a5a;
+            }
+
+        .stat-value {
+            font-family: 'DM Serif Display', serif;
+            font-size: 26px;
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        /* =========================
+                   TWO COLUMN
+                ========================= */
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @@media (max-width: 900px) {
+            .two-col {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .section-heading {
+            font-family: 'DM Serif Display', serif;
+            font-size: 16px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .panel {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 14px;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 24px;
+            font-size: 13px;
+            color: var(--text-light);
+        }
+
+        .badge-lite {
+            font-size: 11px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            background: var(--accent-pale);
+            color: var(--accent);
+        }
+
+    </style>
+}
+
+<!-- =========================
+HEADER
+========================= -->
+<div class="page-header">
+
+    <div>
+        <h2>Welcome back, Admin 👋</h2>
+        <p>Friday, 22 May 2026 — System Overview</p>
+    </div>
+
+    <a href="/Admin/Users"
+       style="background:var(--accent);color:#fff;padding:8px 14px;border-radius:8px;text-decoration:none;font-size:13px;">
+        Manage Users
+    </a>
+
+</div>
+
+<!-- =========================
+STAT CARDS (USERS)
+========================= -->
+<div class="stat-grid">
+
+    <div class="stat-card">
+        <div class="stat-icon red"><i class="bi bi-people"></i></div>
+        <div>
+            <div class="stat-value">12</div>
+            <div class="stat-label">Users</div>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon green"><i class="bi bi-person-badge"></i></div>
+        <div>
+            <div class="stat-value">4</div>
+            <div class="stat-label">Doctors</div>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon slate"><i class="bi bi-eyedropper"></i></div>
+        <div>
+            <div class="stat-value">3</div>
+            <div class="stat-label">Technicians</div>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon gold"><i class="bi bi-person-heart"></i></div>
+        <div>
+            <div class="stat-value">5</div>
+            <div class="stat-label">Patients</div>
+        </div>
+    </div>
+
+</div>
+
+<!-- =========================
+STAT CARDS (REQUESTS)
+========================= -->
+<div class="stat-grid">
+
+    <div class="stat-card">
+        <div class="stat-icon slate"><i class="bi bi-file-medical"></i></div>
+        <div>
+            <div class="stat-value">18</div>
+            <div class="stat-label">Test Requests</div>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon gold"><i class="bi bi-hourglass-split"></i></div>
+        <div>
+            <div class="stat-value">6</div>
+            <div class="stat-label">Pending</div>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon green"><i class="bi bi-check-circle"></i></div>
+        <div>
+            <div class="stat-value">10</div>
+            <div class="stat-label">Completed</div>
+        </div>
+    </div>
+
+</div>
+
+<!-- =========================
+BOTTOM SECTION
+========================= -->
+<div class="two-col">
+
+    <!-- RECENT REQUESTS -->
+    <div>
+
+        <div class="section-heading">
+            <i class="bi bi-file-medical" style="color:var(--accent);"></i>
+            Recent Requests
+        </div>
+
+        <div class="panel">
+
+            <table class="table table-sm">
+
+                <thead>
+                    <tr>
+                        <th>Patient</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    <tr>
+                        <td>John Smith</td>
+                        <td><span class="badge-lite">Completed</span></td>
+                    </tr>
+
+                    <tr>
+                        <td>Mary Johnson</td>
+                        <td><span class="badge-lite">Pending</span></td>
+                    </tr>
+
+                    <tr>
+                        <td>David Brown</td>
+                        <td><span class="badge-lite">Processing</span></td>
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+    <!-- RECENT USERS -->
+    <div>
+
+        <div class="section-heading">
+            <i class="bi bi-people" style="color:var(--accent);"></i>
+            Recent Users
+        </div>
+
+        <div class="panel">
+
+            <table class="table table-sm">
+
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Role</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    <tr>
+                        <td>
+                            <div style="font-weight:600;font-size:13px;">Dr Smith</div>
+                            <div style="font-size:11px;color:var(--text-light);">smith@hospital.com</div>
+                        </td>
+                        <td><span class="badge-lite">Doctor</span></td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <div style="font-weight:600;font-size:13px;">Lab Tech 1</div>
+                            <div style="font-size:11px;color:var(--text-light);">tech@lab.com</div>
+                        </td>
+                        <td><span class="badge-lite">Technician</span></td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <div style="font-weight:600;font-size:13px;">John Patient</div>
+                            <div style="font-size:11px;color:var(--text-light);">john@gmail.com</div>
+                        </td>
+                        <td><span class="badge-lite">Patient</span></td>
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
