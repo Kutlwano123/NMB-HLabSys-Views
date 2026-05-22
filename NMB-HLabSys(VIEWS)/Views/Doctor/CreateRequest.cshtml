@@ -1,0 +1,92 @@
+﻿@{
+    ViewData["Title"] = "Create Test Request - NMB-HLabSys";
+    ViewData["ActiveNav"] = "create";
+    Layout = "_DoctorLayout";
+}
+
+<div class="page-header">
+    <div class="page-tag"><span class="tag-dot"></span> Requests</div>
+    <h1 class="doctor-title">Create Test Request</h1>
+    <p class="doctor-sub">Capture request details, urgency, and sample barcodes for lab processing.</p>
+</div>
+
+<div class="info-strip">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <circle cx="12" cy="12" r="10" />
+        <path d="M12 16v-4M12 8h.01" />
+    </svg>
+    <span>When you submit this request, the patient will receive an email notification confirming that their test has been ordered and providing their request reference number.</span>
+</div>
+
+<section class="panel-card">
+    <h3>New Request</h3>
+
+    <form asp-controller="Doctor" asp-action="CreateRequest" method="post" id="labRequestForm">
+        @Html.AntiForgeryToken()
+
+        <div asp-validation-summary="All" class="text-danger small mb-3 fw-bold" style="list-style-type: none; padding: 0;"></div>
+
+        <div class="form-row cols-3">
+            <div class="form-group">
+                <label for="patientId">Patient</label>
+                <!-- Changed tag helper to standard HTML select matching the action's input argument variable name -->
+                <select id="patientId" name="patientId" class="form-control" required>
+                    <option value="">Select patient</option>
+                    @if (ViewBag.PatientOptions != null)
+                    {
+                        foreach (var p in (List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>)ViewBag.PatientOptions)
+                        {
+                            <option value="@p.Value">@p.Text</option>
+                        }
+                    }
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="requestDate">Request Date</label>
+                <!-- Initialized standard input tag setting today's calendar path dynamically -->
+                <input type="date" id="requestDate" name="requestDate" class="form-control" value="@DateTime.UtcNow.ToString("yyyy-MM-dd")" required />
+            </div>
+
+            <div class="form-group">
+                <label for="urgency">Urgency</label>
+                <select id="urgency" name="urgency" class="form-control">
+                    <option value="Routine">Routine</option>
+                    <option value="Urgent">Urgent</option>
+                    <option value="Stat">STAT</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group" style="margin-top:20px">
+            <label class="fw-bold text-dark" for="rawBarcodesInput">Sample Barcodes <span class="text-danger">*</span></label>
+            <p class="text-muted small mb-2">Scan or type sample barcodes into the box below. Please place **each barcode on a brand new line**.</p>
+            <textarea id="rawBarcodesInput" name="rawBarcodesInput" rows="4" placeholder="BC-2026-0001&#10;BC-2026-0002&#10;BC-2026-0003" style="font-family: monospace; line-height: 1.5; padding: 10px;" required></textarea>
+        </div>
+
+        <div class="form-group" style="margin-top:20px">
+            <label class="fw-bold text-dark" for="selectedTestTypeIds">Requested Test Types <span class="text-danger">*</span></label>
+            <!-- Native Multi-Select control mapping explicitly into the integer list parameter -->
+            <select id="selectedTestTypeIds" name="selectedTestTypeIds" multiple class="form-control" style="min-height: 130px;" required>
+                @if (ViewBag.TestTypeOptions != null)
+                {
+                    foreach (var t in (List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>)ViewBag.TestTypeOptions)
+                    {
+                        <option value="@t.Value">@t.Text</option>
+                    }
+                }
+            </select>
+            <small class="text-muted d-block mt-1">Hold down the **Ctrl** key (Windows) or **Command** key (Mac) to select multiple test parameters.</small>
+        </div>
+
+        <div class="form-group" style="margin-top:20px">
+            <label for="clinicalNotes">Clinical Notes</label>
+            <textarea id="clinicalNotes" name="clinicalNotes" placeholder="Symptoms, context, relevant history..." rows="3"></textarea>
+        </div>
+
+        <div class="form-actions" style="margin-top:25px">
+            <button class="btn" type="submit">Submit Request</button>
+            <a asp-action="Dashboard" class="btn btn-outline text-decoration-none text-center">Cancel</a>
+        </div>
+    </form>
+</section>

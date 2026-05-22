@@ -1,0 +1,48 @@
+﻿@model List<NMB_HLabSys_Views.Controllers.MockAlert>
+@{
+    ViewData["Title"] = "Abnormal Alerts - NMB-HLabSys";
+    ViewData["ActiveNav"] = "alerts";
+    Layout = "_DoctorLayout";
+}
+
+<div class="page-header">
+    <div class="page-tag"><span class="tag-dot"></span> Alerts</div>
+    <h1 class="doctor-title">Abnormal Result Alerts</h1>
+    <p class="doctor-sub">Alerts for tests you ordered — default view shows the last 5 days.</p>
+</div>
+
+<div class="filter-bar" id="alertFilterBar">
+    <span class="filter-bar-label">Time range:</span>
+    <button type="button" class="filter-btn active" data-range="5">Last 5 days</button>
+    <button type="button" class="filter-btn" data-range="10">Last 10 days</button>
+    <button type="button" class="filter-btn" data-range="30">Last 30 days</button>
+    <button type="button" class="filter-btn" data-range="custom">Custom</button>
+    <div class="custom-range-inputs" id="alertCustomRange">
+        <input type="date" id="alertFromDate" aria-label="From date" />
+        <span>to</span>
+        <input type="date" id="alertToDate" aria-label="To date" />
+    </div>
+</div>
+
+<section class="card-grid" id="alertCardGrid">
+    @if (Model != null && Model.Any())
+    {
+        foreach (var a in Model)
+        {
+            <article class="alert-card" data-date="@a.CreatedAt.ToString("yyyy-MM-dd")">
+                <h4>@a.RequestNumber — @a.TestName</h4>
+                <p>Patient: @a.PatientName · Value: @a.Value (ref @a.Range)</p>
+                <div class="alert-card-meta">
+                    <span class="chip danger">Alert</span>
+                    <span>@a.CreatedAt.ToString("dd MMM yyyy HH:mm")</span>
+                </div>
+            </article>
+        }
+    }
+    else
+    {
+        <div class="td-sm" style="padding: 20px; color: var(--text-light); font-style: italic;">
+            No alerts found for the selected period.
+        </div>
+    }
+</section>

@@ -3,12 +3,10 @@
 //  Serves the landing page and handles zero-login role bypass routing.
 // ============================================================
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Security.Claims;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
+using NMB_HLabSys_VIEWS_.Models;
+using System.Diagnostics;
 
-namespace NMB_HLabSys_VIEWS.Controllers
+namespace NMB_HLabSys_VIEWS_.Controllers
 {
     public class HomeController : Controller
     {

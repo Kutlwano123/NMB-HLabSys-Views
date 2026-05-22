@@ -1,0 +1,89 @@
+﻿@model List<(int Id, string RequestNumber, string PatientName, string Status, DateTime UpdatedAt)>
+@{
+    ViewData["Title"] = "Doctor Dashboard - NMB-HLabSys";
+    ViewData["ActiveNav"] = "dashboard";
+    Layout = "_DoctorLayout";
+
+    // Extract the stats dictionary safely from the ViewBag container
+    var stats = ViewBag.Stats as Dictionary<string, int> ?? new Dictionary<string, int>();
+
+    int submittedToday = stats.ContainsKey("SubmittedToday") ? stats["SubmittedToday"] : 0;
+    int pendingRelease = stats.ContainsKey("PendingRelease") ? stats["PendingRelease"] : 0;
+    int abnormalAlerts = stats.ContainsKey("AbnormalAlerts") ? stats["AbnormalAlerts"] : 0;
+    int notificationsSent = stats.ContainsKey("NotificationsSent") ? stats["NotificationsSent"] : 0;
+}
+
+<div class="page-header">
+    <div class="page-tag"><span class="tag-dot"></span> Overview</div>
+    <h1 class="doctor-title">Doctor Dashboard</h1>
+    <p class="doctor-sub">Monitor active requests, quick alerts, and recent patient outcomes.</p>
+</div>
+
+<section class="stats-grid" id="dashboardStats">
+    <article class="stat-card accent-red">
+        <div class="stat-card-top">
+            <div class="stat-icon-wrap">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 5v14M5 12h14" /></svg>
+            </div>
+            <span class="chip pending">Today</span>
+        </div>
+        <div class="stat-value">@submittedToday</div>
+        <div class="stat-label">Submitted Today</div>
+        <p class="stat-meta">Across haematology, chemistry &amp; microbiology</p>
+    </article>
+    <article class="stat-card accent-black">
+        <div class="stat-card-top">
+            <div class="stat-icon-wrap">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" /></svg>
+            </div>
+            <span class="chip progress">Pending</span>
+        </div>
+        <div class="stat-value">@pendingRelease</div>
+        <div class="stat-label">Pending Review</div>
+        <p class="stat-meta">Awaiting doctor release to patients</p>
+    </article>
+    <article class="stat-card accent-crimson">
+        <div class="stat-card-top">
+            <div class="stat-icon-wrap">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" /><line x1="12" y1="9" x2="12" y2="13" /><line x1="12" y1="17" x2="12.01" y2="17" /></svg>
+            </div>
+            <span class="chip danger">5 days</span>
+        </div>
+        <div class="stat-value">@abnormalAlerts</div>
+        <div class="stat-label">Abnormal Alerts</div>
+        <p class="stat-meta"><a asp-controller="Doctor" asp-action="Alerts" style="color:var(--red)">View all alerts →</a></p>
+    </article>
+    <article class="stat-card accent-muted">
+        <div class="stat-card-top">
+            <div class="stat-icon-wrap">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" /><polyline points="22,6 12,13 2,6" /></svg>
+            </div>
+            <span class="chip ok">This week</span>
+        </div>
+        <div class="stat-value">@notificationsSent</div>
+        <div class="stat-label">Patient Notifications</div>
+        <p class="stat-meta">Release notifications sent</p>
+    </article>
+</section>
+
+<div class="dashboard-grid">
+    <section class="panel-card">
+        <h3>Recent Activity</h3>
+        <ul class="activity-list">
+            @if (Model != null && Model.Any())
+            {
+                foreach (var r in Model)
+                {
+                    <li>
+                        <span class="activity-dot"></span>
+                        <span><strong>@r.RequestNumber</strong> — @r.PatientName · @r.Status</span>
+                    </li>
+                }
+            }
+            else
+            {
+                <li class="td-sm">No recent activity.</li>
+            }
+        </ul>
+    </section>
+</div>
