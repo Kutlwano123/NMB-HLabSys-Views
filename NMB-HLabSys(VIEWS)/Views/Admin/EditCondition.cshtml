@@ -1,0 +1,295 @@
+﻿@{
+    ViewData["Title"] = "Edit Condition";
+    ViewData["ActivePage"] = "Conditions";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+
+    var conditionId = ViewBag.ConditionId;
+
+    var conditionName = conditionId switch
+    {
+        1 => "Diabetes Mellitus",
+        2 => "Hypertension",
+        3 => "Asthma",
+        _ => "Unknown Condition"
+    };
+
+    var severity = conditionId switch
+    {
+        1 => "Chronic",
+        2 => "Moderate",
+        3 => "Mild",
+        _ => "General"
+    };
+}
+
+@section Styles {
+    <style>
+
+        .page-header {
+            margin-bottom: 24px;
+        }
+
+            .page-header h2 {
+                margin: 0;
+                font-size: 24px;
+            }
+
+            .page-header p {
+                margin-top: 6px;
+                color: var(--text-light);
+                font-size: 13px;
+            }
+
+        .edit-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 24px;
+            max-width: 720px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+            .form-group label {
+                display: block;
+                font-size: 13px;
+                font-weight: 600;
+                margin-bottom: 8px;
+            }
+
+            .form-group input,
+            .form-group select,
+            .form-group textarea {
+                width: 100%;
+                padding: 11px 14px;
+                border-radius: 10px;
+                border: 1px solid var(--border);
+                font-size: 13px;
+                outline: none;
+            }
+
+            .form-group textarea {
+                resize: vertical;
+                min-height: 110px;
+            }
+
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+            flex-wrap: wrap;
+        }
+
+        .save-btn {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .cancel-btn {
+            background: #eef0f3;
+            color: #3a4a5a;
+            text-decoration: none;
+            padding: 10px 18px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .modal-bg {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .modal-box {
+            background: white;
+            width: 340px;
+            padding: 22px;
+            border-radius: 14px;
+            text-align: center;
+        }
+
+        #toast {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #2ecc71;
+            color: white;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            z-index: 9999;
+        }
+
+    </style>
+}
+
+<div class="page-header">
+
+    <h2>Edit Condition</h2>
+
+    <p>
+        Update chronic condition information
+    </p>
+
+</div>
+
+<div class="edit-card">
+
+    <div class="form-group">
+
+        <label>Condition Name</label>
+
+        <input type="text"
+               value="@conditionName" />
+
+    </div>
+
+    <div class="form-group">
+
+        <label>Severity</label>
+
+        <select>
+            <option selected>@severity</option>
+            <option>Mild</option>
+            <option>Moderate</option>
+            <option>Chronic</option>
+            <option>Critical</option>
+        </select>
+
+    </div>
+
+    <div class="form-group">
+
+        <label>Description</label>
+
+        <textarea>
+Condition description placeholder for @conditionName.
+        </textarea>
+
+    </div>
+
+    <div class="form-group">
+
+        <label>Status</label>
+
+        <select>
+            <option selected>Active</option>
+            <option>Inactive</option>
+        </select>
+
+    </div>
+
+    <div class="action-buttons">
+
+        <button onclick="openSaveModal()"
+                class="save-btn">
+
+            <i class="bi bi-check-circle"></i>
+            Save Changes
+
+        </button>
+
+        <a href="~/Admin/Conditions"
+           class="cancel-btn">
+
+            Cancel
+
+        </a>
+
+    </div>
+
+</div>
+
+<!-- SAVE MODAL -->
+<div id="saveModal" class="modal-bg">
+
+    <div class="modal-box">
+
+        <div style="font-size:42px;color:var(--accent);margin-bottom:10px;">
+            <i class="bi bi-heart-pulse"></i>
+        </div>
+
+        <h4>Save Changes?</h4>
+
+        <p style="font-size:13px;color:gray;">
+            Confirm updating this condition.
+        </p>
+
+        <div style="display:flex;gap:10px;justify-content:center;margin-top:18px;">
+
+            <button onclick="closeSaveModal()"
+                    style="padding:8px 14px;border:1px solid #ccc;
+                background:white;border-radius:8px;">
+                Cancel
+            </button>
+
+            <button onclick="confirmSave()"
+                    style="padding:8px 14px;background:var(--accent);
+                color:white;border:none;border-radius:8px;">
+                Save
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- TOAST -->
+<div id="toast">
+    Condition updated successfully
+</div>
+
+<script>
+
+    function openSaveModal() {
+
+        document.getElementById("saveModal").style.display = "flex";
+    }
+
+    function closeSaveModal() {
+
+        document.getElementById("saveModal").style.display = "none";
+    }
+
+    function confirmSave() {
+
+        closeSaveModal();
+
+        const toast = document.getElementById("toast");
+
+        toast.style.display = "block";
+
+        setTimeout(() => {
+
+            toast.style.display = "none";
+
+        }, 2200);
+    }
+
+    window.addEventListener("click", function (e) {
+
+        const modal = document.getElementById("saveModal");
+
+        if (e.target === modal) {
+
+            closeSaveModal();
+        }
+
+    });
+
+</script>
