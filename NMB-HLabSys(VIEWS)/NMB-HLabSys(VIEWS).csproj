@@ -7,4 +7,9 @@
     <RootNamespace>NMB_HLabSys_VIEWS_</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="Data\" />
+    <Folder Include="ViewModels\" />
+  </ItemGroup>
+
 </Project>

@@ -1,0 +1,105 @@
+﻿@model List<Dictionary<string, object>>
+@{
+    ViewData["Title"] = "Results - NMB-HLabSys";
+    ViewData["ActiveNav"] = "results";
+    Layout = "_DoctorLayout";
+
+    // Safely determine if any result item has the "IsAbnormal" flag checked as true
+    bool hasAbnormalResults = Model != null && Model.Any(r => r.ContainsKey("IsAbnormal") && (bool)r["IsAbnormal"] == true);
+}
+
+<div class="page-header">
+    <div class="page-tag"><span class="tag-dot"></span> Results</div>
+    <h1 class="doctor-title">View Results</h1>
+    <p class="doctor-sub">Review results, highlight abnormal values, and release verified reports to patients.</p>
+</div>
+
+<section class="panel-card" style="margin-bottom:16px">
+    <div class="form-row cols-3">
+        <div class="form-group">
+            <label for="resultsRequestSelect">Select Request</label>
+            <select id="resultsRequestSelect" name="requestId" onchange="location.href='/Doctor/Results/' + this.value;">
+                <option value="">— Choose a request —</option>
+                @if (ViewBag.RequestFound == true)
+                {
+                    <option selected value="@ViewBag.RequestId">@ViewBag.RequestNumber</option>
+                }
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Patient</label>
+            <input type="text" value="@ViewBag.PatientName" readonly />
+        </div>
+        <div class="form-group">
+            <label>Status</label>
+            <input type="text" value="@ViewBag.Status" readonly style="font-weight:600;color:var(--success)" />
+        </div>
+    </div>
+</section>
+
+<section class="panel-card">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px">
+        <h3 style="margin:0">Test Results</h3>
+        <!-- Fixed line using the local boolean evaluation variable -->
+        @if (hasAbnormalResults)
+        {
+            <span class="badge b-abnormal" id="resultsAbnormalBadge">⚠ Abnormal</span>
+        }
+    </div>
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Test Type</th>
+                    <th>Result Value</th>
+                    <th>Normal Range</th>
+                    <th>Units</th>
+                    <th>Flag</th>
+                    <th>Verified By</th>
+                </tr>
+            </thead>
+            <tbody id="resultsTableBody">
+                @if (Model != null && Model.Any())
+                {
+                    foreach (var r in Model)
+                    {
+                        bool isAbnormal = r.ContainsKey("IsAbnormal") && (bool)r["IsAbnormal"];
+
+                        <tr class="@(isAbnormal ? "tr-abnormal" : "")">
+                            <td style="font-weight:500">@r["TestName"]</td>
+                            <td><span class="@(isAbnormal ? "val-abnormal" : "val-mono")">@r["Value"]</span></td>
+                            <td><span class="val-range">@r["RefLow"] – @r["RefHigh"]</span></td>
+                            <td class="td-sm">@r["Units"]</td>
+                            <td>
+                                @if (isAbnormal)
+                                {
+                                    <span class="badge b-abnormal">⚠ Abnormal</span>
+                                }
+                                else
+                                {
+                                    <span class="badge b-normal">Normal</span>
+                                }
+                            </td>
+                            <td class="td-sm">@r["VerifiedBy"] (@r["VerifiedAt"])</td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="6" class="td-sm text-center text-muted italic" style="padding: 20px;">
+                            No results available.
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="form-actions" style="margin-top:18px">
+        <form asp-action="ReleaseResults" method="post" class="inline-form">
+            <input type="hidden" name="requestId" value="@ViewBag.RequestId" />
+            <button class="btn" type="submit">Release to Patient</button>
+        </form>
+        <a asp-controller="Doctor" asp-action="Reports" class="btn btn-outline">Download PDF</a>
+    </div>
+</section>

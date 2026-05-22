@@ -1,0 +1,63 @@
+﻿@model string
+@{
+    var active = Model ?? "";
+    bool IsActive(string key) => string.Equals(active, key, StringComparison.OrdinalIgnoreCase);
+}
+<aside class="doctor-sidebar" id="doctorSidebar">
+    <div class="doctor-brand">
+        <span class="icon">N</span>
+        <div class="brand-text">
+            <span class="brand-title">NMB-HLabSys</span>
+            <span class="brand-sub">Doctor Portal</span>
+        </div>
+    </div>
+
+    <div class="sidebar-profile-preview" id="sidebarProfilePreview">
+        <div class="sidebar-avatar" id="sidebarAvatar">@(ViewData["DoctorInitials"] ?? "UM")</div>
+        <div class="sidebar-profile-meta">
+            <span class="sidebar-profile-name" id="sidebarProfileName">@(ViewData["DoctorDisplayName"] ?? "Dr. Unathi Mzathu")</span>
+            <span class="sidebar-profile-role" id="sidebarProfileRole">@(ViewData["DoctorRoleSubtitle"] ?? "General Practitioner")</span>
+        </div>
+    </div>
+
+    <nav class="doctor-nav">
+        <a class="@(IsActive("dashboard") ? "active" : "")" asp-controller="Doctor" asp-action="Dashboard">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1" /><rect x="14" y="3" width="7" height="7" rx="1" /><rect x="3" y="14" width="7" height="7" rx="1" /><rect x="14" y="14" width="7" height="7" rx="1" /></svg>
+            Dashboard
+        </a>
+        <a class="@(IsActive("patients") ? "active" : "")" asp-controller="Doctor" asp-action="Patients">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M22 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" /></svg>
+            Patient Records
+        </a>
+        <a class="@(IsActive("create") ? "active" : "")" asp-controller="Doctor" asp-action="CreateRequest">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 5v14M5 12h14" /></svg>
+            Create Test Request
+        </a>
+        <a class="@(IsActive("track") ? "active" : "")" asp-controller="Doctor" asp-action="TrackRequests">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" /></svg>
+            Track Requests
+        </a>
+        <a class="@(IsActive("results") ? "active" : "")" asp-controller="Doctor" asp-action="Results">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2" /><rect x="9" y="3" width="6" height="4" rx="1" /><path d="M9 14l2 2 4-4" /></svg>
+            Results
+        </a>
+        <a class="@(IsActive("alerts") ? "active" : "")" asp-controller="Doctor" asp-action="Alerts">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9" /><path d="M13.73 21a2 2 0 01-3.46 0" /></svg>
+            Abnormal Alerts
+            <span class="nav-badge pulse-badge" id="alertsNavBadge">1</span>
+        </a>
+        <a class="@(IsActive("reports") ? "active" : "")" asp-controller="Doctor" asp-action="Reports">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" /><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8" /></svg>
+            PDF Reports
+        </a>
+        <a class="@(IsActive("settings") ? "active" : "")" asp-controller="Doctor" asp-action="Settings">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3" /><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" /></svg>
+            Settings
+        </a>
+    </nav>
+
+    <div class="sidebar-footer">
+        <partial name="_DoctorLogout" />
+    </div>
+</aside>
+<div class="sidebar-overlay" id="sidebarOverlay" aria-hidden="true"></div>

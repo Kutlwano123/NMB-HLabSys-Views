@@ -1,8 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
+//using NMB_HLabSys.Models;
 using NMB_HLabSys_VIEWS_.Models;
 using System.Diagnostics;
 
-namespace NMB_HLabSys_VIEWS_.Controllers
+namespace NMB_HLabSys_Views.Controllers
 {
     public class HomeController : Controller
     {
