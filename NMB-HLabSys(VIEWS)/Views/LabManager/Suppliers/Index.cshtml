@@ -1,0 +1,123 @@
+﻿@{
+    ViewData["Title"] = "Suppliers";
+    Layout = "~/Views/Shared/_ManagersLayout.cshtml";
+    
+    var suppliers = new[]
+    {
+        new { Id = 1, Name = "Lab Supplies Co.", Contact = "John Doe", Email = "john.doe@lab supplies.com"},
+        new { Id = 2, Name = "Medical Equipments Inc.", Contact = "Jane Smith", Email = "jane.smith@medicalequipments.com" },
+        new { Id = 3, Name = "Chemicals & Reagents Ltd.", Contact = "Bob Johnson", Email = "bob.johnson@chemicalsreagents.com" },
+        new { Id = 4, Name = "Diagnostic Tools Corp.", Contact = "Alice Brown", Email = "alice.brown@diagnostictools.com" }
+    };
+}
+
+<style>
+    .mgr-page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+
+    .mgr-page-title {
+        font-family: 'DM Serif Display', serif;
+        font-size: 24px;
+        color: var(--mgr-text-dark, #1e2420);
+        margin: 0;
+    }
+
+    .mgr-btn-primary {
+        background: var(--mgr-accent, #7a3030);
+        border-color: var(--mgr-accent, #7a3030);
+        color: #fff;
+    }
+
+        .mgr-btn-primary:hover {
+            background: var(--mgr-accent-2, #9a4040);
+            border-color: var(--mgr-accent-2, #9a4040);
+            color: #fff;
+        }
+
+    .mgr-table {
+        background: #fff;
+        border: 1px solid var(--mgr-border, #ddd9d2);
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+        .mgr-table thead {
+            background: var(--mgr-accent-pale, #f0e8e8);
+            color: var(--mgr-accent, #7a3030);
+        }
+
+        .mgr-table th,
+        .mgr-table td {
+            vertical-align: middle;
+            border-color: var(--mgr-border, #ddd9d2);
+        }
+
+    .mgr-badge {
+        background: var(--mgr-accent-pale, #f0e8e8);
+        color: var(--mgr-accent, #7a3030);
+        font-weight: 600;
+    }
+
+    .mgr-action-btn {
+        border-radius: 6px;
+        font-size: 12px;
+        padding: 6px 10px;
+    }
+
+        .mgr-action-btn.btn-outline-primary {
+            border-color: var(--mgr-accent, #7a3030);
+            color: var(--mgr-accent, #7a3030);
+        }
+
+            .mgr-action-btn.btn-outline-primary:hover {
+                background: var(--mgr-accent, #7a3030);
+                color: #fff;
+            }
+</style>
+
+<div class="mgr-page-header">
+    <h2 class="mgr-page-title">Suppliers</h2>
+    <a asp-action="CreateSupplier" class="btn mgr-btn-primary">
+        <i class="bi bi-plus-circle"></i> Add Supplier
+    </a>
+</div>
+
+@if (!suppliers.Any())
+{
+    <div class="alert alert-info">No suppliers found. Add one to get started.</div>
+}
+else
+{
+    <table class="table table-hover mgr-table">
+        <thead>
+            <tr>
+                <th>Supplier Name</th>
+                <th>Contact Person</th>
+                <th>Email</th>
+                <th class="text-center">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var supplier in suppliers)
+            {
+                <tr>
+                    <td>@supplier.Name</td>
+                    <td>@supplier.Contact</td>
+                    <td>@supplier.Email</td>
+                    <td class="text-center">
+                        <a asp-controller="LabManager" asp-action="SupplierDetails" asp-route-id="@supplier.Id"
+                           class="btn btn-sm btn-outline-primary mgr-action-btn">Details</a>
+                        <a asp-controller="LabManager" asp-action="EditSupplier" asp-route-id="@supplier.Id"
+                           class="btn btn-sm btn-outline-secondary mgr-action-btn">Edit</a>
+                        <a asp-controller="LabManager" asp-action="DeleteSupplier" asp-route-id="@supplier.Id"
+                           class="btn btn-sm btn-outline-danger mgr-action-btn">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

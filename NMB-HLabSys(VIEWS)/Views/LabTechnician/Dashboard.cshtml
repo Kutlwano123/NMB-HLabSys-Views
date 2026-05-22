@@ -1,0 +1,93 @@
+@model NMB_HLabSys_VIEWS.ViewModels.LabDashboardViewModel
+@{
+    ViewData["Title"] = "Lab Technician Dashboard";
+    Layout = "~/Views/Shared/_TechnicianLayout.cshtml";
+    ViewData["ActivePage"] = "Dashboard";
+}
+
+<h2>Workload Overview</h2>
+<p class="text-muted">Counters reflect only test types assigned to you by the laboratory manager.</p>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show">@TempData["Success"]<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show">@TempData["Error"]<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+}
+
+<div class="row g-3 mb-4">
+    <div class="col-md-4 col-lg-3">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <div class="h1">@Model.SelectedByTechnician</div>
+                <p class="text-muted">Selected by Me</p>
+                <a class="btn btn-sm btn-primary mt-2" href="/LabTechnician/SelectedTests">View</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 col-lg-3">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <div class="h1">@Model.WaitingToBeSelected</div>
+                <p class="text-muted">Pending / Awaiting Samples</p>
+                <a class="btn btn-sm btn-primary mt-2" href="/LabTechnician/PendingTests">Manage</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 col-lg-3">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <div class="h1">@Model.WaitingToBeVerified</div>
+                <p class="text-muted">Awaiting Verification</p>
+                <a class="btn btn-sm btn-primary mt-2" href="/LabTechnician/VerifyTests">Verify</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 col-lg-3">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <div class="h1">@Model.WaitingToBeReviewed</div>
+                <p class="text-muted">Rejected — Re-capture</p>
+                <a class="btn btn-sm btn-warning mt-2" href="/LabTechnician/ReviewTests">Review</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 col-lg-3">
+        <div class="card h-100 border-danger">
+            <div class="card-body text-center">
+                <div class="h1 text-danger">@Model.UrgentTests</div>
+                <p class="text-muted">Urgent (STAT)</p>
+                <a class="btn btn-sm btn-danger mt-2" href="/LabTechnician/UrgentTests">Open</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 col-lg-3">
+        <div class="card h-100 border-warning">
+            <div class="card-body text-center">
+                <div class="h1 text-warning">@Model.OverdueTests</div>
+                <p class="text-muted">Overdue (TAT)</p>
+                <a class="btn btn-sm btn-outline-warning mt-2" href="/LabTechnician/OverdueTests">Open</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 col-lg-3">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <div class="h1">@Model.NearingLimit</div>
+                <p class="text-muted">Nearing TAT Limit</p>
+                <a class="btn btn-sm btn-secondary mt-2" href="/LabTechnician/NearingLimit">Open</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 col-lg-3">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <i class="bi bi-file-earmark-bar-graph fs-1"></i>
+                <p class="text-muted mt-2">Productivity Report</p>
+                <a class="btn btn-sm btn-outline-primary mt-2" href="/LabTechnician/ProductivityReport">Download</a>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,33 +1,67 @@
+// ============================================================
+//  HomeController.cs  —  NMB_HLabSys (VIEWS ONLY)
+//  Serves the landing page and handles zero-login role bypass routing.
+// ============================================================
 using Microsoft.AspNetCore.Mvc;
-//using NMB_HLabSys.Models;
 using NMB_HLabSys_VIEWS_.Models;
 using System.Diagnostics;
 
-namespace NMB_HLabSys_Views.Controllers
+namespace NMB_HLabSys_VIEWS_.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
-        {
-            _logger = logger;
-        }
-
         public IActionResult Index()
         {
             return View();
         }
 
-        public IActionResult Privacy()
+        // Demo login — triggers instantly when clicking any role portal card
+        [HttpGet]
+        [Route("Account/DemoLogin")]
+        public IActionResult DemoLogin(string role = "LabTechnician")
         {
-            return View();
+            // Assign custom display variables to mimic an active system database profile
+            var (userId, userName) = role switch
+            {
+                "Admin" => ("demo-admin", "Kutlwano Modise"),
+                "Doctor" => ("demo-doctor", "Dr. A. Petersen"),
+                "LabTechnician" => ("demo-tech", "Kabelo Mabidikama"),
+                "LabManager" => ("demo-manager", "Unathi Mzathu"),
+                "Patient" => ("demo-patient", "Pieter Selekane"),
+                _ => ("demo-tech", "Kabelo Mabidikama"),
+            };
+
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, userId),
+                new Claim(ClaimTypes.Name,           userName),
+                new Claim(ClaimTypes.Role,           role),
+            };
+
+            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var principal = new ClaimsPrincipal(identity);
+
+            // Establish the fake authentication session securely
+            HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal).Wait();
+
+            // Route user directly to their mockup layouts
+            return role switch
+            {
+                "LabTechnician" => RedirectToAction("Dashboard", "LabTechnician"),
+                "LabManager" => RedirectToAction("Index", "LabManager"),
+                "Doctor" => RedirectToAction("Index", "Doctor"),
+                "Admin" => RedirectToAction("Index", "Admin"),
+                "Patient" => RedirectToAction("Index", "Patient"),
+                _ => RedirectToAction("Dashboard", "LabTechnician"),
+            };
         }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
+        [HttpGet]
+        [Route("Account/Logout")]
+        public IActionResult Logout()
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme).Wait();
+            return RedirectToAction(nameof(Index));
         }
     }
 }

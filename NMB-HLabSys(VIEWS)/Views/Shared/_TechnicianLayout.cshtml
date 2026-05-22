@@ -1,0 +1,65 @@
+@{
+	var active = ViewData["ActivePage"]?.ToString() ?? "";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>@ViewData["Title"] - NMB-HLabSys</title>
+	<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+	<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" />
+	<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+	<style>
+		:root { --bg:#f4f2ef; --surface:#faf9f7; --border:#ddd9d2; --accent:#7a3030; --accent-pale:#f0e8e8; --text-dark:#1e2420; --text-mid:#4a5248; }
+		body { background:var(--bg); font-family:'DM Sans',sans-serif; }
+		.tech-sidebar { position:fixed; left:0; top:0; bottom:0; width:240px; background:var(--surface); border-right:1px solid var(--border); padding:18px; overflow-y:auto; }
+		.tech-brand { display:flex; align-items:center; gap:10px; text-decoration:none; margin-bottom:12px; }
+		.tech-brand .icon { width:36px;height:36px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff }
+		.tech-nav { margin-top:18px; display:flex; flex-direction:column; gap:6px; }
+		.tech-nav a { color:var(--text-mid); text-decoration:none; padding:10px 12px; border-radius:8px; display:flex; gap:8px; align-items:center }
+		.tech-nav a.active { background:var(--accent-pale); color:var(--accent); font-weight:600 }
+		.main-wrapper { margin-left:240px; min-height:100vh; }
+		.topbar { background:var(--surface); border-bottom:1px solid var(--border); padding:12px 20px; display:flex; justify-content:space-between; align-items:center }
+		.page-body { padding:24px; }
+	</style>
+	@RenderSection("Styles", required: false)
+</head>
+<body>
+	<div class="tech-sidebar">
+		<a class="tech-brand" href="/LabTechnician/Dashboard">
+			<div class="icon"><i class="bi bi-flask"></i></div>
+			<div style="font-family:'DM Serif Display', serif;">NMB-<span style="color:var(--accent)">HLab</span>Sys</div>
+		</a>
+		<nav class="tech-nav">
+			<a href="/LabTechnician/Dashboard" class="@(active=="Dashboard"?"active":"")"><i class="bi bi-speedometer2"></i><span>Dashboard</span></a>
+			<a href="/LabTechnician/Tasks" class="@(active=="Tasks"?"active":"")"><i class="bi bi-list-task"></i><span>My Tasks</span></a>
+			<a href="/LabTechnician/PendingTests" class="@(active=="PendingTests"?"active":"")"><i class="bi bi-hourglass-split"></i><span>Pending / Samples</span></a>
+			<a href="/LabTechnician/SelectedTests" class="@(active=="SelectedTests"?"active":"")"><i class="bi bi-check2-square"></i><span>Selected Tests</span></a>
+			<a href="/LabTechnician/VerifyTests" class="@(active=="VerifyTests"?"active":"")"><i class="bi bi-shield-shaded"></i><span>Verify Results</span></a>
+			<a href="/LabTechnician/ReviewTests" class="@(active=="ReviewTests"?"active":"")"><i class="bi bi-arrow-clockwise"></i><span>Re-capture Queue</span></a>
+			<a href="/LabTechnician/TestResults" class="@(active=="TestResults"?"active":"")"><i class="bi bi-vial"></i><span>All Results</span></a>
+			<a href="/LabTechnician/UrgentTests" class="@(active=="UrgentTests"?"active":"")"><i class="bi bi-exclamation-triangle"></i><span>Urgent (STAT)</span></a>
+			<a href="/LabTechnician/OverdueTests" class="@(active=="OverdueTests"?"active":"")"><i class="bi bi-clock-history"></i><span>Overdue</span></a>
+			<a href="/LabTechnician/NearingLimit" class="@(active=="NearingLimit"?"active":"")"><i class="bi bi-hourglass"></i><span>Nearing TAT Limit</span></a>
+			<a href="/LabTechnician/ProductivityReport" class="@(active=="ProductivityReport"?"active":"")"><i class="bi bi-file-earmark-bar-graph"></i><span>Productivity Report</span></a>
+		</nav>
+	</div>
+	<div class="main-wrapper">
+		<div class="topbar">
+			<div style="font-weight:600">@ViewData["Title"]</div>
+			@await Component.InvokeAsync("TechnicianHeader")
+		</div>
+		<div class="page-body">
+			@if (TempData["Success"] != null) { <div class="alert alert-success">@TempData["Success"]</div> }
+			@if (TempData["Error"] != null) { <div class="alert alert-danger">@TempData["Error"]</div> }
+			@RenderBody()
+		</div>
+	</div>
+	<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+	@await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
+
+

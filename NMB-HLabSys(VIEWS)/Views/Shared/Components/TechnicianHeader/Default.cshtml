@@ -1,0 +1,11 @@
+@model NMB_HLabSys.ViewComponents.TechnicianHeaderModel
+<div class="d-flex align-items-center gap-3">
+    <a href="/Account/AccountSettings" class="d-flex align-items-center gap-2 text-decoration-none text-dark" title="Profile settings">
+        <img src="@Model.PhotoPath" alt="Profile" style="width:36px;height:36px;border-radius:50%;object-fit:cover;border:2px solid var(--border,#ddd9d2);" />
+        <span class="d-none d-md-inline" style="font-size:14px;">@Model.Email</span>
+    </a>
+    <form method="post" asp-controller="Home" asp-action="Index" style="display:inline;">
+        @Html.AntiForgeryToken()
+        <button class="btn btn-sm btn-outline-secondary" type="submit">Logout</button>
+    </form>
+</div>

@@ -1,0 +1,213 @@
+﻿@{
+    ViewData["Title"] = "My Test Requests";
+    ViewData["ActivePage"] = "TestRequests";
+    Layout = "~/Views/Shared/_PatientLayout.cshtml";
+
+    // =========================
+    // DUMMY DATA (STATIC ONLY)
+    // =========================
+    var testRequests = new[]
+    {
+        new {
+            Id = 1,
+            Date = new DateTime(2026, 1, 10),
+            TestName = "Full Blood Count",
+            Category = "Haematology",
+            Status = "Completed",
+            HasResult = true,
+            ResultId = 101
+        },
+        new {
+            Id = 2,
+            Date = new DateTime(2026, 2, 15),
+            TestName = "Glucose Test",
+            Category = "Chemical Pathology",
+            Status = "In Progress",
+            HasResult = true,
+            ResultId = 102
+        },
+        new {
+            Id = 3,
+            Date = new DateTime(2026, 3, 2),
+            TestName = "Lipid Profile",
+            Category = "Biochemistry",
+            Status = "Pending",
+            HasResult = false,
+            ResultId = 0
+        },
+        new {
+            Id = 4,
+            Date = new DateTime(2026, 4, 5),
+            TestName = "Vitamin D Test",
+            Category = "Endocrinology",
+            Status = "Urgent",
+            HasResult = false,
+            ResultId = 0
+        }
+    };
+}
+
+@section Styles {
+    <style>
+        .status-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .status-pending {
+            background: var(--gold-pale);
+            color: var(--gold);
+        }
+
+        .status-complete {
+            background: #e8f0e8;
+            color: #3a6b3a;
+        }
+
+        .status-urgent {
+            background: var(--accent-pale);
+            color: var(--accent);
+        }
+
+        .status-progress {
+            background: #e8eaee;
+            color: #3a4a5a;
+        }
+
+        .result-btn {
+            background: var(--accent);
+            color: white;
+            border-radius: 6px;
+            padding: 6px 12px;
+            font-size: 12px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .pending-text {
+            font-size: 11px;
+            color: var(--text-light);
+        }
+    </style>
+}
+
+<!-- HEADER -->
+<div style="margin-bottom:20px;">
+    <h2 style="margin:0;">My Test Requests</h2>
+    <p style="color:var(--text-light);font-size:13px;margin-top:4px;">
+        All laboratory test requests linked to your account — @testRequests.Length total
+    </p>
+</div>
+
+<!-- TABLE -->
+<div class="card" style="padding:0;overflow:hidden;">
+    <table class="table" style="margin:0;">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Request Date</th>
+                <th>Test Type</th>
+                <th>Category</th>
+                <th>Status</th>
+                <th>Result Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @{
+                int i = 1;
+            }
+
+            @foreach (var r in testRequests)
+            {
+                var statusClass = r.Status switch
+                {
+                    "Completed" => "status-complete",
+                    "Urgent" => "status-urgent",
+                    "In Progress" => "status-progress",
+                    _ => "status-pending"
+                };
+
+                <tr>
+
+                    <!-- NUMBER -->
+                    <td style="font-size:12px;color:var(--text-light);">
+                        @i
+                    </td>
+
+                    <!-- DATE -->
+                    <td style="font-size:13px;">
+                        @r.Date.ToString("dd MMM yyyy")
+                    </td>
+
+                    <!-- TEST -->
+                    <td style="font-size:13px;font-weight:500;">
+                        @r.TestName
+                    </td>
+
+                    <!-- CATEGORY -->
+                    <td style="font-size:13px;color:var(--text-mid);">
+                        @r.Category
+                    </td>
+
+                    <!-- STATUS -->
+                    <td>
+                        <span class="status-badge @statusClass">
+                            @r.Status
+                        </span>
+                    </td>
+
+                    <!-- RESULT STATUS -->
+                    <td>
+                        @if (r.HasResult)
+                        {
+                            <span style="font-size:11px;
+                                background:#e8f0e8;
+                                color:#3a6b3a;
+                                padding:3px 8px;
+                                border-radius:10px;">
+
+                                <i class="bi bi-check-circle"></i>
+                                Available
+
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="pending-text">
+                                Awaiting Result
+                            </span>
+                        }
+                    </td>
+
+                    <!-- ACTION -->
+                    <td>
+                        @if (r.HasResult)
+                        {
+                            <a href="/Patient/ViewResult/@r.ResultId"
+                               class="result-btn">
+
+                                <i class="bi bi-eye"></i>
+                                View Result
+
+                            </a>
+                        }
+                        else
+                        {
+                            <span class="pending-text">Pending</span>
+                        }
+                    </td>
+
+                </tr>
+
+                i++;
+            }
+        </tbody>
+    </table>
+</div>

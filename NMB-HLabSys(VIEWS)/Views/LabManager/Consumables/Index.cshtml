@@ -1,0 +1,127 @@
+﻿@{
+    ViewData["Title"] = "Consumables";
+    Layout = "~/Views/Shared/_ManagersLayout.cshtml";
+
+    var consumables = new[]
+    {
+        new { Id = 1, Name = "Syringes 5ml", Supplier = "MedSupply Co.", ReorderLevel = 20, QuantityOnHand = 15 },
+        new { Id = 2, Name = "Latex Gloves", Supplier = "HealthPro", ReorderLevel = 50, QuantityOnHand = 200 },
+        new { Id = 3, Name = "Test Tubes", Supplier = "Lab Essentials", ReorderLevel = 40, QuantityOnHand = 120 }
+    };
+}
+
+<style>
+    .mgr-page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+
+    .mgr-page-title {
+        font-family: 'DM Serif Display', serif;
+        font-size: 24px;
+        color: var(--mgr-text-dark, #1e2420);
+        margin: 0;
+    }
+
+    .mgr-btn-primary {
+        background: var(--mgr-accent, #7a3030);
+        border-color: var(--mgr-accent, #7a3030);
+        color: #fff;
+    }
+
+        .mgr-btn-primary:hover {
+            background: var(--mgr-accent-2, #9a4040);
+            border-color: var(--mgr-accent-2, #9a4040);
+            color: #fff;
+        }
+
+    .mgr-table {
+        background: #fff;
+        border: 1px solid var(--mgr-border, #ddd9d2);
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+        .mgr-table thead {
+            background: var(--mgr-accent-pale, #f0e8e8);
+            color: var(--mgr-accent, #7a3030);
+        }
+
+        .mgr-table th,
+        .mgr-table td {
+            vertical-align: middle;
+            border-color: var(--mgr-border, #ddd9d2);
+        }
+
+    .mgr-badge {
+        background: var(--mgr-accent-pale, #f0e8e8);
+        color: var(--mgr-accent, #7a3030);
+        font-weight: 600;
+    }
+
+    .mgr-action-btn {
+        border-radius: 6px;
+        font-size: 12px;
+        padding: 6px 10px;
+    }
+
+        .mgr-action-btn.btn-outline-primary {
+            border-color: var(--mgr-accent, #7a3030);
+            color: var(--mgr-accent, #7a3030);
+        }
+
+            .mgr-action-btn.btn-outline-primary:hover {
+                background: var(--mgr-accent, #7a3030);
+                color: #fff;
+            }
+</style>
+
+<div class="mgr-page-header">
+    <h2 class="mgr-page-title">Consumables</h2>
+    <a asp-action="CreateConsumable" class="btn mgr-btn-primary">
+        <i class="bi bi-plus-circle"></i> Add Consumable
+    </a>
+</div>
+
+@if (!consumables.Any())
+{
+    <div class="alert alert-info">No consumables found. Add one to get started.</div>
+}
+else
+{
+    <table class="table table-hover mgr-table">
+        <thead>
+            <tr>
+                <th>Consumable</th>
+                <th>Supplier</th>
+                <th>Reorder Level</th>
+                <th>Quantity on Hand</th>
+                <th class="text-center">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var consumable in consumables)
+            {
+                <tr>
+                    <td>@consumable.Name</td>
+                    <td>@consumable.Supplier</td>
+                    <td>@consumable.ReorderLevel</td>
+                    <td>
+                        <span class="badge mgr-badge">@consumable.QuantityOnHand</span>
+                    </td>
+                    <td class="text-center">
+                        <a asp-action="ConsumableDetails" asp-route-id="@consumable.Id"
+                           class="btn btn-sm btn-outline-primary mgr-action-btn">Details</a>
+                        <a asp-action="EditConsumable" asp-route-id="@consumable.Id"
+                           class="btn btn-sm btn-outline-secondary mgr-action-btn">Edit</a>
+                        <a asp-action="DeleteConsumable" asp-route-id="@consumable.Id"
+                           class="btn btn-sm btn-outline-danger mgr-action-btn">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+

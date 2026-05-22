@@ -1,0 +1,84 @@
+﻿@{
+    ViewData["Title"] = "Delete Sample Type";
+    Layout = "~/Views/Shared/_ManagersLayout.cshtml";
+    var sampleType = new { Id = 1, Name = "Blood Sample", Description = "Used for blood tests and analysis." };
+}
+<style>
+    .mgr-delete-card {
+        background: #fff;
+        border: 1px solid var(--mgr-border, #ddd9d2);
+        border-radius: 12px;
+        padding: 24px;
+        max-width: 700px;
+        margin: 0 auto;
+    }
+
+    .mgr-delete-title {
+        font-family: 'DM Serif Display', serif;
+        font-size: 20px;
+        color: var(--mgr-text-dark, #1e2420);
+        margin-bottom: 10px;
+    }
+
+    .mgr-delete-warning {
+        font-size: 13px;
+        color: var(--mgr-text-mid, #4a5248);
+        margin-bottom: 16px;
+    }
+
+    .mgr-delete-list {
+        list-style: none;
+        padding: 0;
+        margin: 0 0 20px 0;
+        display: grid;
+        gap: 8px;
+    }
+
+    .mgr-delete-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 10px;
+        background: var(--mgr-bg, #f4f2ef);
+        border-radius: 8px;
+        font-size: 13px;
+        color: var(--mgr-text-mid, #4a5248);
+    }
+
+    .mgr-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+    }
+
+    .mgr-btn-danger {
+        background: #7a3030;
+        border-color: #7a3030;
+        color: #fff;
+    }
+
+        .mgr-btn-danger:hover {
+            background: #9a4040;
+            border-color: #9a4040;
+            color: #fff;
+        }
+</style>
+
+<div class="mgr-delete-card">
+    <h5 class="mgr-delete-title">Delete Sample Type</h5>
+    <p class="mgr-delete-warning">This action cannot be undone. Please confirm you want to delete the sample type below.</p>
+
+    <ul class="mgr-delete-list">
+        <li class="mgr-delete-item"><span>Sample Type Name</span><strong>@sampleType.Name</strong></li>
+        <li class="mgr-delete-item"><span>Description</span><strong>@sampleType.Description</strong></li>
+    </ul>
+
+    <form asp-action="DeleteSampleType" method="post">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="SampleTypeID" value="@sampleType.Id" />
+        <div class="mgr-actions">
+            <a asp-action="SampleTypes" class="btn btn-outline-secondary">Cancel</a>
+            <button type="submit" class="btn mgr-btn-danger">Delete</button>
+        </div>
+    </form>
+</div>
+
