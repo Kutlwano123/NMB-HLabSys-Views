@@ -38,7 +38,7 @@
                     @Html.AntiForgeryToken()
                     <input type="hidden" name="ConsumableID" value="@consumable.Id" />
                     <div class="d-flex justify-content-between">
-                        <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+                        <a asp-controller="LabManager" asp-action="Consumables" class="btn btn-secondary">Cancel</a>
                         <button type="submit" class="btn btn-danger">Yes, Delete</button>
                     </div>
                 </form>
