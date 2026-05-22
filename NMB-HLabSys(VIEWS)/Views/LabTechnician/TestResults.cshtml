@@ -1,0 +1,65 @@
+@using NMB_HLabSys_VIEWS.Data
+@model IEnumerable<StubTestResult>
+@{
+    ViewData["Title"] = "Test Results";
+    Layout = "~/Views/Shared/_TechnicianLayout.cshtml";
+    var active = ViewData["ActivePage"]?.ToString() ?? "TestResults";
+}
+
+<h2>Test Results</h2>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show">@TempData["Success"]<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show">@TempData["Error"]<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+}
+
+<table class="table table-striped table-hover">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Request</th>
+            <th>Patient</th>
+            <th>Test</th>
+            <th>Captured</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var r in Model)
+        {
+            var status = r.ResultStatus?.StatusName ?? "";
+            <tr>
+                <td>@r.TestResultId</td>
+                <td>@r.TestRequest?.RequestNumber</td>
+                <td>@r.TestRequest?.PatientName</td>
+                <td>@r.TestRequest?.TestType?.TestName</td>
+                <td>@r.CapturedAt?.ToString("g") by @r.CapturedBy</td>
+                <td>
+                    <span class="badge @(status == "Verified" ? "bg-success" : status == "To Be Reviewed" ? "bg-warning text-dark" : "bg-secondary")">
+                        @status
+                    </span>
+                </td>
+                <td>
+                    @if (status == "Captured")
+                    {
+                        <a class="btn btn-sm btn-info text-white" href="/LabTechnician/VerifyResultForm?resultId=@r.TestResultId">Verify</a>
+                    }
+                    @if (status == "To Be Reviewed")
+                    {
+                        <a class="btn btn-sm btn-warning" href="/LabTechnician/CaptureResultForm?requestId=@r.TestRequestId">Re-capture</a>
+                        <a class="btn btn-sm btn-outline-secondary ms-1" href="/LabTechnician/RejectionHistory?resultId=@r.TestResultId">History</a>
+                    }
+                    @if (status == "Verified")
+                    {
+                        <span class="text-success"><i class="bi bi-check-circle"></i> Verified by @r.VerifiedBy</span>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

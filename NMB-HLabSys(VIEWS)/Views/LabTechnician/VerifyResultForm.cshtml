@@ -1,0 +1,76 @@
+@model NMB_HLabSys_VIEWS.ViewModels.ResultVerificationViewModel
+@{
+    ViewData["Title"] = "Verify Result";
+    Layout = "~/Views/Shared/_TechnicianLayout.cshtml";
+    ViewData["ActivePage"] = "VerifyTests";
+}
+
+<h2>Peer Verification</h2>
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show">@TempData["Error"]<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+}
+
+<div class="card">
+    <div class="card-header bg-dark text-white">Request @Model.RequestNumber</div>
+    <div class="card-body">
+        <table class="table table-bordered">
+            <tr><th>Patient</th><td>@Model.PatientName</td></tr>
+            <tr><th>Test</th><td>@Model.TestName</td></tr>
+            <tr><th>Captured by</th><td>@Model.CapturedByTechnician</td></tr>
+            <tr class="@(Model.IsOutOfRange ? "table-danger" : "table-success")">
+                <th>Result</th>
+                <td>
+                    <strong>@Model.ResultData</strong> @Model.UnitOfMeasurement
+                    @if (Model.IsOutOfRange)
+                    {
+                        <span class="badge bg-danger ms-2">
+                            <i class="bi bi-exclamation-triangle"></i> OUT OF RANGE
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-success ms-2">Within range</span>
+                    }
+                </td>
+            </tr>
+            <tr><th>Normal range</th><td>@Model.MinNormalRange – @Model.MaxNormalRange @Model.UnitOfMeasurement</td></tr>
+        </table>
+
+        <div class="row mt-3">
+            <div class="col-md-6">
+                <form method="post" asp-action="ApproveResult">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="resultId" value="@Model.TestResultId" />
+                    <button type="submit" class="btn btn-success btn-lg w-100">
+                        <i class="bi bi-check-circle"></i> Approve &amp; Verify
+                    </button>
+                </form>
+            </div>
+            <div class="col-md-6">
+                <button class="btn btn-danger btn-lg w-100" type="button"
+                        data-bs-toggle="collapse" data-bs-target="#rejectPanel">
+                    <i class="bi bi-x-circle"></i> Reject
+                </button>
+            </div>
+        </div>
+
+        <div class="collapse mt-3" id="rejectPanel">
+            <div class="card card-body border-danger">
+                <form method="post" asp-action="RejectResult">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="resultId" value="@Model.TestResultId" />
+                    <label class="form-label fw-bold text-danger">Rejection reason <span class="text-muted fw-normal">(required)</span></label>
+                    <textarea class="form-control mb-2" name="validationNotes" rows="3"
+                              placeholder="Describe the issue clearly so the capturing technician can act on it..." required></textarea>
+                    <button type="submit" class="btn btn-danger btn-sm">Submit Rejection</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<a href="/LabTechnician/VerifyTests" class="btn btn-outline-secondary mt-3">
+    <i class="bi bi-arrow-left"></i> Back to Verify Tests
+</a>

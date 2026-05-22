@@ -1,0 +1,44 @@
+@using NMB_HLabSys_VIEWS.Data
+@model IEnumerable<StubRejectionLog>
+@{
+    ViewData["Title"] = "Rejection History";
+    Layout = "~/Views/Shared/_TechnicianLayout.cshtml";
+    ViewData["ActivePage"] = "TestResults";
+}
+
+<h2>Rejection Review Loop History</h2>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">No rejection history found for this result.</div>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>When</th>
+                <th>Rejected By</th>
+                <th>Rejection Notes</th>
+                <th>Previous Result</th>
+                <th>Previous Tech Notes</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var log in Model)
+            {
+                <tr>
+                    <td>@log.RejectedAt.ToString("g")</td>
+                    <td>@log.RejectedBy</td>
+                    <td>@log.RejectionNotes</td>
+                    <td>@log.PreviousResultData</td>
+                    <td>@log.PreviousTechnicianNotes</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<a href="/LabTechnician/TestResults" class="btn btn-secondary">
+    <i class="bi bi-arrow-left"></i> Back to Results
+</a>

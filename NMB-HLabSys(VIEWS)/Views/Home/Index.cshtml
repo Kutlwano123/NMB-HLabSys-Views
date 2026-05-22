@@ -1,8 +1,329 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+@{
+    ViewData["Title"] = "NMB-HLabSys - Haematology Laboratory System";
+    Layout = null; 
 }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --bg:         #f4f2ef;
+            --surface:    #faf9f7;
+            --surface-2:  #eeeae4;
+            --border:     #ddd9d2;
+            --accent:     #7a3030;
+            --accent-2:   #9a4040;
+            --accent-pale:#f0e8e8;
+            --text-dark:  #1e2420;
+            --text-mid:   #4a5248;
+            --text-light: #7a857a;
+            --red-dark:   #7a3030;
+            --red-pale:   #f0e8e8;
+            --gold:       #8a7340;
+            --gold-pale:  #f0ebe0;
+        }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background-color: var(--bg);
+            color: var(--text-dark);
+        }
+
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 48px;
+            height: 64px;
+            background: rgba(244,242,239,0.92);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .nav-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+        .nav-logo { width: 36px; height: 36px; background: var(--accent); border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+        .nav-logo i { color: #fff; font-size: 16px; }
+        .nav-brand-text { font-family: 'DM Serif Display', serif; font-size: 18px; color: var(--text-dark); letter-spacing: -0.3px; }
+        .nav-brand-text span { color: var(--accent); }
+
+        .nav-links { display: flex; align-items: center; gap: 32px; list-style: none; }
+        .nav-links a { text-decoration: none; font-size: 14px; font-weight: 500; color: var(--text-mid); transition: color 0.2s; }
+        .nav-links a:hover { color: var(--accent); }
+
+        .nav-cta { padding: 9px 22px; background: var(--accent); color: #fff !important; border-radius: 6px; font-weight: 600 !important; font-size: 13px !important; transition: background 0.2s !important; }
+        .nav-cta:hover { background: var(--accent-2) !important; color: #fff !important; }
+
+        .hero { min-height: 100vh; display: grid; grid-template-columns: 1fr 1fr; align-items: center; padding: 100px 48px 60px; gap: 60px; max-width: 1200px; margin: 0 auto; }
+        .hero-left { animation: fadeUp 0.8s ease both; }
+
+        .hero-eyebrow { display: inline-flex; align-items: center; gap: 8px; background: var(--accent-pale); color: var(--accent); font-size: 12px; font-weight: 600; letter-spacing: 0.8px; text-transform: uppercase; padding: 6px 14px; border-radius: 20px; margin-bottom: 24px; border: 1px solid rgba(122,48,48,0.2); }
+        .hero-eyebrow i { font-size: 10px; }
+
+        .hero h1 { font-family: 'DM Serif Display', serif; font-size: clamp(2.4rem, 4vw, 3.4rem); line-height: 1.15; color: var(--text-dark); margin-bottom: 20px; letter-spacing: -0.5px; }
+        .hero h1 em { font-style: italic; color: var(--accent); }
+
+        .hero-desc { font-size: 16px; line-height: 1.7; color: var(--text-mid); max-width: 480px; margin-bottom: 36px; }
+        .hero-actions { display: flex; gap: 14px; flex-wrap: wrap; }
+
+        .btn-primary { padding: 13px 28px; background: var(--accent); color: #fff; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: background 0.2s, transform 0.2s; display: inline-flex; align-items: center; gap: 8px; text-decoration: none; }
+        .btn-primary:hover { background: var(--accent-2); transform: translateY(-1px); color: #fff; }
+
+        .btn-secondary { padding: 13px 28px; background: transparent; color: var(--text-dark); border: 1.5px solid var(--border); border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; transition: border-color 0.2s, background 0.2s; display: inline-flex; align-items: center; gap: 8px; text-decoration: none; }
+        .btn-secondary:hover { border-color: var(--accent); background: var(--accent-pale); }
+
+        .hero-stats { display: flex; gap: 32px; margin-top: 48px; padding-top: 32px; border-top: 1px solid var(--border); }
+        .stat-item { text-align: left; }
+        .stat-value { font-family: 'DM Serif Display', serif; font-size: 28px; color: var(--text-dark); }
+        .stat-label { font-size: 12px; color: var(--text-light); margin-top: 2px; }
+
+        .hero-right { animation: fadeUp 0.8s 0.2s ease both; }
+        .hero-visual { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; box-shadow: 0 4px 32px rgba(0,0,0,0.06); height: 420px; }
+        .hero-visual img { width: 100%; height: 100%; object-fit: cover; }
+
+        .sdg-banner { background: var(--accent); color: #fff; padding: 16px 48px; display: flex; align-items: center; justify-content: center; gap: 12px; }
+        .sdg-banner i { font-size: 18px; opacity: 0.8; }
+        .sdg-banner p { font-size: 13px; font-weight: 500; opacity: 0.9; }
+        .sdg-banner strong { opacity: 1; }
+
+        .section { max-width: 1100px; margin: 0 auto; padding: 80px 48px; }
+        .section-label { font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; }
+        .section-heading { font-family: 'DM Serif Display', serif; font-size: clamp(1.8rem, 3vw, 2.4rem); color: var(--text-dark); margin-bottom: 14px; letter-spacing: -0.3px; }
+        .section-sub { font-size: 15px; color: var(--text-mid); max-width: 560px; line-height: 1.7; margin-bottom: 48px; }
+
+        .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        .feature-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 28px 24px; transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s; opacity: 0; transform: translateY(20px); }
+        .feature-card.visible { opacity: 1; transform: translateY(0); transition: opacity 0.5s ease, transform 0.5s ease, box-shadow 0.25s, border-color 0.25s; }
+        .feature-card:hover { transform: translateY(-4px); box-shadow: 0 12px 28px rgba(0,0,0,0.08); border-color: rgba(122,48,48,0.3); }
+
+        .feature-icon-wrap { width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 18px; }
+        .feature-icon-wrap.green { background: var(--accent-pale); color: var(--accent); }
+        .feature-icon-wrap.red   { background: var(--red-pale);    color: var(--red-dark); }
+        .feature-icon-wrap.gold  { background: var(--gold-pale);   color: var(--gold); }
+        .feature-icon-wrap.slate { background: #e8eaee;            color: #4a5060; }
+        .feature-icon-wrap.teal  { background: #e0ecec;            color: #2e6b6b; }
+        .feature-icon-wrap.mauve { background: #ede8f0;            color: #6b4a7a; }
+        .feature-icon-wrap i { font-size: 18px; }
+
+        .feature-card h3 { font-family: 'DM Serif Display', serif; font-size: 17px; color: var(--text-dark); margin-bottom: 10px; }
+        .feature-card p  { font-size: 14px; line-height: 1.65; color: var(--text-mid); }
+
+        .roles-section { background: var(--surface-2); padding: 80px 0; }
+        .roles-inner   { max-width: 1100px; margin: 0 auto; padding: 0 48px; }
+        .roles-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; margin-top: 48px; }
+
+        .role-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 28px 20px; text-align: center; opacity: 0; transform: translateY(24px); transition: transform 0.25s, box-shadow 0.25s; text-decoration: none; color: inherit; display: block; cursor: pointer; }
+        .role-card.visible { opacity: 1; transform: translateY(0); transition: opacity 0.5s ease, transform 0.5s ease, box-shadow 0.25s; }
+        .role-card:hover { transform: translateY(-4px); box-shadow: 0 12px 28px rgba(0,0,0,0.08); }
+
+        .role-icon { width: 56px; height: 56px; border-radius: 14px; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; }
+        .role-icon i { font-size: 22px; color: #fff; }
+        .role-icon.admin   { background: var(--accent); }
+        .role-icon.doctor  { background: var(--accent); }
+        .role-icon.tech    { background: var(--red-dark); }
+        .role-icon.manager { background: var(--gold); }
+        .role-icon.patient { background: #3a6080; }
+
+        .role-card h4 { font-family: 'DM Serif Display', serif; font-size: 16px; color: var(--text-dark); margin-bottom: 10px; }
+        .role-card p  { font-size: 12px; color: var(--text-mid); line-height: 1.6; margin-bottom: 18px; }
+
+        .role-btn { display: inline-block; padding: 8px 18px; border-radius: 7px; font-size: 12px; font-weight: 600; cursor: pointer; text-decoration: none; border: 1.5px solid var(--border); color: var(--text-dark); background: var(--bg); transition: all 0.2s; }
+        .role-btn:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+        .workflow-section { max-width: 1100px; margin: 0 auto; padding: 80px 48px; }
+        .workflow-steps { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0; margin-top: 48px; position: relative; }
+        .workflow-steps::before { content: ''; position: absolute; top: 28px; left: 10%; right: 10%; height: 1px; background: var(--border); z-index: 0; }
+
+        .workflow-step { text-align: center; position: relative; z-index: 1; padding: 0 12px; opacity: 0; transform: translateY(16px); }
+        .workflow-step.visible { opacity: 1; transform: translateY(0); transition: opacity 0.5s ease, transform 0.5s ease; }
+
+        .step-num { width: 56px; height: 56px; border-radius: 50%; background: var(--surface); border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; font-family: 'DM Serif Display', serif; font-size: 20px; color: var(--accent); position: relative; }
+        .workflow-step.active .step-num { background: var(--accent); border-color: var(--accent); color: #fff; }
+        .step-title { font-size: 13px; font-weight: 600; color: var(--text-dark); margin-bottom: 6px; }
+        .step-desc  { font-size: 12px; color: var(--text-light); line-height: 1.5; }
+
+        .team-section { background: var(--surface-2); padding: 90px 0; }
+        .team-inner   { max-width: 1200px; margin: 0 auto; padding: 0 48px; }
+        .team-grid    { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin-top: 50px; }
+
+        .team-card { background: var(--surface); border: 1px solid var(--border); border-radius: 18px; overflow: hidden; transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease; }
+        .team-card:hover { transform: translateY(-6px); box-shadow: 0 18px 38px rgba(0,0,0,0.08); border-color: rgba(122,48,48,0.2); }
+
+        .team-image-wrap { height: 260px; overflow: hidden; background: var(--bg); }
+        .team-image      { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; }
+        .team-card:hover .team-image { transform: scale(1.04); }
+
+        .team-info   { padding: 24px; }
+        .team-info h3 { font-family: 'DM Serif Display', serif; font-size: 20px; color: var(--text-dark); margin-bottom: 6px; }
+        .team-role   { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; color: var(--accent); margin-bottom: 12px; }
+        .team-info p { font-size: 13px; line-height: 1.7; color: var(--text-mid); margin-bottom: 16px; }
+
+        .team-socials     { display: flex; gap: 10px; }
+        .team-socials a   { width: 34px; height: 34px; border-radius: 8px; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; color: var(--text-mid); text-decoration: none; transition: all 0.2s ease; }
+        .team-socials a:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+        .testimonial-section { background: var(--text-dark); padding: 80px 48px; text-align: center; }
+        .testimonial-section blockquote { font-family: 'DM Serif Display', serif; font-style: italic; font-size: clamp(1.2rem, 2.5vw, 1.7rem); color: #e8e4de; max-width: 720px; margin: 0 auto 24px; line-height: 1.5; }
+        .testimonial-section cite { display: block; font-size: 13px; color: var(--accent-2); font-weight: 600; font-style: normal; }
+
+        footer { background: var(--surface); border-top: 1px solid var(--border); padding: 28px 48px; display: flex; align-items: center; justify-content: space-between; }
+        .footer-brand { display: flex; align-items: center; gap: 8px; }
+        .footer-logo  { width: 28px; height: 28px; background: var(--accent); border-radius: 6px; display: flex; align-items: center; justify-content: center; }
+        .footer-logo i { color: #fff; font-size: 12px; }
+        .footer-name  { font-family: 'DM Serif Display', serif; font-size: 15px; color: var(--text-dark); }
+        .footer-copy  { font-size: 12px; color: var(--text-light); }
+        .footer-sdg   { font-size: 12px; color: var(--accent); font-weight: 600; }
+
+        @@keyframes fadeUp {
+            from { opacity: 0; transform: translateY(24px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        @@media (max-width: 1100px) {
+            .roles-grid { grid-template-columns: repeat(3, 1fr); }
+            .team-grid  { grid-template-columns: repeat(2, 1fr); }
+        }
+        @@media (max-width: 900px) {
+            nav { padding: 0 24px; }
+            .nav-links { display: none; }
+            .hero { grid-template-columns: 1fr; padding: 100px 24px 60px; }
+            .hero-right { display: none; }
+            .section, .workflow-section { padding: 60px 24px; }
+            .features-grid { grid-template-columns: 1fr; }
+            .workflow-steps { grid-template-columns: 1fr; gap: 20px; }
+            .workflow-steps::before { display: none; }
+            footer { flex-direction: column; gap: 12px; text-align: center; padding: 24px; }
+            .sdg-banner { padding: 16px 24px; flex-direction: column; text-align: center; gap: 6px; }
+        }
+        @@media (max-width: 700px) {
+            .roles-grid { grid-template-columns: 1fr; }
+            .team-grid  { grid-template-columns: 1fr; }
+            .team-inner, .roles-inner { padding: 0 24px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a class="nav-brand" href="/">
+            <div class="nav-logo"><i class="fas fa-flask"></i></div>
+            <span class="nav-brand-text">NMB-<span>HLab</span>Sys</span>
+        </a>
+        <ul class="nav-links">
+            <li><a href="#features">Features</a></li>
+            <li><a href="#workflow">How It Works</a></li>
+            <li><a href="#team">Team</a></li>
+            <li><a href="#roles" class="nav-cta">Access Portal</a></li>
+        </ul>
+    </nav>
+
+    <div class="sdg-banner">
+        <i class="fas fa-heartbeat"></i>
+        <p>Aligned with <strong>UN SDG 3 — Good Health and Well-Being</strong> &mdash; Ensuring healthy lives and promoting well-being for all at all ages</p>
+    </div>
+
+    <div class="hero">
+        <div class="hero-left">
+            <div class="hero-eyebrow">
+                <i class="fas fa-circle"></i>
+                Nelson Mandela Bay Haematology Diagnostic Laboratories
+            </div>
+            <h1>
+                Laboratory Test<br>
+                Requests, <em>Simplified</em><br>
+                for Better Care
+            </h1>
+            <p class="hero-desc">
+                A secure, web-based system for doctors, technicians, managers, and patients
+                to manage haematology test requests, results, and reports — end to end.
+            </p>
+            <div class="hero-actions">
+                <a href="#roles" class="btn-primary">
+                    <i class="fas fa-sign-in-alt"></i> Access Portal
+                </a>
+                <a href="#workflow" class="btn-secondary">
+                    <i class="fas fa-play-circle"></i> See How It Works
+                </a>
+            </div>
+        </div>
+
+        <div class="hero-right">
+            <div class="hero-visual">
+                <img src="~/images/background.jpg" alt="NMB-HLabSys Laboratory" />
+            </div>
+        </div>
+    </div>
+
+    <section class="roles-section" id="roles">
+        <div class="roles-inner">
+            <div class="section-label">Access Portal</div>
+            <h2 class="section-heading">Instant One-Click Login</h2>
+            <p class="section-sub">
+                Click any role below to bypass authentication and enter the view dashboards with pre-loaded mock telemetry data.
+            </p>
+            <div class="roles-grid">
+                <a class="role-card" href="/Account/DemoLogin?role=Admin">
+                    <div class="role-icon admin"><i class="fas fa-user-cog"></i></div>
+                    <h4>Admin</h4>
+                    <p>Maintain lists of medical conditions, allergies and medications.</p>
+                    <span class="role-btn">Admin Access</span>
+                </a>
+                <a class="role-card" href="/Account/DemoLogin?role=Doctor">
+                    <div class="role-icon doctor"><i class="fas fa-user-md"></i></div>
+                    <h4>Doctor</h4>
+                    <p>Submit test requests, review verified results, and manage patient consent.</p>
+                    <span class="role-btn">Doctor Access</span>
+                </a>
+                <a class="role-card" href="/Account/DemoLogin?role=LabTechnician">
+                    <div class="role-icon tech"><i class="fas fa-flask"></i></div>
+                    <h4>Lab Technician</h4>
+                    <p>Process assigned test requests, capture results, and escalate urgent findings.</p>
+                    <span class="role-btn">Lab Technician Access</span>
+                </a>
+                <a class="role-card" href="/Account/DemoLogin?role=LabManager">
+                    <div class="role-icon manager"><i class="fas fa-tasks"></i></div>
+                    <h4>Laboratory Manager</h4>
+                    <p>Oversee operations, monitor KPIs, manage staff assignments, and generate reports.</p>
+                    <span class="role-btn">Lab Manager Access</span>
+                </a>
+                <a class="role-card" href="/Account/DemoLogin?role=Patient">
+                    <div class="role-icon patient"><i class="fas fa-user"></i></div>
+                    <h4>Patient</h4>
+                    <p>View verified lab results, track test history, and download official PDF reports.</p>
+                    <span class="role-btn">Patient Access</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-brand">
+            <div class="footer-logo"><i class="fas fa-flask"></i></div>
+            <span class="footer-name">NMB-HLabSys</span>
+        </div>
+        <span class="footer-copy">&copy; 2026 Nelson Mandela Bay Haematology Diagnostic Laboratories</span>
+    </footer>
+
+    <script>
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => entry.target.classList.add('visible'), entry.target.dataset.delay || 0);
+                }
+            });
+        }, { threshold: 0.15 });
+
+        document.querySelectorAll('.role-card').forEach((el, i)    => { el.dataset.delay = i * 100; observer.observe(el); });
+    </script>
+</body>
+</html>
