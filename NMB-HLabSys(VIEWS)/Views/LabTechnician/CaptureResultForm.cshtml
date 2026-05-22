@@ -1,0 +1,118 @@
+@model NMB_HLabSys_VIEWS.ViewModels.ResultCaptureViewModel
+@{
+    ViewData["Title"] = "Capture Results";
+    Layout = "~/Views/Shared/_TechnicianLayout.cshtml";
+    ViewData["ActivePage"] = "Tasks";
+}
+
+@if (Model.IsOverdue)
+{
+    <div class="alert alert-danger">
+        <i class="bi bi-exclamation-triangle"></i> <strong>TURNAROUND TIME OVERDUE</strong> for this request.
+    </div>
+}
+
+<div class="row">
+    <div class="col-md-4 mb-4">
+        <div class="card border-warning">
+            <div class="card-header bg-warning text-dark fw-bold">
+                <i class="bi bi-person-bounding-box"></i> Clinical Context
+            </div>
+            <div class="card-body">
+                <h6><strong>Patient:</strong> @Model.PatientName</h6>
+
+                <p class="text-danger mb-1"><strong>Allergies:</strong></p>
+                <ul>
+                    @if (Model.Allergies.Any())
+                    {
+                        foreach (var a in Model.Allergies) { <li>@a</li> }
+                    }
+                    else { <li class="text-muted">None recorded</li> }
+                </ul>
+
+                <p class="text-info mb-1"><strong>Active Medications:</strong></p>
+                <ul>
+                    @if (Model.CurrentMedications.Any())
+                    {
+                        foreach (var m in Model.CurrentMedications) { <li>@m</li> }
+                    }
+                    else { <li class="text-muted">None recorded</li> }
+                </ul>
+
+                <p class="mb-1"><strong>Medical Conditions:</strong></p>
+                <ul>
+                    @if (Model.MedicalConditions.Any())
+                    {
+                        foreach (var c in Model.MedicalConditions) { <li>@c</li> }
+                    }
+                    else { <li class="text-muted">None recorded</li> }
+                </ul>
+
+                <p><strong>Doctor's Notes:</strong> <em>@Model.ClinicalNotes</em></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body">
+                <h3>Capture — @Model.RequestNumber</h3>
+                <h5 class="text-muted">@Model.TestName</h5>
+
+                <div class="alert alert-info">
+                    Normal range: <strong>@Model.MinNormalRange – @Model.MaxNormalRange @Model.UnitOfMeasurement</strong>
+                </div>
+
+                <form method="post" asp-action="CaptureResult">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" asp-for="TestRequestId" />
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Result value</label>
+                        <input type="text"
+                               class="form-control form-control-lg"
+                               asp-for="ResultData"
+                               id="resultData"
+                               placeholder="Enter numeric value..."
+                               required
+                               data-min="@Model.MinNormalRange"
+                               data-max="@Model.MaxNormalRange" />
+                        <div id="rangeAlert" class="alert alert-danger mt-2 d-none">
+                            <strong>Out of range</strong> — value falls outside clinical limits.
+                        </div>
+                        <span asp-validation-for="ResultData" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Technician notes</label>
+                        <textarea class="form-control" asp-for="TechnicianNotes" rows="3"></textarea>
+                    </div>
+
+                    <button class="btn btn-success" type="submit">Submit for verification</button>
+                    <a href="/LabTechnician/Tasks" class="btn btn-outline-secondary ms-2">Cancel</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+(function () {
+    const input = document.getElementById('resultData');
+    const alert = document.getElementById('rangeAlert');
+    if (!input) return;
+    const min = parseFloat(input.dataset.min);
+    const max = parseFloat(input.dataset.max);
+    function check() {
+        const val = parseFloat((input.value || '').replace(/[^\d.]/g, ''));
+        const bad = !isNaN(val) && (val < min || val > max);
+        alert.classList.toggle('d-none', !bad);
+        input.classList.toggle('border-danger', bad);
+        input.classList.toggle('bg-danger-subtle', bad);
+    }
+    input.addEventListener('input', check);
+    check();
+})();
+</script>
+}

@@ -1,0 +1,152 @@
+﻿@{
+    ViewData["Title"] = "Test Type Details";
+    Layout = "~/Views/Shared/_ManagersLayout.cshtml";
+
+    var testType = new
+    {
+        Id = 1,
+        TestName = "Complete Blood Count",
+        Category = "Hematology",
+        SampleType = "EDTA Tube",
+        Unit = "x10⁹/L",
+        MinRange = "4.5",
+        MaxRange = "11.0",
+        TurnaroundMins = 120,
+        Consumables = new[] { "Syringes 5ml", "Test Tubes" },
+        Technicians = new[] { "David Miller", "Emma Wilson" }
+    };
+}
+
+<style>
+    .mgr-detail-card {
+        background: #fff;
+        border: 1px solid var(--mgr-border, #ddd9d2);
+        border-radius: 12px;
+        padding: 24px;
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    .mgr-detail-title {
+        font-family: 'DM Serif Display', serif;
+        font-size: 22px;
+        color: var(--mgr-text-dark, #1e2420);
+        margin-bottom: 6px;
+    }
+
+    .mgr-detail-subtitle {
+        font-size: 13px;
+        color: var(--mgr-text-mid, #4a5248);
+        margin-bottom: 20px;
+    }
+
+    .mgr-detail-list {
+        list-style: none;
+        padding: 0;
+        margin: 0 0 20px 0;
+        display: grid;
+        gap: 10px;
+    }
+
+    .mgr-detail-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 12px;
+        background: var(--mgr-bg, #f4f2ef);
+        border-radius: 8px;
+        font-size: 13px;
+        color: var(--mgr-text-mid, #4a5248);
+    }
+
+    .mgr-chip {
+        background: var(--mgr-accent-pale, #f0e8e8);
+        color: var(--mgr-accent, #7a3030);
+        font-weight: 600;
+        font-size: 11px;
+        padding: 4px 10px;
+        border-radius: 999px;
+    }
+
+    .mgr-section-title {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--mgr-text-dark, #1e2420);
+        margin-bottom: 8px;
+    }
+
+    .mgr-chip-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .mgr-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+    }
+
+    .mgr-btn-primary {
+        background: var(--mgr-accent, #7a3030);
+        border-color: var(--mgr-accent, #7a3030);
+        color: #fff;
+    }
+
+        .mgr-btn-primary:hover {
+            background: var(--mgr-accent-2, #9a4040);
+            border-color: var(--mgr-accent-2, #9a4040);
+            color: #fff;
+        }
+</style>
+
+<div class="mgr-detail-card">
+    <h5 class="mgr-detail-title">@testType.TestName</h5>
+    <p class="mgr-detail-subtitle">Review test configuration, ranges, consumables, and assigned technicians.</p>
+
+    <ul class="mgr-detail-list">
+        <li class="mgr-detail-item"><span>Category</span><strong>@testType.Category</strong></li>
+        <li class="mgr-detail-item"><span>Sample Type</span><strong>@testType.SampleType</strong></li>
+        <li class="mgr-detail-item"><span>Units</span><strong>@testType.Unit</strong></li>
+        <li class="mgr-detail-item"><span>Normal Range</span><strong>@testType.MinRange – @testType.MaxRange</strong></li>
+        <li class="mgr-detail-item"><span>Turnaround</span><strong>@testType.TurnaroundMins mins</strong></li>
+    </ul>
+
+    <div class="mb-3">
+        <div class="mgr-section-title">Consumables Used</div>
+        <div class="mgr-chip-list">
+            @if (testType.Consumables.Any())
+            {
+                foreach (var item in testType.Consumables)
+                {
+                    <span class="mgr-chip">@item</span>
+                }
+            }
+            else
+            {
+                <span class="text-muted">No consumables assigned.</span>
+            }
+        </div>
+    </div>
+
+    <div class="mb-4">
+        <div class="mgr-section-title">Assigned Technicians</div>
+        <div class="mgr-chip-list">
+            @if (testType.Technicians.Any())
+            {
+                foreach (var tech in testType.Technicians)
+                {
+                    <span class="mgr-chip">@tech</span>
+                }
+            }
+            else
+            {
+                <span class="text-muted">No technicians assigned.</span>
+            }
+        </div>
+    </div>
+
+    <div class="mgr-actions">
+        <a asp-action="TestTypes" class="btn btn-outline-secondary">Back</a>
+        <a asp-action="EditTestType" asp-route-id="@testType.Id" class="btn mgr-btn-primary">Edit</a>
+    </div>
+</div>

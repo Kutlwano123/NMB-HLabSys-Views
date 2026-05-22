@@ -1,0 +1,101 @@
+﻿@{
+    ViewData["Title"] = "Doctor Details";
+    Layout = "~/Views/Shared/_ManagersLayout.cshtml";
+    var doctor = new { Id = 1, Name = "Dr. Alice Smith", Specialty = "Cardiology", Contact = "alice.smith@hospital.com" };
+}
+<style>
+    .mgr-detail-card {
+        background: #fff;
+        border: 1px solid var(--mgr-border, #ddd9d2);
+        border-radius: 12px;
+        padding: 24px;
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    .mgr-detail-title {
+        font-family: 'DM Serif Display', serif;
+        font-size: 22px;
+        color: var(--mgr-text-dark, #1e2420);
+        margin-bottom: 6px;
+    }
+
+    .mgr-detail-subtitle {
+        font-size: 13px;
+        color: var(--mgr-text-mid, #4a5248);
+        margin-bottom: 20px;
+    }
+
+    .mgr-detail-list {
+        list-style: none;
+        padding: 0;
+        margin: 0 0 20px 0;
+        display: grid;
+        gap: 10px;
+    }
+
+    .mgr-detail-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 12px;
+        background: var(--mgr-bg, #f4f2ef);
+        border-radius: 8px;
+        font-size: 13px;
+        color: var(--mgr-text-mid, #4a5248);
+    }
+
+    .mgr-chip {
+        background: var(--mgr-accent-pale, #f0e8e8);
+        color: var(--mgr-accent, #7a3030);
+        font-weight: 600;
+        font-size: 11px;
+        padding: 4px 10px;
+        border-radius: 999px;
+    }
+
+    .mgr-section-title {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--mgr-text-dark, #1e2420);
+        margin-bottom: 8px;
+    }
+
+    .mgr-chip-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .mgr-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+    }
+
+    .mgr-btn-primary {
+        background: var(--mgr-accent, #7a3030);
+        border-color: var(--mgr-accent, #7a3030);
+        color: #fff;
+    }
+
+        .mgr-btn-primary:hover {
+            background: var(--mgr-accent-2, #9a4040);
+            border-color: var(--mgr-accent-2, #9a4040);
+            color: #fff;
+        }
+</style>
+
+<div class="mgr-detail-card">
+    <h5 class="mgr-detail-title">@doctor.Name</h5>
+    <p class="mgr-detail-subtitle">Review doctor information, contact details, and associated tests.</p>
+
+    <ul class="mgr-detail-list">
+        <li class="mgr-detail-item"><span>Specialty</span><strong>@doctor.Specialty</strong></li>
+        <li class="mgr-detail-item"><span>Email</span><strong>@doctor.Contact</strong></li>
+    </ul>
+
+    <div class="mgr-actions">
+        <a asp-action="Doctors" class="btn btn-outline-secondary">Back</a>
+        <a asp-action="EditDoctor" asp-route-id="@doctor.Id" class="btn mgr-btn-primary">Edit</a>
+    </div>
+</div>

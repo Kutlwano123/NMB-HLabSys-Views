@@ -1,0 +1,23 @@
+﻿@{
+    ViewData["Title"] = "Sample Type Details";
+    Layout = "~/Views/Shared/_ManagersLayout.cshtml";
+    var sampleType = new { Id = 1, Name = "Blood Sample", Description = "Used for blood tests and analysis." };
+}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow-sm">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">Sample Type Details</h5>
+            </div>
+            <div class="card-body">
+                <dl class="row">
+                    <dt class="col-sm-4">Sample Type Name</dt>
+                    <dd class="col-sm-8">@sampleType.Name</dd>
+                    <dt class="col-sm-4">Description</dt>
+                    <dd class="col-sm-8">@sampleType.Description</dd>
+                </dl>
+                <a asp-controller="LabManager" asp-action="SampleTypes" class="btn btn-secondary mt-3">Back to List</a>
+            </div>
+        </div>
+    </div>
+ </div>

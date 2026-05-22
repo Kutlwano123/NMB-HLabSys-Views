@@ -268,8 +268,8 @@
             </a>
 
             <div class="nav-section-label">Test Management</div>
-            <a asp-controller="LabManager" asp-action="Index"
-               class="mgr-nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "active" : "")">
+            <a asp-controller="LabManager" asp-action="TestCategories"
+               class="mgr-nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "TestCategories" ? "active" : "")">
                 <i class="bi bi-tags"></i> Test Categories
             </a>
             <a asp-controller="LabManager" asp-action="TestTypes"

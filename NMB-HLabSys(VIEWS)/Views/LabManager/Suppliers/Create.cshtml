@@ -1,0 +1,36 @@
+﻿@{
+    ViewData["Title"] = "Add New Supplier";
+    Layout = "~/Views/Shared/_ManagersLayout.cshtml";
+    var supplier = new { Name = "", Contact = "", Email = "" };
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-header bg-warning">
+                <h5 class="mb-0">Add New Supplier</h5>
+            </div>
+            <div class="card-body">
+                <form asp-controller="LabManager" asp-action="CreateSupplier" method="post">
+                    @Html.AntiForgeryToken()
+                    <div class="mb-3">
+                        <label class="form-label">Supplier Name</label>
+                        <input name="Name" class="form-control" placeholder="Enter supplier name" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Contact Person</label>
+                        <input name="Contact" class="form-control" placeholder="Enter contact person" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <input name="Email" type="email" class="form-control" placeholder="Enter email address" />
+                    </div>
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-warning">Add Supplier</button>
+                        <a asp-controller="LabManager" asp-action="Suppliers" class="btn btn-outline-secondary">Back</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

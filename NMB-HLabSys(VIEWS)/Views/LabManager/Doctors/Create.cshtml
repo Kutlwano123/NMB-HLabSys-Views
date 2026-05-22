@@ -1,0 +1,42 @@
+﻿@{
+    ViewData["Title"] = "Create Doctor";
+    Layout = "~/Views/Shared/_ManagersLayout.cshtml";
+    var specialties = new[] { "Cardiology", "Neurology", "Pediatrics", "Oncology", "Orthopedics" };
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-header bg-warning">
+                <h5 class="mb-0">Add New Doctor</h5>
+            </div>
+            <div class="card-body">
+                <form asp-controller="LabManager" asp-action="CreateDoctor" method="post">
+                    @Html.AntiForgeryToken()
+                    <div class="mb-3">
+                        <label class="form-label">Doctor Name</label>
+                        <input name="Name" class="form-control" placeholder="Enter doctor name" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Specialty</label>
+                        <select name="Specialty" class="form-control">
+                            <option value="">Select Specialty</option>
+                            @foreach (var specialty in specialties)
+                            {
+                                <option value="@specialty">@specialty</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <input name="Email" type="email" class="form-control" placeholder="Enter email address" />
+                    </div>
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-warning">Add Doctor</button>
+                        <a asp-controller="LabManager" asp-action="Doctors" class="btn btn-outline-secondary">Back</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

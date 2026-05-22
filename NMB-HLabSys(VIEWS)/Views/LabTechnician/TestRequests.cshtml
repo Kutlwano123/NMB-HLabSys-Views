@@ -1,0 +1,39 @@
+@using NMB_HLabSys_VIEWS.Data
+@model IEnumerable<StubTestRequest>
+@{
+    ViewData["Title"] = "Test Requests";
+    Layout = "~/Views/Shared/_TechnicianLayout.cshtml";
+    ViewData["ActivePage"] = "TestRequests";
+}
+
+<h2>Test Requests</h2>
+
+<table class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Request No</th>
+            <th>Patient</th>
+            <th>Test</th>
+            <th>Urgency</th>
+            <th>Requested At</th>
+            <th>Due</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var r in Model)
+        {
+            <tr class="@(r.IsOverdue ? "table-warning" : "")">
+                <td>@r.TestRequestId</td>
+                <td>@r.RequestNumber</td>
+                <td>@r.PatientName</td>
+                <td>@r.TestType?.TestName</td>
+                <td><span class="badge @(r.Urgency == "STAT" ? "bg-danger" : r.Urgency == "Urgent" ? "bg-warning text-dark" : "bg-secondary")">@r.Urgency</span></td>
+                <td>@r.RequestDate.ToString("g")</td>
+                <td>@r.DueDate?.ToString("d") @(r.IsOverdue ? "⚠" : "")</td>
+                <td>@r.RequestStatus?.StatusName</td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,44 @@
+﻿@{
+    ViewData["Title"] = "Edit Doctor"; 
+    Layout = "~/Views/Shared/_ManagersLayout.cshtml";
+    var doctor = new { Id = 1, Name = "Dr. Alice Smith", Specialty = "Cardiology", Contact = "alice.smith@hospital.com" };
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+
+        <div class="card shadow-sm">
+            <div class="card-header bg-warning">
+                <h5 class="mb-0">Edit Doctor</h5>
+            </div>
+            <div class="card-body">
+                <form asp-controller="LabManager" asp-action="EditDoctor" method="post">
+                    @Html.AntiForgeryToken()
+
+                    <input type="hidden" name="DoctorID" value="@doctor.Id" />
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Doctor Name</label>
+                        <input name="DoctorName" class="form-control" value="@doctor.Name" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Specialty</label>
+                        <input name="Specialty" class="form-control" value="@doctor.Specialty" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Email</label>
+                        <input name="Email" type="email" class="form-control" value="@doctor.Contact" />
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <a asp-controller="LabManager" asp-action="Doctors" class="btn btn-secondary">Cancel</a>
+                        <button type="submit" class="btn btn-warning">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+</div>

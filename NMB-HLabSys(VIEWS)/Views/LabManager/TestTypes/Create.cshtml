@@ -1,0 +1,175 @@
+﻿@{
+    ViewData["Title"] = "Add Test Type";
+    Layout = "~/Views/Shared/_ManagersLayout.cshtml";
+
+    var categories = new[]
+    {
+        new { Id = 1, Name = "Hematology" },
+        new { Id = 2, Name = "Chemistry" },
+        new { Id = 3, Name = "Microbiology" }
+    };
+
+    var sampleTypes = new[]
+    {
+        new { Id = 1, Name = "EDTA Tube" },
+        new { Id = 2, Name = "Citrate Tube" },
+        new { Id = 3, Name = "Serum" },
+        new { Id = 4, Name = "Urine" }
+    };
+
+    var consumables = new[]
+    {
+        new { Id = 1, Name = "Syringes 5ml" },
+        new { Id = 2, Name = "Latex Gloves" },
+        new { Id = 3, Name = "Test Tubes" }
+    };
+
+    var technicians = new[]
+    {
+        new { Id = 1, Name = "David Miller" },
+        new { Id = 2, Name = "Emma Wilson" },
+        new { Id = 3, Name = "James Taylor" }
+    };
+}
+
+<style>
+    .mgr-form-wrap {
+        max-width: 760px;
+        margin: 0 auto;
+    }
+
+    .mgr-form-card {
+        background: #fff;
+        border: 1px solid var(--mgr-border, #ddd9d2);
+        border-radius: 12px;
+        padding: 24px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    .mgr-form-title {
+        font-family: 'DM Serif Display', serif;
+        font-size: 20px;
+        color: var(--mgr-text-dark, #1e2420);
+        margin-bottom: 6px;
+    }
+
+    .mgr-form-subtitle {
+        font-size: 13px;
+        color: var(--mgr-text-mid, #4a5248);
+        margin-bottom: 20px;
+    }
+
+    .mgr-form-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+    }
+
+    .mgr-btn-primary {
+        background: var(--mgr-accent, #7a3030);
+        border-color: var(--mgr-accent, #7a3030);
+        color: #fff;
+    }
+
+        .mgr-btn-primary:hover {
+            background: var(--mgr-accent-2, #9a4040);
+            border-color: var(--mgr-accent-2, #9a4040);
+            color: #fff;
+        }
+</style>
+
+<div class="mgr-form-wrap">
+    <div class="mgr-form-card">
+        <h5 class="mgr-form-title">Add Test Type</h5>
+        <p class="mgr-form-subtitle">Define test requirements, ranges, consumables, and assigned technicians.</p>
+
+        <form asp-action="CreateTestType" method="post">
+            @Html.AntiForgeryToken()
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-semibold">Test Name</label>
+                    <input name="TestName" class="form-control" placeholder="e.g. Full Blood Count" />
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-semibold">Test Category</label>
+                    <select name="TestCategoryID" class="form-select">
+                        <option value="">Select a category</option>
+                        @foreach (var c in categories)
+                        {
+                            <option value="@c.Id">@c.Name</option>
+                        }
+                    </select>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-semibold">Sample Type</label>
+                    <select name="SampleTypeID" class="form-select">
+                        <option value="">Select a sample type</option>
+                        @foreach (var s in sampleTypes)
+                        {
+                            <option value="@s.Id">@s.Name</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-semibold">Units of Measurement</label>
+                    <input name="UnitOfMeasurement" class="form-control" placeholder="e.g. g/dL, x10³/µL" />
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label class="form-label fw-semibold">Normal Range (Min)</label>
+                    <input name="MinNormalRange" class="form-control" placeholder="e.g. 4.0" />
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label fw-semibold">Normal Range (Max)</label>
+                    <input name="MaxNormalRange" class="form-control" placeholder="e.g. 11.0" />
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label fw-semibold">Turnaround (minutes)</label>
+                    <input name="TurnAroundTimeMinutes" class="form-control" type="number" min="0" placeholder="e.g. 90" />
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-semibold text-dark">Consumables Used</label>
+                <div class="d-flex flex-wrap gap-2">
+                    @foreach (var consumable in consumables)
+                    {
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox"
+                                   name="SelectedConsumableIds" value="@consumable.Id"
+                                   id="consumable_@consumable.Id" />
+                            <label class="form-check-label" for="consumable_@consumable.Id">@consumable.Name</label>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Assigned Technicians</label>
+                <div class="d-flex flex-wrap gap-2">
+                    @foreach (var tech in technicians)
+                    {
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox"
+                                   name="SelectedTechnicianIds" value="@tech.Id"
+                                   id="technician_@tech.Id" />
+                            <label class="form-check-label" for="technician_@tech.Id">@tech.Name</label>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <div class="mgr-form-actions">
+                <a asp-action="TestTypes" class="btn btn-outline-secondary">Cancel</a>
+                <button type="submit" class="btn mgr-btn-primary">Save Test Type</button>
+            </div>
+        </form>
+    </div>
+</div>
+
