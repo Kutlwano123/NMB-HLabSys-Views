@@ -1,0 +1,86 @@
+﻿@{
+    ViewData["Title"] = "Reorder Alerts";
+    Layout = "~/Views/Shared/_ManagersLayout.cshtml";
+    var alerts = new[] {
+        new { Id = 1, Consumable = "Blood Collection Tubes", Supplier = "MedTech Inc.", CurrentStock = 15, ReorderLevel = 20 },
+        new { Id = 2, Consumable = "Gloves (Box of 100)", Supplier = "HealthCare Supplies", CurrentStock = 8, ReorderLevel = 10 },
+        new { Id = 3, Consumable = "Microscope Slides", Supplier = "Lab Essentials", CurrentStock = 50, ReorderLevel = 30 }
+    };
+}
+<style>
+    .mgr-page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+
+    .mgr-page-title {
+        font-family: 'DM Serif Display', serif;
+        font-size: 24px;
+        color: var(--mgr-text-dark, #1e2420);
+        margin: 0;
+    }
+
+    .mgr-table {
+        background: #fff;
+        border: 1px solid var(--mgr-border, #ddd9d2);
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+        .mgr-table thead {
+            background: var(--mgr-accent-pale, #f0e8e8);
+            color: var(--mgr-accent, #7a3030);
+        }
+
+        .mgr-table th,
+        .mgr-table td {
+            vertical-align: middle;
+            border-color: var(--mgr-border, #ddd9d2);
+        }
+
+    .mgr-chip {
+        background: var(--mgr-accent-pale, #f0e8e8);
+        color: var(--mgr-accent, #7a3030);
+        font-weight: 600;
+        font-size: 11px;
+        padding: 4px 10px;
+        border-radius: 999px;
+    }
+</style>
+
+<div class="mgr-page-header">
+    <h2 class="mgr-page-title">Reorder Alerts</h2>
+    <a asp-action="Orders" class="btn btn-outline-secondary">Back to Orders</a>
+</div>
+
+@if (!alerts.Any())
+{
+    <div class="alert alert-info">No consumables are near or below reorder level.</div>
+}
+else
+{
+    <table class="table table-hover mgr-table">
+        <thead>
+            <tr>
+                <th>Consumable</th>
+                <th>Supplier</th>
+                <th>Reorder Level</th>
+                <th>Quantity on Hand</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var consumable in alerts)
+            {
+                <tr>
+                    <td>@consumable.Consumable</td>
+                    <td>@consumable.Supplier</td>
+                    <td>@consumable.ReorderLevel</td>
+                    <td><span class="mgr-chip">@consumable.CurrentStock</span></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+

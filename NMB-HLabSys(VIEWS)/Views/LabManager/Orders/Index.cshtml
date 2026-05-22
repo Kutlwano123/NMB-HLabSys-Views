@@ -1,14 +1,12 @@
 ﻿@{
-    ViewData["Title"] = "Lab Technicians";
+    ViewData["Title"] = "Orders";
     Layout = "~/Views/Shared/_ManagersLayout.cshtml";
-    var labTechnicians = new[]
-    {
-        new { Id = 1, Name = "John Doe", Specialty = "Microbiology", Contact = "john.doe@example.com" },
-        new { Id = 2, Name = "Jane Smith", Specialty = "Haematology", Contact = "jane.smith@example.com" },
-        new { Id = 3, Name = "Emily Davis", Specialty = "Biochemistry", Contact = "emily.davis@example.com" }
+    var orders = new[] {
+        new { Id = 123, Consumable = "Reanalysis Kits", Supplier = "Lab Supplies Co.", Status = "In Progress", OrderedDate = DateTime.Now.AddDays(-1).ToString("MMMM dd, yyyy"), DueDate = DateTime.Now.AddDays(2).ToString("MMMM dd, yyyy") },
+        new { Id = 124, Consumable = "DNA Extraction Kits", Supplier = "Medical Equipment Inc.", Status = "Completed", OrderedDate = DateTime.Now.AddDays(-5).ToString("MMMM dd, yyyy"), DueDate = DateTime.Now.AddDays(-2).ToString("MMMM dd, yyyy") },
+        new { Id = 125, Consumable = "PCR Reagents", Supplier = "Diagnostic Tools Corp.", Status = "Pending", OrderedDate = DateTime.Now.ToString("MMMM dd, yyyy"), DueDate = DateTime.Now.AddDays(3).ToString("MMMM dd, yyyy") }
     };
 }
-
 <style>
     .mgr-page-header {
         display: flex;
@@ -78,40 +76,40 @@
 </style>
 
 <div class="mgr-page-header">
-    <h2 class="mgr-page-title">Doctors</h2>
-    <a asp-action="CreateDoctor" class="btn mgr-btn-primary">
-        <i class="bi bi-plus-circle"></i> Add Doctor
+    <h2 class="mgr-page-title">Orders</h2>
+    <a asp-action="CreateOrder" class="btn mgr-btn-primary">
+        <i class="bi bi-plus-circle"></i> Create Order
     </a>
 </div>
 
-@if (!labTechnicians.Any())
+@if (!orders.Any())
 {
-    <div class="alert alert-info">No lab technicians found. Add one to get started.</div>
+    <div class="alert alert-info">No orders found. Create one to get started.</div>
 }
 else
 {
     <table class="table table-hover mgr-table">
         <thead>
             <tr>
-                <th>Lab Technician Name</th>
-                <th>Specialty</th>
-                <th>Email</th>
+                <th>Order ID</th>
+                <th>Consumable</th>
+                <th>Supplier</th>
                 <th class="text-center">Actions</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var labTechnician in labTechnicians)
+            @foreach (var order in orders)
             {
                 <tr>
-                    <td>@labTechnician.Name</td>
-                    <td>@labTechnician.Specialty</td>
-                    <td>@labTechnician.Contact</td>
+                    <td>@order.Id</td>
+                    <td>@order.Consumable</td>
+                    <td>@order.Supplier</td>
                     <td class="text-center">
-                        <a asp-controller="LabManager" asp-action="LabTechnicianDetails" asp-route-id="@labTechnician.Id"
+                        <a asp-action="OrderDetails" asp-route-id="@order.Id"
                            class="btn btn-sm btn-outline-primary mgr-action-btn">Details</a>
-                        <a asp-controller="LabManager" asp-action="EditLabTechnician" asp-route-id="@labTechnician.Id"
+                        <a asp-action="EditOrder" asp-route-id="@order.Id"
                            class="btn btn-sm btn-outline-secondary mgr-action-btn">Edit</a>
-                        <a asp-controller="LabManager" asp-action="DeleteLabTechnician" asp-route-id="@labTechnician.Id"
+                        <a asp-action="DeleteOrder" asp-route-id="@order.Id"
                            class="btn btn-sm btn-outline-danger mgr-action-btn">Delete</a>
                     </td>
                 </tr>
@@ -119,3 +117,4 @@ else
         </tbody>
     </table>
 }
+

@@ -1,11 +1,12 @@
 ﻿@{
-    ViewData["Title"] = "Lab Technicians";
+    ViewData["Title"] = "Test Categories";
     Layout = "~/Views/Shared/_ManagersLayout.cshtml";
-    var labTechnicians = new[]
+
+    var categories = new[]
     {
-        new { Id = 1, Name = "John Doe", Specialty = "Microbiology", Contact = "john.doe@example.com" },
-        new { Id = 2, Name = "Jane Smith", Specialty = "Haematology", Contact = "jane.smith@example.com" },
-        new { Id = 3, Name = "Emily Davis", Specialty = "Biochemistry", Contact = "emily.davis@example.com" }
+        new { Id = 1, Name = "Hematology", Description = "Blood and cellular analysis", TestCount = 6 },
+        new { Id = 2, Name = "Chemistry", Description = "Metabolic and enzyme panels", TestCount = 8 },
+        new { Id = 3, Name = "Microbiology", Description = "Culture and sensitivity testing", TestCount = 4 }
     };
 }
 
@@ -78,40 +79,44 @@
 </style>
 
 <div class="mgr-page-header">
-    <h2 class="mgr-page-title">Doctors</h2>
-    <a asp-action="CreateDoctor" class="btn mgr-btn-primary">
-        <i class="bi bi-plus-circle"></i> Add Doctor
+    <h2 class="mgr-page-title">Test Categories</h2>
+    <a asp-controller="LabManager" asp-action="CreateTestCategory" class="btn mgr-btn-primary">
+        <i class="bi bi-plus-circle"></i> Add Category
     </a>
 </div>
 
-@if (!labTechnicians.Any())
+@if (!categories.Any())
 {
-    <div class="alert alert-info">No lab technicians found. Add one to get started.</div>
+    <div class="alert alert-info">No test categories found. Add one to get started.</div>
 }
 else
 {
     <table class="table table-hover mgr-table">
         <thead>
             <tr>
-                <th>Lab Technician Name</th>
-                <th>Specialty</th>
-                <th>Email</th>
+                <th>Category Name</th>
+                <th>Description</th>
+                <th>Test Types</th>
                 <th class="text-center">Actions</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var labTechnician in labTechnicians)
+            @foreach (var category in categories)
             {
                 <tr>
-                    <td>@labTechnician.Name</td>
-                    <td>@labTechnician.Specialty</td>
-                    <td>@labTechnician.Contact</td>
+                    <td>@category.Name</td>
+                    <td>@category.Description</td>
+                    <td>
+                        <span class="badge mgr-badge">
+                            @category.TestCount test(s)
+                        </span>
+                    </td>
                     <td class="text-center">
-                        <a asp-controller="LabManager" asp-action="LabTechnicianDetails" asp-route-id="@labTechnician.Id"
+                        <a asp-controller="LabManager" asp-action="TestCategoryDetails" asp-route-id="@category.Id"
                            class="btn btn-sm btn-outline-primary mgr-action-btn">Details</a>
-                        <a asp-controller="LabManager" asp-action="EditLabTechnician" asp-route-id="@labTechnician.Id"
+                        <a asp-controller="LabManager" asp-action="EditTestCategory" asp-route-id="@category.Id"
                            class="btn btn-sm btn-outline-secondary mgr-action-btn">Edit</a>
-                        <a asp-controller="LabManager" asp-action="DeleteLabTechnician" asp-route-id="@labTechnician.Id"
+                        <a asp-controller="LabManager" asp-action="DeleteTestCategory" asp-route-id="@category.Id"
                            class="btn btn-sm btn-outline-danger mgr-action-btn">Delete</a>
                     </td>
                 </tr>

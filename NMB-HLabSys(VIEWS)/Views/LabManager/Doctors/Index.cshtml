@@ -1,11 +1,11 @@
 ﻿@{
-    ViewData["Title"] = "Lab Technicians";
+    ViewData["Title"] = "Doctors";
     Layout = "~/Views/Shared/_ManagersLayout.cshtml";
-    var labTechnicians = new[]
+    var doctors = new[]
     {
-        new { Id = 1, Name = "John Doe", Specialty = "Microbiology", Contact = "john.doe@example.com" },
-        new { Id = 2, Name = "Jane Smith", Specialty = "Haematology", Contact = "jane.smith@example.com" },
-        new { Id = 3, Name = "Emily Davis", Specialty = "Biochemistry", Contact = "emily.davis@example.com" }
+        new { Id = 1, Name = "Dr. Alice Smith", Specialty = "Cardiology", Contact = "alice.smith@hospital.com" },
+        new { Id = 2, Name = "Dr. Bob Johnson", Specialty = "Neurology", Contact = "bob.johnson@hospital.com" },
+        new { Id = 3, Name = "Dr. Carol Lee", Specialty = "Pediatrics", Contact = "carol.lee@hospital.com" }
     };
 }
 
@@ -84,34 +84,34 @@
     </a>
 </div>
 
-@if (!labTechnicians.Any())
+@if (!doctors.Any())
 {
-    <div class="alert alert-info">No lab technicians found. Add one to get started.</div>
+    <div class="alert alert-info">No doctors found. Add one to get started.</div>
 }
 else
 {
     <table class="table table-hover mgr-table">
         <thead>
             <tr>
-                <th>Lab Technician Name</th>
+                <th>Doctor Name</th>
                 <th>Specialty</th>
                 <th>Email</th>
                 <th class="text-center">Actions</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var labTechnician in labTechnicians)
+            @foreach (var doctor in doctors)
             {
                 <tr>
-                    <td>@labTechnician.Name</td>
-                    <td>@labTechnician.Specialty</td>
-                    <td>@labTechnician.Contact</td>
+                    <td>@doctor.Name</td>
+                    <td>@doctor.Specialty</td>
+                    <td>@doctor.Contact</td>
                     <td class="text-center">
-                        <a asp-controller="LabManager" asp-action="LabTechnicianDetails" asp-route-id="@labTechnician.Id"
+                        <a asp-controller="LabManager" asp-action="DoctorDetails" asp-route-id="@doctor.Id"
                            class="btn btn-sm btn-outline-primary mgr-action-btn">Details</a>
-                        <a asp-controller="LabManager" asp-action="EditLabTechnician" asp-route-id="@labTechnician.Id"
+                        <a asp-controller="LabManager" asp-action="EditDoctor" asp-route-id="@doctor.Id"
                            class="btn btn-sm btn-outline-secondary mgr-action-btn">Edit</a>
-                        <a asp-controller="LabManager" asp-action="DeleteLabTechnician" asp-route-id="@labTechnician.Id"
+                        <a asp-controller="LabManager" asp-action="DeleteDoctor" asp-route-id="@doctor.Id"
                            class="btn btn-sm btn-outline-danger mgr-action-btn">Delete</a>
                     </td>
                 </tr>

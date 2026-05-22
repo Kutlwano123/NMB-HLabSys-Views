@@ -1,0 +1,43 @@
+﻿@{
+    ViewData["Title"] = "Delete Doctor";
+    Layout = "~/Views/Shared/_ManagersLayout.cshtml";
+    var doctor = new { Id = 1, Name = "Dr. Alice Smith", Specialty = "Cardiology", Contact = "alice.smith@hospital.com" };
+}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+
+        <div class="card shadow-sm border-danger">
+            <div class="card-header bg-danger text-white">
+                <h5 class="mb-0">Confirm Deletion</h5>
+            </div>
+            <div class="card-body">
+                <p>Are you sure you want to delete the following doctor?</p>
+
+                <dl class="row">
+                    <dt class="col-sm-4">Doctor Name</dt>
+                    <dd class="col-sm-8">@doctor.Name</dd>
+
+                    <dt class="col-sm-4">Specialty</dt>
+                    <dd class="col-sm-8">@doctor.Specialty</dd>
+                </dl>
+
+                <div class="alert alert-warning">
+                    <i class="bi bi-exclamation-triangle"></i>
+                    This action cannot be undone.
+                </div>
+
+                <form asp-action="DeleteDoctor" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="DoctorID" value="@doctor.Id" />
+
+                    <div class="d-flex justify-content-between">
+                        <a asp-controller="LabManager" asp-action="Suppliers" class="btn btn-secondary">Cancel</a>
+                        <button type="submit" class="btn btn-danger">Yes, Delete</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+
+    </div>
+</div>

@@ -1,0 +1,77 @@
+﻿@{
+    ViewData["Title"] = "Add Test Category";
+    Layout = "~/Views/Shared/_ManagersLayout.cshtml";
+    var category = new { Name = "", Description = "" };
+}
+<style>
+    .mgr-form-wrap {
+        max-width: 720px;
+        margin: 0 auto;
+    }
+
+    .mgr-form-card {
+        background: #fff;
+        border: 1px solid var(--mgr-border, #ddd9d2);
+        border-radius: 12px;
+        padding: 24px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    .mgr-form-title {
+        font-family: 'DM Serif Display', serif;
+        font-size: 20px;
+        color: var(--mgr-text-dark, #1e2420);
+        margin-bottom: 6px;
+    }
+
+    .mgr-form-subtitle {
+        font-size: 13px;
+        color: var(--mgr-text-mid, #4a5248);
+        margin-bottom: 20px;
+    }
+
+    .mgr-form-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+    }
+
+    .mgr-btn-primary {
+        background: var(--mgr-accent, #7a3030);
+        border-color: var(--mgr-accent, #7a3030);
+        color: #fff;
+    }
+
+        .mgr-btn-primary:hover {
+            background: var(--mgr-accent-2, #9a4040);
+            border-color: var(--mgr-accent-2, #9a4040);
+            color: #fff;
+        }
+</style>
+
+<div class="mgr-form-wrap">
+    <div class="mgr-form-card">
+        <h5 class="mgr-form-title">Add Test Category</h5>
+        <p class="mgr-form-subtitle">Create a new test category for your laboratory.</p>
+
+        <form asp-controller="LabManager" asp-action="CreateTestCategory" method="post">
+            @Html.AntiForgeryToken()
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-semibold">Category Name</label>
+                    <input name="CategoryName" class="form-control" placeholder="e.g. Blood Tests" />
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-semibold">Description</label>
+                    <textarea name="Description" class="form-control" placeholder="Enter a description for the test category"></textarea>
+                </div>
+            </div>
+
+            <div class="mgr-form-actions">
+                <a asp-controller="LabManager" asp-action="TestCategories" class="btn btn-outline-secondary">Cancel</a>
+                <button type="submit" class="btn mgr-btn-primary">Save Test Category</button>
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,36 @@
+﻿@{
+    ViewData["Title"] = "Order Details";
+    Layout = "~/Views/Shared/_ManagersLayout.cshtml";
+    var order = new
+    {
+        Id = 123,
+        Consumable = "Reanalysis Kits",
+        Status = "In Progress",
+        OrderedDate = DateTime.Now.AddDays(-1).ToString("MMMM dd, yyyy"),
+        DueDate = DateTime.Now.AddDays(2).ToString("MMMM dd, yyyy"),
+        TechnicianName = "Jane Smith"
+    };
+}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Order Details - #@order.Id</h5>
+            </div>
+            <div class="card-body">
+                <dl class="row">
+                    <dt class="col-sm-4">Consumable:</dt>
+                    <dd class="col-sm-8">@order.Consumable</dd>
+                    <dt class="col-sm-4">Status:</dt>
+                    <dd class="col-sm-8">@order.Status</dd>
+                    <dt class="col-sm-4">Ordered Date:</dt>
+                    <dd class="col-sm-8">@order.OrderedDate</dd>
+                    <dt class="col-sm-4">Due Date:</dt>
+                    <dd class="col-sm-8">@order.DueDate</dd>
+                    <dt class="col-sm-4">Technician:</dt>
+                    <dd class="col-sm-8">@order.TechnicianName</dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+</div>
