@@ -1,0 +1,159 @@
+@model NMB_HLabSys_VIEWS.ViewModels.RecaptureFormViewModel
+@{
+    ViewData["Title"] = "Re-capture Test Result";
+    Layout = "~/Views/Shared/_TechnicianLayout.cshtml";
+    ViewData["ActivePage"] = "ReviewTests";
+}
+
+<div class="row">
+    <div class="col-md-4 mb-4">
+        <div class="card border-warning">
+            <div class="card-header bg-warning text-dark fw-bold">
+                <i class="bi bi-exclamation-triangle"></i> Rejection Details
+            </div>
+            <div class="card-body">
+                <p class="mb-2">
+                    <strong>Rejected By:</strong> @Model.RejectedBy
+                </p>
+                <p class="mb-3">
+                    <strong>Reason:</strong><br />
+                    <em>@Model.RejectionNotes</em>
+                </p>
+
+                <hr />
+
+                <h6 class="mb-2"><strong>Previous Result Data</strong></h6>
+                <p class="bg-light p-2 rounded">
+                    <code>@Model.PreviousResultData</code>
+                </p>
+
+                <h6 class="mb-2"><strong>Previous Technician Notes</strong></h6>
+                <p class="bg-light p-2 rounded text-muted">
+                    @(string.IsNullOrWhiteSpace(Model.PreviousTechnicianNotes) ? "(No notes)" : Model.PreviousTechnicianNotes)
+                </p>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header bg-info text-white fw-bold">
+                <i class="bi bi-person-bounding-box"></i> Clinical Context
+            </div>
+            <div class="card-body">
+                <h6><strong>Patient:</strong> @Model.PatientName</h6>
+
+                <p class="text-danger mb-1"><strong>Allergies:</strong></p>
+                <ul class="small">
+                    @if (Model.Allergies.Any())
+                    {
+                        foreach (var a in Model.Allergies) { <li>@a</li> }
+                    }
+                    else { <li class="text-muted">None recorded</li> }
+                </ul>
+
+                <p class="text-info mb-1"><strong>Active Medications:</strong></p>
+                <ul class="small">
+                    @if (Model.CurrentMedications.Any())
+                    {
+                        foreach (var m in Model.CurrentMedications) { <li>@m</li> }
+                    }
+                    else { <li class="text-muted">None recorded</li> }
+                </ul>
+
+                <p class="mb-1"><strong>Medical Conditions:</strong></p>
+                <ul class="small">
+                    @if (Model.MedicalConditions.Any())
+                    {
+                        foreach (var c in Model.MedicalConditions) { <li>@c</li> }
+                    }
+                    else { <li class="text-muted">None recorded</li> }
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-success text-white fw-bold">
+                <i class="bi bi-arrow-repeat"></i> Re-Capture Form
+            </div>
+            <div class="card-body">
+                <form method="post" asp-action="SubmitRecapture" asp-controller="LabTechnician">
+                    <input type="hidden" asp-for="TestResultId" />
+                    <input type="hidden" asp-for="TestRequestId" />
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Request Number</label>
+                            <input type="text" class="form-control" value="@Model.RequestNumber" disabled />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Patient Name</label>
+                            <input type="text" class="form-control" value="@Model.PatientName" disabled />
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Test Name</label>
+                            <input type="text" class="form-control" value="@Model.TestName" disabled />
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label fw-bold">Unit of Measurement</label>
+                            <input type="text" class="form-control" value="@Model.UnitOfMeasurement" disabled />
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label fw-bold">Normal Range</label>
+                            <input type="text" class="form-control" value="@Model.MinNormalRange - @Model.MaxNormalRange" disabled />
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Clinical Notes from Request</label>
+                        <textarea class="form-control" rows="2" disabled>@Model.ClinicalNotes</textarea>
+                    </div>
+
+                    <hr />
+
+                    <h5 class="mb-3"><i class="bi bi-pencil-square"></i> Enter New Test Result Data</h5>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">
+                            <span class="text-danger">*</span> New Result Value
+                        </label>
+                        <input type="text" class="form-control" 
+                               asp-for="NewResultData" placeholder="e.g., 7.2" required />
+                        <small class="form-text text-muted d-block mt-1">
+                            Normal range: @Model.MinNormalRange - @Model.MaxNormalRange @Model.UnitOfMeasurement
+                        </small>
+                        <span asp-validation-for="NewResultData" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Technician Notes (Optional)</label>
+                        <textarea class="form-control" rows="3" asp-for="NewTechnicianNotes" placeholder="Document your observations, sample condition, technique notes, etc."></textarea>
+                        <small class="form-text text-muted">
+                            Include any relevant details about the re-draw (e.g., new sample obtained, technique improved, etc.)
+                        </small>
+                    </div>
+
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i>
+                        <strong>Reminder:</strong> Ensure you have obtained a new sample and followed proper collection procedures 
+                        to avoid the issue that caused the previous rejection.
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-success">
+                            <i class="bi bi-check-circle"></i> Submit Re-captured Result
+                        </button>
+                        <a href="/LabTechnician/RejectedForRecapture" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

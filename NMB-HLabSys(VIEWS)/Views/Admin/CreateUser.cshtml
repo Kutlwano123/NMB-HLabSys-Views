@@ -1,0 +1,223 @@
+﻿@{
+    ViewData["Title"] = "Create User";
+    ViewData["ActivePage"] = "Users";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+@section Styles {
+    <style>
+
+        /* =========================
+                   HEADER (PATIENT STYLE)
+                ========================= */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 22px;
+        }
+
+            .page-header h2 {
+                margin: 0;
+                font-size: 22px;
+            }
+
+            .page-header p {
+                font-size: 12px;
+                color: var(--text-light);
+                margin-top: 4px;
+            }
+
+        /* =========================
+                   FORM PANEL
+                ========================= */
+        .panel {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            max-width: 650px;
+        }
+
+        .field {
+            margin-bottom: 16px;
+        }
+
+            .field label {
+                font-size: 12px;
+                font-weight: 600;
+                display: block;
+                margin-bottom: 6px;
+            }
+
+            .field input,
+            .field select {
+                width: 100%;
+                padding: 10px 12px;
+                border: 1px solid var(--border);
+                border-radius: 8px;
+                font-size: 13px;
+            }
+
+        /* =========================
+                   MODALS
+                ========================= */
+        .modal-bg {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .modal {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            width: 340px;
+            text-align: center;
+        }
+
+    </style>
+}
+
+<!-- =========================
+HEADER
+========================= -->
+<div class="page-header">
+
+    <div>
+        <h2>Create User</h2>
+        <p>Add a system user (prototype UI only)</p>
+    </div>
+
+    <a href="~/Admin/Users"
+       style="padding:8px 14px;border-radius:8px;border:1px solid var(--border);
+        text-decoration:none;font-size:13px;color:var(--text-dark);">
+        <i class="bi bi-arrow-left"></i> Back
+    </a>
+
+</div>
+
+<!-- =========================
+FORM (STATIC PROTOTYPE)
+========================= -->
+<div class="panel">
+
+    <div class="field">
+        <label>Username</label>
+        <input type="text" placeholder="e.g. john.doe" />
+    </div>
+
+    <div class="field">
+        <label>Email</label>
+        <input type="email" placeholder="e.g. john@email.com" />
+    </div>
+
+    <div class="field">
+        <label>Password</label>
+        <input type="password" placeholder="••••••••" />
+    </div>
+
+    <div class="field">
+        <label>Role</label>
+        <select>
+            <option>Admin</option>
+            <option>Doctor</option>
+            <option>Patient</option>
+            <option>Lab Technician</option>
+            <option>Lab Manager</option>
+        </select>
+    </div>
+
+    <button onclick="openConfirm()"
+            style="background:var(--accent);color:#fff;border:none;padding:10px 16px;
+        border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;">
+        <i class="bi bi-check-circle"></i> Create User
+    </button>
+
+</div>
+
+<!-- =========================
+CONFIRM MODAL
+========================= -->
+<div id="confirmModal" class="modal-bg">
+
+    <div class="modal">
+
+        <h4>Confirm Action</h4>
+
+        <p style="font-size:13px;color:var(--text-light);">
+            Create this user in the system?
+        </p>
+
+        <div style="display:flex;gap:10px;justify-content:center;margin-top:14px;">
+
+            <button onclick="closeConfirm()"
+                    style="padding:8px 14px;border:1px solid var(--border);border-radius:8px;background:white;">
+                Cancel
+            </button>
+
+            <button onclick="showSuccess()"
+                    style="padding:8px 14px;background:var(--accent);color:white;border:none;border-radius:8px;">
+                Confirm
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- =========================
+SUCCESS MODAL
+========================= -->
+<div id="successModal" class="modal-bg">
+
+    <div class="modal">
+
+        <div style="font-size:40px;color:#2ecc71;">
+            <i class="bi bi-check-circle-fill"></i>
+        </div>
+
+        <h4>User Created</h4>
+
+        <p style="font-size:13px;color:var(--text-light);">
+            This is a prototype success state.
+        </p>
+
+        <button onclick="closeSuccess()"
+                style="margin-top:10px;padding:8px 14px;background:#2ecc71;
+            color:white;border:none;border-radius:8px;">
+            OK
+        </button>
+
+    </div>
+
+</div>
+
+<!-- =========================
+SCRIPT
+========================= -->
+<script>
+
+    function openConfirm() {
+        document.getElementById("confirmModal").style.display = "flex";
+    }
+
+    function closeConfirm() {
+        document.getElementById("confirmModal").style.display = "none";
+    }
+
+    function showSuccess() {
+        closeConfirm();
+        document.getElementById("successModal").style.display = "flex";
+    }
+
+    function closeSuccess() {
+        document.getElementById("successModal").style.display = "none";
+    }
+
+</script>

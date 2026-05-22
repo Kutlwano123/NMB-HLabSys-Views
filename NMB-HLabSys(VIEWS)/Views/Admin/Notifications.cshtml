@@ -1,0 +1,239 @@
+﻿@{
+    ViewData["Title"] = "Notifications";
+    ViewData["ActivePage"] = "Notifications";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+@section Styles {
+    <style>
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .notification-list {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .notification-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-left: 5px solid var(--accent);
+            border-radius: 14px;
+            padding: 16px;
+            transition: 0.2s ease;
+        }
+
+            .notification-card.unread {
+                border-left-color: var(--gold);
+                background: #fffdf7;
+            }
+
+            .notification-card:hover {
+                transform: translateY(-1px);
+            }
+
+        .notification-title {
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .notification-meta {
+            font-size: 11px;
+            color: var(--text-light);
+            margin-top: 2px;
+        }
+
+        .notification-message {
+            font-size: 13px;
+            color: var(--text-mid);
+            margin-top: 10px;
+            margin-bottom: 12px;
+        }
+
+        .badge-new {
+            background: var(--gold-pale);
+            color: var(--gold);
+            font-size: 11px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: 700;
+        }
+
+        .actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .btn-lite {
+            font-size: 12px;
+            padding: 7px 12px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-read {
+            background: #e8f0e8;
+            color: #2f6b2f;
+        }
+
+        .btn-delete {
+            background: var(--accent-pale);
+            color: var(--accent);
+        }
+
+        .empty {
+            text-align: center;
+            padding: 50px 20px;
+            color: var(--text-light);
+        }
+
+    </style>
+}
+
+<!-- =========================
+HEADER
+========================= -->
+<div class="page-header">
+
+    <div>
+        <h2 style="margin:0;">Notifications</h2>
+        <p style="color:var(--text-light);font-size:13px;margin-top:4px;">
+            System alerts and activity updates (prototype UI)
+        </p>
+    </div>
+
+    <a href="javascript:history.back()"
+       style="padding:10px 16px;border-radius:10px;
+        border:1px solid var(--border);text-decoration:none;
+        color:var(--text-dark);font-size:13px;">
+        <i class="bi bi-arrow-left"></i>
+        Back
+    </a>
+
+</div>
+
+<!-- =========================
+STATIC NOTIFICATIONS
+========================= -->
+<div class="notification-list">
+
+    <!-- NOTIFICATION 1 -->
+    <div class="notification-card unread">
+
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;">
+
+            <div>
+                <div class="notification-title">New Test Request Submitted</div>
+                <div class="notification-meta">21 May 2026 • 09:10</div>
+            </div>
+
+            <span class="badge-new">NEW</span>
+
+        </div>
+
+        <div class="notification-message">
+            A doctor has submitted a new blood test request for a patient record.
+        </div>
+
+        <div class="actions">
+
+            <button class="btn-lite btn-read" onclick="fakeAction('Marked as read')">
+                <i class="bi bi-check-circle"></i>
+                Mark as Read
+            </button>
+
+            <button class="btn-lite btn-delete" onclick="fakeAction('Deleted notification')">
+                <i class="bi bi-trash"></i>
+                Delete
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- NOTIFICATION 2 -->
+    <div class="notification-card">
+
+        <div>
+            <div class="notification-title">System Backup Completed</div>
+            <div class="notification-meta">20 May 2026 • 23:40</div>
+        </div>
+
+        <div class="notification-message">
+            Automatic system backup completed successfully without errors.
+        </div>
+
+        <div class="actions">
+
+            <button class="btn-lite btn-read" onclick="fakeAction('Viewed notification')">
+                View
+            </button>
+
+            <button class="btn-lite btn-delete" onclick="fakeAction('Deleted notification')">
+                Delete
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- NOTIFICATION 3 -->
+    <div class="notification-card">
+
+        <div>
+            <div class="notification-title">New User Registered</div>
+            <div class="notification-meta">20 May 2026 • 14:22</div>
+        </div>
+
+        <div class="notification-message">
+            A new lab technician account was created by an administrator.
+        </div>
+
+        <div class="actions">
+
+            <button class="btn-lite btn-read" onclick="fakeAction('Viewed user')">
+                View User
+            </button>
+
+            <button class="btn-lite btn-delete" onclick="fakeAction('Removed notification')">
+                Remove
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- =========================
+TOAST
+========================= -->
+<div id="toast"
+     style="display:none;position:fixed;bottom:20px;right:20px;
+    background:#2ecc71;color:white;padding:10px 14px;
+    border-radius:8px;font-size:13px;">
+</div>
+
+<script>
+
+    function fakeAction(msg) {
+        const t = document.getElementById("toast");
+        t.innerText = msg;
+        t.style.display = "block";
+
+        setTimeout(() => {
+            t.style.display = "none";
+        }, 2000);
+    }
+
+</script>

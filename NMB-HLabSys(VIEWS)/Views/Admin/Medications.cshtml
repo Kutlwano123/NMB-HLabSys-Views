@@ -1,0 +1,428 @@
+﻿@{
+    ViewData["Title"] = "Medications";
+    ViewData["ActivePage"] = "Medications";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+@section Styles {
+    <style>
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 22px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .page-header h2 {
+            margin: 0;
+            font-size: 22px;
+        }
+
+        .page-header p {
+            font-size: 12px;
+            color: var(--text-light);
+            margin-top: 4px;
+        }
+
+        .panel {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .search-bar {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+
+        .search-bar input {
+            flex: 1;
+            min-width: 220px;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            outline: none;
+        }
+
+        .modal-bg {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .modal {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            width: 340px;
+            text-align: center;
+        }
+
+        #toast {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #2ecc71;
+            color: white;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            z-index: 9999;
+        }
+
+    </style>
+}
+
+<!-- =========================
+HEADER
+========================= -->
+<div class="page-header">
+
+    <div>
+        <h2>Medications</h2>
+        <p>Reference list of medications (prototype UI)</p>
+    </div>
+
+    <button onclick="openAddModal()"
+            style="background:var(--accent);color:#fff;border:none;
+            padding:10px 16px;border-radius:10px;font-size:13px;">
+        <i class="bi bi-plus-circle"></i>
+        Add Medication
+    </button>
+
+</div>
+
+<!-- =========================
+SEARCH
+========================= -->
+<div class="search-bar">
+
+    <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;">
+
+        <input type="text" placeholder="Search medication..." />
+
+        <button style="background:var(--accent);color:white;border:none;
+                padding:10px 16px;border-radius:10px;font-size:13px;">
+            <i class="bi bi-search"></i>
+            Search
+        </button>
+
+    </div>
+
+</div>
+
+<!-- =========================
+TABLE (STATIC DATA ONLY)
+========================= -->
+<div class="panel">
+
+    <table class="table" style="margin:0;">
+
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Medication Name</th>
+                <th>Category</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            <tr id="row-1">
+    <td>1</td>
+    <td style="font-weight:600;">Metformin</td>
+    <td>Diabetes</td>
+
+    <td style="display:flex;gap:8px;">
+
+        <a href="~/Admin/EditMedication/1"
+           style="background:#e8eaee;color:#3a4a5a;
+           border:none;padding:6px 10px;border-radius:6px;
+           font-size:12px;text-decoration:none;">
+            <i class="bi bi-pencil"></i> Edit
+        </a>
+
+        <button onclick="openDeleteModal(1)"
+                style="background:var(--accent-pale);color:var(--accent);
+                border:none;padding:6px 10px;border-radius:6px;font-size:12px;">
+            <i class="bi bi-trash"></i> Delete
+        </button>
+
+    </td>
+</tr>
+
+<tr id="row-2">
+    <td>2</td>
+    <td style="font-weight:600;">Aspirin</td>
+    <td>Pain Relief</td>
+
+    <td style="display:flex;gap:8px;">
+
+        <a href="~/Admin/EditMedication/2"
+           style="background:#e8eaee;color:#3a4a5a;
+           border:none;padding:6px 10px;border-radius:6px;
+           font-size:12px;text-decoration:none;">
+            <i class="bi bi-pencil"></i> Edit
+        </a>
+
+        <button onclick="openDeleteModal(2)"
+                style="background:var(--accent-pale);color:var(--accent);
+                border:none;padding:6px 10px;border-radius:6px;font-size:12px;">
+            <i class="bi bi-trash"></i> Delete
+        </button>
+
+    </td>
+</tr>
+
+<tr id="row-3">
+    <td>3</td>
+    <td style="font-weight:600;">Ibuprofen</td>
+    <td>Anti-inflammatory</td>
+
+    <td style="display:flex;gap:8px;">
+
+        <a href="~/Admin/EditMedication/3"
+           style="background:#e8eaee;color:#3a4a5a;
+           border:none;padding:6px 10px;border-radius:6px;
+           font-size:12px;text-decoration:none;">
+            <i class="bi bi-pencil"></i> Edit
+        </a>
+
+        <button onclick="openDeleteModal(3)"
+                style="background:var(--accent-pale);color:var(--accent);
+                border:none;padding:6px 10px;border-radius:6px;font-size:12px;">
+            <i class="bi bi-trash"></i> Delete
+        </button>
+
+    </td>
+</tr>
+
+        </tbody>
+
+    </table>
+
+</div>
+
+<!-- =========================
+ADD MODAL
+========================= -->
+<div id="addModal" class="modal-bg">
+
+    <div class="modal">
+
+        <h4>Add Medication</h4>
+
+        <input type="text"
+               placeholder="Enter medication name"
+               style="width:100%;margin-top:10px;padding:10px;
+               border:1px solid var(--border);border-radius:8px;" />
+
+        <p style="font-size:13px;color:var(--text-light);margin-top:10px;">
+            Confirm adding this medication?
+        </p>
+
+        <div style="display:flex;gap:10px;justify-content:center;margin-top:15px;">
+
+            <button onclick="closeAddModal()"
+                    style="padding:8px 14px;border:1px solid var(--border);
+                    border-radius:8px;background:white;">
+                Cancel
+            </button>
+
+            <button onclick="confirmAdd()"
+                    style="padding:8px 14px;background:var(--accent);
+                    color:white;border:none;border-radius:8px;">
+                Add
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- =========================
+EDIT MODAL
+========================= -->
+<div id="editModal" class="modal-bg">
+
+    <div class="modal">
+
+        <h4>Edit Medication</h4>
+
+        <input id="editMedicationInput"
+               type="text"
+               style="width:100%;margin-top:10px;padding:10px;
+               border:1px solid var(--border);border-radius:8px;" />
+
+        <p style="font-size:13px;color:var(--text-light);margin-top:10px;">
+            Save changes to this medication?
+        </p>
+
+        <div style="display:flex;gap:10px;justify-content:center;margin-top:15px;">
+
+            <button onclick="closeEditModal()"
+                    style="padding:8px 14px;border:1px solid var(--border);
+                    border-radius:8px;background:white;">
+                Cancel
+            </button>
+
+            <button onclick="confirmEdit()"
+                    style="padding:8px 14px;background:#3a4a5a;
+                    color:white;border:none;border-radius:8px;">
+                Save
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- =========================
+DELETE MODAL
+========================= -->
+<div id="deleteModal" class="modal-bg">
+
+    <div class="modal">
+
+        <h4>Delete Medication?</h4>
+
+        <p style="font-size:13px;color:var(--text-light);">
+            This action cannot be undone.
+        </p>
+
+        <div style="display:flex;gap:10px;justify-content:center;margin-top:15px;">
+
+            <button onclick="closeDeleteModal()"
+                    style="padding:8px 14px;border:1px solid var(--border);
+                    border-radius:8px;background:white;">
+                Cancel
+            </button>
+
+            <button onclick="confirmDelete()"
+                    style="padding:8px 14px;background:#c0392b;
+                    color:white;border:none;border-radius:8px;">
+                Delete
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- =========================
+TOAST
+========================= -->
+<div id="toast">
+    Action completed successfully
+</div>
+
+<!-- =========================
+SCRIPT
+========================= -->
+<script>
+
+    let selectedId = null;
+
+    // ADD
+    function openAddModal() {
+        document.getElementById("addModal").style.display = "flex";
+    }
+
+    function closeAddModal() {
+        document.getElementById("addModal").style.display = "none";
+    }
+
+    function confirmAdd() {
+        closeAddModal();
+        showToast("Medication added successfully");
+    }
+
+    // EDIT
+    function openEditModal(name) {
+
+        document.getElementById("editMedicationInput").value = name;
+
+        document.getElementById("editModal").style.display = "flex";
+    }
+
+    function closeEditModal() {
+        document.getElementById("editModal").style.display = "none";
+    }
+
+    function confirmEdit() {
+        closeEditModal();
+        showToast("Medication updated successfully");
+    }
+
+    // DELETE
+    function openDeleteModal(id) {
+
+        selectedId = id;
+
+        document.getElementById("deleteModal").style.display = "flex";
+    }
+
+    function closeDeleteModal() {
+        document.getElementById("deleteModal").style.display = "none";
+    }
+
+    function confirmDelete() {
+
+        document.getElementById("row-" + selectedId).remove();
+
+        closeDeleteModal();
+
+        showToast("Medication deleted successfully");
+    }
+
+    // TOAST
+    function showToast(message) {
+
+        const toast = document.getElementById("toast");
+
+        toast.innerText = message;
+
+        toast.style.display = "block";
+
+        setTimeout(() => {
+
+            toast.style.display = "none";
+
+        }, 2200);
+    }
+
+    // CLOSE MODALS WHEN CLICKING OUTSIDE
+    window.addEventListener("click", function (e) {
+
+        const addModal = document.getElementById("addModal");
+        const editModal = document.getElementById("editModal");
+        const deleteModal = document.getElementById("deleteModal");
+
+        if (e.target === addModal)
+            closeAddModal();
+
+        if (e.target === editModal)
+            closeEditModal();
+
+        if (e.target === deleteModal)
+            closeDeleteModal();
+
+    });
+
+</script>

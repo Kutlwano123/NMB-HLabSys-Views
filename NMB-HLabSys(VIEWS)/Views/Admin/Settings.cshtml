@@ -1,0 +1,180 @@
+﻿@{
+    ViewData["Title"] = "System Settings";
+    ViewData["ActivePage"] = "Settings";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<!-- =========================
+HEADER
+========================= -->
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;flex-wrap:wrap;gap:12px;">
+
+    <div>
+        <h2 style="margin:0;">System Settings</h2>
+        <p style="color:var(--text-light);font-size:13px;margin-top:4px;">
+            Configure system preferences, notifications, security and laboratory workflows
+        </p>
+    </div>
+
+    <a href="javascript:history.back()"
+       style="padding:10px 16px;border-radius:10px;border:1px solid var(--border);
+        text-decoration:none;color:var(--text-dark);font-size:13px;font-weight:600;">
+        <i class="bi bi-arrow-left"></i>
+        Back
+    </a>
+
+</div>
+
+<!-- =========================
+SETTINGS GRID
+========================= -->
+<div class="settings-grid" style="
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(320px, 1fr));
+    gap:20px;">
+
+    <!-- NOTIFICATIONS -->
+    <div class="settings-card" style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:22px;">
+
+        <div style="display:flex;gap:12px;margin-bottom:18px;">
+            <div style="width:42px;height:42px;border-radius:12px;background:var(--accent-pale);color:var(--accent);display:flex;align-items:center;justify-content:center;">
+                <i class="bi bi-bell"></i>
+            </div>
+            <div>
+                <h4 style="margin:0;">Notifications</h4>
+                <p style="margin:2px 0 0;color:var(--text-light);font-size:12px;">Alerts & communication</p>
+            </div>
+        </div>
+
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid #eee;">
+            <div>
+                <div style="font-size:13px;font-weight:600;">Email Notifications</div>
+                <div style="font-size:12px;color:var(--text-light);">Send system updates via email</div>
+            </div>
+            <input type="checkbox" checked />
+        </div>
+
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 0;">
+            <div>
+                <div style="font-size:13px;font-weight:600;">SMS Notifications</div>
+                <div style="font-size:12px;color:var(--text-light);">Send urgent alerts via SMS</div>
+            </div>
+            <input type="checkbox" />
+        </div>
+
+    </div>
+
+    <!-- PATIENT ACCESS -->
+    <div class="settings-card" style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:22px;">
+
+        <div style="display:flex;gap:12px;margin-bottom:18px;">
+            <div style="width:42px;height:42px;border-radius:12px;background:var(--gold-pale);color:var(--gold);display:flex;align-items:center;justify-content:center;">
+                <i class="bi bi-people"></i>
+            </div>
+            <div>
+                <h4 style="margin:0;">Patient Access</h4>
+                <p style="margin:2px 0 0;color:var(--text-light);font-size:12px;">Registration & report access</p>
+            </div>
+        </div>
+
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid #eee;">
+            <div>
+                <div style="font-size:13px;font-weight:600;">Self Registration</div>
+                <div style="font-size:12px;color:var(--text-light);">Allow patients to register</div>
+            </div>
+            <input type="checkbox" checked />
+        </div>
+
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 0;">
+            <div>
+                <div style="font-size:13px;font-weight:600;">PDF Downloads</div>
+                <div style="font-size:12px;color:var(--text-light);">Allow report downloads</div>
+            </div>
+            <input type="checkbox" checked />
+        </div>
+
+    </div>
+
+    <!-- LAB OPERATIONS -->
+    <div class="settings-card" style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:22px;">
+
+        <div style="display:flex;gap:12px;margin-bottom:18px;">
+            <div style="width:42px;height:42px;border-radius:12px;background:#e8f0e8;color:#3a6b3a;display:flex;align-items:center;justify-content:center;">
+                <i class="bi bi-hospital"></i>
+            </div>
+            <div>
+                <h4 style="margin:0;">Lab Operations</h4>
+                <p style="margin:2px 0 0;color:var(--text-light);font-size:12px;">Result processing workflow</p>
+            </div>
+        </div>
+
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid #eee;">
+            <div>
+                <div style="font-size:13px;font-weight:600;">Auto Verification</div>
+                <div style="font-size:12px;color:var(--text-light);">Auto verify results</div>
+            </div>
+            <input type="checkbox" />
+        </div>
+
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 0;">
+            <div>
+                <div style="font-size:13px;font-weight:600;">Doctor Approval</div>
+                <div style="font-size:12px;color:var(--text-light);">Require approval before release</div>
+            </div>
+            <input type="checkbox" checked />
+        </div>
+
+    </div>
+
+    <!-- SECURITY -->
+    <div class="settings-card" style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:22px;">
+
+        <div style="display:flex;gap:12px;margin-bottom:18px;">
+            <div style="width:42px;height:42px;border-radius:12px;background:var(--accent-pale);color:var(--accent);display:flex;align-items:center;justify-content:center;">
+                <i class="bi bi-shield-lock"></i>
+            </div>
+            <div>
+                <h4 style="margin:0;">Security</h4>
+                <p style="margin:2px 0 0;color:var(--text-light);font-size:12px;">Audit & system controls</p>
+            </div>
+        </div>
+
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid #eee;">
+            <div>
+                <div style="font-size:13px;font-weight:600;">Audit Logs</div>
+                <div style="font-size:12px;color:var(--text-light);">Track system activity</div>
+            </div>
+            <input type="checkbox" checked />
+        </div>
+
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 0;">
+            <div>
+                <div style="font-size:13px;font-weight:600;">Dark Mode</div>
+                <div style="font-size:12px;color:var(--text-light);">Enable dark theme</div>
+            </div>
+            <input type="checkbox" />
+        </div>
+
+    </div>
+
+</div>
+
+<!-- =========================
+SAVE BUTTON
+========================= -->
+<div style="display:flex;justify-content:flex-end;margin-top:28px;">
+
+    <button type="button"
+            style="background:var(--accent);
+        color:white;
+        border:none;
+        padding:12px 22px;
+        border-radius:10px;
+        font-size:13px;
+        font-weight:600;
+        cursor:pointer;">
+        <i class="bi bi-check-circle"></i>
+        Save Settings
+    </button>
+
+</div>

@@ -1,0 +1,313 @@
+﻿@{
+    ViewData["Title"] = "Edit Test Category";
+    ViewData["ActivePage"] = "TestCategories";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+
+    var categoryId = ViewBag.CategoryId;
+    var categoryName = ViewBag.CategoryName;
+}
+
+@section Styles {
+
+    <style>
+
+        .page-header {
+            margin-bottom: 24px;
+        }
+
+            .page-header h2 {
+                margin: 0;
+                font-size: 24px;
+            }
+
+            .page-header p {
+                margin-top: 5px;
+                color: var(--text-light);
+                font-size: 13px;
+            }
+
+        .edit-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 24px;
+            max-width: 650px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+            .form-group label {
+                display: block;
+                margin-bottom: 7px;
+                font-size: 13px;
+                font-weight: 600;
+                color: var(--text-dark);
+            }
+
+            .form-group input {
+                width: 100%;
+                padding: 11px 14px;
+                border: 1px solid var(--border);
+                border-radius: 10px;
+                font-size: 13px;
+                outline: none;
+                transition: 0.2s ease;
+            }
+
+                .form-group input:focus {
+                    border-color: var(--accent);
+                    box-shadow: 0 0 0 3px rgba(122,48,48,0.08);
+                }
+
+        .button-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 24px;
+            flex-wrap: wrap;
+        }
+
+        .btn-save {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-cancel {
+            background: white;
+            border: 1px solid var(--border);
+            color: var(--text-mid);
+            padding: 10px 18px;
+            border-radius: 10px;
+            font-size: 13px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        /* =========================
+                   MODAL
+                ========================= */
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .modal-box {
+            width: 340px;
+            background: white;
+            border-radius: 14px;
+            padding: 22px;
+            text-align: center;
+        }
+
+            .modal-box h4 {
+                margin-bottom: 10px;
+            }
+
+            .modal-box p {
+                font-size: 13px;
+                color: var(--text-light);
+                margin-bottom: 18px;
+            }
+
+        .modal-actions {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .modal-btn {
+            border: none;
+            padding: 9px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .modal-cancel {
+            background: #ececec;
+            color: #333;
+        }
+
+        .modal-confirm {
+            background: var(--accent);
+            color: white;
+        }
+
+        /* =========================
+                   TOAST
+                ========================= */
+
+        .toast-msg {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #2ecc71;
+            color: white;
+            padding: 12px 16px;
+            border-radius: 10px;
+            font-size: 13px;
+            z-index: 99999;
+        }
+
+    </style>
+}
+
+<!-- =========================
+PAGE HEADER
+========================= -->
+
+<div class="page-header">
+
+    <h2>Edit Test Category</h2>
+
+    <p>
+        Modify category details for category ID #@categoryId
+    </p>
+
+</div>
+
+<!-- =========================
+EDIT CARD
+========================= -->
+
+<div class="edit-card">
+
+    <div class="form-group">
+
+        <label>Category Name</label>
+
+        <input type="text"
+               id="categoryName"
+               value="@categoryName" />
+
+    </div>
+
+    <div class="button-row">
+
+        <button class="btn-save"
+                onclick="openSaveModal()">
+
+            <i class="bi bi-check-circle"></i>
+            Save Changes
+
+        </button>
+
+        <a href="~/Admin/TestCategories"
+           class="btn-cancel">
+
+            <i class="bi bi-arrow-left"></i>
+            &nbsp;Back
+
+        </a>
+
+    </div>
+
+</div>
+
+<!-- =========================
+CONFIRM MODAL
+========================= -->
+
+<div class="modal-overlay"
+     id="saveModal">
+
+    <div class="modal-box">
+
+        <h4>Save Changes?</h4>
+
+        <p>
+            Are you sure you want to update this category?
+        </p>
+
+        <div class="modal-actions">
+
+            <button class="modal-btn modal-cancel"
+                    onclick="closeSaveModal()">
+
+                Cancel
+
+            </button>
+
+            <button class="modal-btn modal-confirm"
+                    onclick="saveCategory()">
+
+                Confirm
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- =========================
+TOAST
+========================= -->
+
+<div class="toast-msg"
+     id="toast">
+
+    Category updated successfully
+
+</div>
+
+<!-- =========================
+SCRIPT
+========================= -->
+
+<script>
+
+    function openSaveModal() {
+
+        document.getElementById("saveModal").style.display = "flex";
+    }
+
+    function closeSaveModal() {
+
+        document.getElementById("saveModal").style.display = "none";
+    }
+
+    function saveCategory() {
+
+        closeSaveModal();
+
+        const toast = document.getElementById("toast");
+
+        toast.style.display = "block";
+
+        setTimeout(() => {
+
+            toast.style.display = "none";
+
+            window.location.href = "~/Admin/TestCategories";
+
+        }, 1800);
+    }
+
+    window.addEventListener("click", function (e) {
+
+        const modal = document.getElementById("saveModal");
+
+        if (e.target === modal) {
+
+            closeSaveModal();
+        }
+    });
+
+</script>

@@ -1,0 +1,228 @@
+﻿@{
+    ViewData["Title"] = "Audit Log";
+    ViewData["ActivePage"] = "AuditLog";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+@section Styles {
+    <style>
+
+        /* =========================
+                   HEADER (PATIENT STYLE)
+                ========================= */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+            .page-header h2 {
+                margin: 0;
+                font-size: 22px;
+            }
+
+            .page-header p {
+                font-size: 12px;
+                color: var(--text-light);
+                margin-top: 4px;
+            }
+
+        /* =========================
+                   FILTER BAR (SIMPLIFIED)
+                ========================= */
+        .filter-bar {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 14px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+            .filter-bar input,
+            .filter-bar select {
+                padding: 8px 10px;
+                border: 1px solid var(--border);
+                border-radius: 8px;
+                font-size: 12px;
+                background: var(--bg);
+            }
+
+        /* =========================
+                   BADGES (PATIENT STYLE)
+                ========================= */
+        .action-badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .action-login {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .action-logout {
+            background: #fff3cd;
+            color: #b58900;
+        }
+
+        .action-create {
+            background: #e8eaee;
+            color: #3a4a5a;
+        }
+
+        .action-update {
+            background: #e8eef4;
+            color: #2a5080;
+        }
+
+        .action-delete {
+            background: var(--accent-pale);
+            color: var(--accent);
+        }
+
+        /* =========================
+                   PANEL STYLE
+                ========================= */
+        .panel {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 24px;
+            font-size: 13px;
+            color: var(--text-light);
+        }
+
+    </style>
+}
+
+<!-- =========================
+HEADER
+========================= -->
+<div class="page-header">
+
+    <div>
+        <h2>Audit Log</h2>
+        <p>@DateTime.Now.ToString("dddd, dd MMMM yyyy") — System activity overview</p>
+    </div>
+
+    @* <a href="#"
+       style="background:var(--accent);color:#fff;padding:8px 14px;border-radius:8px;text-decoration:none;font-size:13px;">
+        Export Log
+    </a> *@
+
+</div>
+
+<!-- =========================
+FILTERS (STATIC)
+========================= -->
+<div class="filter-bar">
+
+    <input type="date" />
+    <input type="date" />
+
+    <select>
+        <option>All Actions</option>
+        <option>Login</option>
+        <option>Logout</option>
+        <option>Create</option>
+        <option>Update</option>
+        <option>Delete</option>
+    </select>
+
+    <select>
+        <option>All Roles</option>
+        <option>Admin</option>
+        <option>Doctor</option>
+        <option>LabTechnician</option>
+        <option>Patient</option>
+        <option>LabManager</option>
+    </select>
+
+    <button style="background:var(--accent);color:#fff;border:none;border-radius:8px;padding:8px 12px;font-size:12px;">
+        Filter
+    </button>
+
+</div>
+
+<!-- =========================
+TABLE PANEL
+========================= -->
+<div class="panel">
+
+    <table class="table table-sm" style="margin:0;">
+
+        <thead>
+            <tr>
+                <th>Time</th>
+                <th>User</th>
+                <th>Role</th>
+                <th>Action</th>
+                <th>Description</th>
+                <th>IP</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            <tr>
+                <td style="font-size:12px;color:var(--text-light);">09:10</td>
+                <td style="font-weight:600;">admin@nmb.ac.za</td>
+                <td><span class="badge-lite">Admin</span></td>
+                <td><span class="action-badge action-login">Login</span></td>
+                <td style="font-size:12px;color:var(--text-light);">User logged in</td>
+                <td style="font-size:12px;color:var(--text-light);">192.168.1.10</td>
+            </tr>
+
+            <tr>
+                <td style="font-size:12px;color:var(--text-light);">09:25</td>
+                <td style="font-weight:600;">doctor@nmb.ac.za</td>
+                <td><span class="badge-lite">Doctor</span></td>
+                <td><span class="action-badge action-create">Create</span></td>
+                <td style="font-size:12px;color:var(--text-light);">New test request created</td>
+                <td style="font-size:12px;color:var(--text-light);">192.168.1.22</td>
+            </tr>
+
+            <tr>
+                <td style="font-size:12px;color:var(--text-light);">09:40</td>
+                <td style="font-weight:600;">labtech@nmb.ac.za</td>
+                <td><span class="badge-lite">LabTech</span></td>
+                <td><span class="action-badge action-update">Update</span></td>
+                <td style="font-size:12px;color:var(--text-light);">Updated results</td>
+                <td style="font-size:12px;color:var(--text-light);">192.168.1.33</td>
+            </tr>
+
+            <tr>
+                <td style="font-size:12px;color:var(--text-light);">10:05</td>
+                <td style="font-weight:600;">manager@nmb.ac.za</td>
+                <td><span class="badge-lite">Manager</span></td>
+                <td><span class="action-badge action-delete">Delete</span></td>
+                <td style="font-size:12px;color:var(--text-light);">Removed record</td>
+                <td style="font-size:12px;color:var(--text-light);">192.168.1.40</td>
+            </tr>
+
+            <tr>
+                <td style="font-size:12px;color:var(--text-light);">10:30</td>
+                <td style="font-weight:600;">patient@nmb.ac.za</td>
+                <td><span class="badge-lite">Patient</span></td>
+                <td><span class="action-badge action-logout">Logout</span></td>
+                <td style="font-size:12px;color:var(--text-light);">User logged out</td>
+                <td style="font-size:12px;color:var(--text-light);">192.168.1.55</td>
+            </tr>
+
+        </tbody>
+
+    </table>
+
+</div>

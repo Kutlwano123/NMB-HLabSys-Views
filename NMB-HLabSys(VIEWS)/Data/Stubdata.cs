@@ -4,6 +4,7 @@
 // ============================================================
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace NMB_HLabSys_VIEWS.Data
 {
@@ -106,6 +107,39 @@ namespace NMB_HLabSys_VIEWS.Data
         public int AssignmentId { get; set; }
         public string TechnicianUserId { get; set; } = "";
         public int TestTypeId { get; set; }
+    }
+
+    public class StubConsumable
+    {
+        public int ConsumableId { get; set; }
+        public string ConsumableName { get; set; } = "";
+        public string Unit { get; set; } = "";  // e.g., "ml", "units", "boxes"
+        public int QuantityInStock { get; set; }
+        public int MinimumThreshold { get; set; }
+    }
+
+    public class StubTestConsumableRequirement
+    {
+        public int RequirementId { get; set; }
+        public int TestTypeId { get; set; }
+        public int ConsumableId { get; set; }
+        public int QuantityRequired { get; set; }
+
+        public StubTestType? TestType { get; set; }
+        public StubConsumable? Consumable { get; set; }
+    }
+
+    public class StubNotification
+    {
+        public int NotificationId { get; set; }
+        public string TechnicianUserId { get; set; } = "";
+        public string Title { get; set; } = "";
+        public string Message { get; set; } = "";
+        public string NotificationType { get; set; } = "";  // "Urgent", "TAT", "Overdue", "Rejection"
+        public DateTime CreatedAt { get; set; }
+        public bool IsRead { get; set; }
+        public int? RelatedTestRequestId { get; set; }
+        public int? RelatedTestResultId { get; set; }
     }
 
     // ── Status name constants ─────────────────────────────────
@@ -277,6 +311,186 @@ namespace NMB_HLabSys_VIEWS.Data
                 RequestStatusLookupId  = 1,   // Pending
                 TestProgressStatusLookupId = 1,
             },
+            new()
+            {
+                TestRequestId  = 6,
+                RequestNumber  = "REQ-2026-006",
+                PatientName    = "Mandla Khumalo",
+                Urgency        = "STAT",
+                RequestDate    = DateTime.Now.AddHours(-12),
+                DueDate        = DateTime.Now.AddHours(2),
+                ClinicalNotes  = "Emergency patient assessment - chest pain.",
+                AssignedTechnicianUserId = "demo-tech",
+                RequestingDoctorEmail    = "dr.patel@nmbhdl.co.za",
+                PatientConditionsSnapshot  = "Chest Pain; Cardiac Risk",
+                PatientAllergiesSnapshot   = "Latex",
+                PatientMedicationsSnapshot = "Aspirin; Nitroglycerin",
+                TestTypeId             = 1,
+                RequestStatusLookupId  = 1,   // Pending
+                TestProgressStatusLookupId = 1,
+            },
+            new()
+            {
+                TestRequestId  = 7,
+                RequestNumber  = "REQ-2026-007",
+                PatientName    = "Naledi Mohlomi",
+                Urgency        = "Urgent",
+                RequestDate    = DateTime.Now.AddDays(-4),
+                DueDate        = DateTime.Now.AddHours(-8),  // overdue
+                ClinicalNotes  = "Monitoring glucose levels - diabetic patient.",
+                AssignedTechnicianUserId = "demo-tech",
+                RequestingDoctorEmail    = "dr.mkhize@nmbhdl.co.za",
+                PatientConditionsSnapshot  = "Diabetes Type 2; Hypertension",
+                PatientAllergiesSnapshot   = "",
+                PatientMedicationsSnapshot = "Metformin; Lisinopril",
+                TestTypeId             = 5,
+                RequestStatusLookupId  = 2,   // Samples Received
+                TestProgressStatusLookupId = 1,
+            },
+            new()
+            {
+                TestRequestId  = 8,
+                RequestNumber  = "REQ-2026-008",
+                PatientName    = "Bongiwe Ndlela",
+                Urgency        = "Routine",
+                RequestDate    = DateTime.Now.AddDays(-6),
+                DueDate        = DateTime.Now.AddDays(-2),  // overdue
+                ClinicalNotes  = "Routine coagulation profile.",
+                AssignedTechnicianUserId = "demo-tech",
+                RequestingDoctorEmail    = "dr.sithole@nmbhdl.co.za",
+                PatientConditionsSnapshot  = "",
+                PatientAllergiesSnapshot   = "Sulpha drugs",
+                PatientMedicationsSnapshot = "Heparin",
+                TestTypeId             = 4,
+                RequestStatusLookupId  = 3,   // Selected
+                TestProgressStatusLookupId = 2,
+            },
+            new()
+            {
+                TestRequestId  = 9,
+                RequestNumber  = "REQ-2026-009",
+                PatientName    = "Tshepo Makhanya",
+                Urgency        = "Urgent",
+                RequestDate    = DateTime.Now.AddHours(-6),
+                DueDate        = DateTime.Now.AddHours(18),
+                ClinicalNotes  = "Post-operative follow-up - check for bleeding.",
+                AssignedTechnicianUserId = "demo-tech",
+                RequestingDoctorEmail    = "dr.thompson@nmbhdl.co.za",
+                PatientConditionsSnapshot  = "Post-operative; Recent Surgery",
+                PatientAllergiesSnapshot   = "",
+                PatientMedicationsSnapshot = "Antibiotics; Pain relief",
+                TestTypeId             = 3,
+                RequestStatusLookupId  = 1,   // Pending
+                TestProgressStatusLookupId = 1,
+            },
+            new()
+            {
+                TestRequestId  = 10,
+                RequestNumber  = "REQ-2026-010",
+                PatientName    = "Zanele Ntuli",
+                Urgency        = "Routine",
+                RequestDate    = DateTime.Now.AddDays(-3),
+                DueDate        = DateTime.Now.AddDays(2),
+                ClinicalNotes  = "Annual health screening - normal patient.",
+                AssignedTechnicianUserId = "demo-tech",
+                RequestingDoctorEmail    = "dr.naidoo@nmbhdl.co.za",
+                PatientConditionsSnapshot  = "Hypertension - Controlled",
+                PatientAllergiesSnapshot   = "Penicillin",
+                PatientMedicationsSnapshot = "Amlodipine",
+                TestTypeId             = 2,
+                RequestStatusLookupId  = 2,   // Samples Received
+                TestProgressStatusLookupId = 1,
+            },
+            new()
+            {
+                TestRequestId  = 11,
+                RequestNumber  = "REQ-2026-011",
+                PatientName    = "Kamal Hassan",
+                Urgency        = "STAT",
+                RequestDate    = DateTime.Now.AddHours(-3),
+                DueDate        = DateTime.Now.AddHours(1),  // about to be overdue
+                ClinicalNotes  = "Acute kidney injury assessment.",
+                AssignedTechnicianUserId = "demo-tech",
+                RequestingDoctorEmail    = "dr.fischer@nmbhdl.co.za",
+                PatientConditionsSnapshot  = "Acute Kidney Injury",
+                PatientAllergiesSnapshot   = "Contrast media",
+                PatientMedicationsSnapshot = "IV Fluids; Dialysis scheduled",
+                TestTypeId             = 1,
+                RequestStatusLookupId  = 1,   // Pending
+                TestProgressStatusLookupId = 1,
+            },
+            new()
+            {
+                TestRequestId  = 12,
+                RequestNumber  = "REQ-2026-012",
+                PatientName    = "Amara Okonkwo",
+                Urgency        = "Routine",
+                RequestDate    = DateTime.Now.AddDays(-7),
+                DueDate        = DateTime.Now.AddDays(-1),  // overdue
+                ClinicalNotes  = "Drug interaction check - multiple medications.",
+                AssignedTechnicianUserId = "",   // unassigned
+                RequestingDoctorEmail    = "dr.brown@nmbhdl.co.za",
+                PatientConditionsSnapshot  = "Polypharmacy",
+                PatientAllergiesSnapshot   = "Multiple drug allergies",
+                PatientMedicationsSnapshot = "Complex medication regimen",
+                TestTypeId             = 5,
+                RequestStatusLookupId  = 1,   // Pending
+                TestProgressStatusLookupId = 1,
+            },
+            new()
+            {
+                TestRequestId  = 13,
+                RequestNumber  = "REQ-2026-013",
+                PatientName    = "Ibrahim Khalil",
+                Urgency        = "Urgent",
+                RequestDate    = DateTime.Now.AddDays(-2),
+                DueDate        = DateTime.Now.AddHours(12),
+                ClinicalNotes  = "Bleeding disorder investigation.",
+                AssignedTechnicianUserId = "demo-tech",
+                RequestingDoctorEmail    = "dr.williams@nmbhdl.co.za",
+                PatientConditionsSnapshot  = "Bleeding Tendency",
+                PatientAllergiesSnapshot   = "",
+                PatientMedicationsSnapshot = "None reported",
+                TestTypeId             = 4,
+                RequestStatusLookupId  = 3,   // Selected
+                TestProgressStatusLookupId = 2,
+            },
+            new()
+            {
+                TestRequestId  = 14,
+                RequestNumber  = "REQ-2026-014",
+                PatientName    = "Sophia Okafor",
+                Urgency        = "Routine",
+                RequestDate    = DateTime.Now.AddDays(-1),
+                DueDate        = DateTime.Now.AddDays(5),
+                ClinicalNotes  = "Routine blood donation screening.",
+                AssignedTechnicianUserId = "demo-tech",
+                RequestingDoctorEmail    = "dr.grant@nmbhdl.co.za",
+                PatientConditionsSnapshot  = "Blood donor screening",
+                PatientAllergiesSnapshot   = "",
+                PatientMedicationsSnapshot = "",
+                TestTypeId             = 2,
+                RequestStatusLookupId  = 2,   // Samples Received
+                TestProgressStatusLookupId = 1,
+            },
+            new()
+            {
+                TestRequestId  = 15,
+                RequestNumber  = "REQ-2026-015",
+                PatientName    = "Marcus De Wit",
+                Urgency        = "STAT",
+                RequestDate    = DateTime.Now.AddHours(-2),
+                DueDate        = DateTime.Now.AddHours(6),
+                ClinicalNotes  = "Critical patient - sepsis screening.",
+                AssignedTechnicianUserId = "demo-tech",
+                RequestingDoctorEmail    = "dr.kumar@nmbhdl.co.za",
+                PatientConditionsSnapshot  = "Sepsis; ICU Patient",
+                PatientAllergiesSnapshot   = "Cephalosporin",
+                PatientMedicationsSnapshot = "Broad-spectrum antibiotics",
+                TestTypeId             = 3,
+                RequestStatusLookupId  = 1,   // Pending
+                TestProgressStatusLookupId = 1,
+            },
         };
 
         // ── Test results ───────────────────────────────────────
@@ -307,6 +521,118 @@ namespace NMB_HLabSys_VIEWS.Data
                 VerifiedAt      = DateTime.Now.AddHours(-12),
                 ResultStatusLookupId = 2,   // Verified
             },
+            new()
+            {
+                TestResultId    = 3,
+                TestRequestId   = 6,
+                TestTypeId      = 1,
+                ResultData      = "6.8",    // slightly low
+                Notes           = "Patient extremely anxious - mild haemolysis noted in sample.",
+                CapturedBy      = "T. Moabi",
+                CapturedAt      = DateTime.Now.AddHours(-4),
+                ResultStatusLookupId = 3,   // To Be Reviewed - needs recapture due to haemolysis
+            },
+            new()
+            {
+                TestResultId    = 4,
+                TestRequestId   = 7,
+                TestTypeId      = 5,
+                ResultData      = "18.5",   // elevated
+                Notes           = "Patient fasting state confirmed. Result consistent with clinical picture.",
+                CapturedBy      = "K. Sithole",
+                CapturedAt      = DateTime.Now.AddDays(-2),
+                VerifiedBy      = "S. Dlamini",
+                VerifiedAt      = DateTime.Now.AddDays(-1),
+                ResultStatusLookupId = 2,   // Verified
+            },
+            new()
+            {
+                TestResultId    = 5,
+                TestRequestId   = 8,
+                TestTypeId      = 4,
+                ResultData      = "15.2",   // slightly elevated
+                Notes           = "Patient on warfarin - monitoring therapeutic range.",
+                CapturedBy      = "M. Sharma",
+                CapturedAt      = DateTime.Now.AddDays(-3),
+                ResultStatusLookupId = 3,   // To Be Reviewed
+            },
+            new()
+            {
+                TestResultId    = 6,
+                TestRequestId   = 10,
+                TestTypeId      = 2,
+                ResultData      = "13.9",   // within range
+                Notes           = "Normal result - no clinical concerns.",
+                CapturedBy      = "K. Sithole",
+                CapturedAt      = DateTime.Now.AddHours(-8),
+                ResultStatusLookupId = 1,   // Captured — awaiting verification
+            },
+            new()
+            {
+                TestResultId    = 7,
+                TestRequestId   = 13,
+                TestTypeId      = 4,
+                ResultData      = "18.5",   // abnormal
+                Notes           = "Prolonged PT - suspect factor deficiency. Recommend specialized testing.",
+                CapturedBy      = "T. Moabi",
+                CapturedAt      = DateTime.Now.AddHours(-6),
+                ResultStatusLookupId = 1,   // Captured — awaiting verification
+            },
+            new()
+            {
+                TestResultId    = 8,
+                TestRequestId   = 14,
+                TestTypeId      = 2,
+                ResultData      = "12.5",   // low end of normal
+                Notes           = "Suitable for blood donation - meets criteria.",
+                CapturedBy      = "M. Sharma",
+                CapturedAt      = DateTime.Now.AddHours(-10),
+                ResultStatusLookupId = 1,   // Captured — awaiting verification
+            },
+            new()
+            {
+                TestResultId    = 9,
+                TestRequestId   = 9,
+                TestTypeId      = 3,
+                ResultData      = "175",   // elevated
+                Notes           = "Sample integrity questionable - possible contamination. Recapture recommended.",
+                CapturedBy      = "K. Sithole",
+                CapturedAt      = DateTime.Now.AddHours(-5),
+                ResultStatusLookupId = 3,   // To Be Reviewed - requires recapture
+            },
+            new()
+            {
+                TestResultId    = 10,
+                TestRequestId   = 11,
+                TestTypeId      = 1,
+                ResultData      = "5.2",   // within range
+                Notes           = "Baseline assessment for acute kidney injury.",
+                CapturedBy      = "T. Moabi",
+                CapturedAt      = DateTime.Now.AddHours(-1),
+                ResultStatusLookupId = 1,   // Captured — awaiting verification
+            },
+            new()
+            {
+                TestResultId    = 11,
+                TestRequestId   = 15,
+                TestTypeId      = 3,
+                ResultData      = "225",   // elevated
+                Notes           = "Critically elevated - consistent with sepsis response.",
+                CapturedBy      = "M. Sharma",
+                CapturedAt      = DateTime.Now.AddHours(-3),
+                ResultStatusLookupId = 1,   // Captured — awaiting verification
+            },
+            new()
+            {
+                TestResultId    = 12,
+                TestRequestId   = 3,
+                TestTypeId      = 3,
+                ResultData      = "280",   // high
+                Notes           = "Initial result - requires second sample for confirmation.",
+                CapturedBy      = "K. Sithole",
+                CapturedAt      = DateTime.Now.AddDays(-1),
+                ResultStatusLookupId = 3,   // To Be Reviewed - retest needed
+            },
         };
 
         // ── Rejection logs ─────────────────────────────────────
@@ -325,15 +651,128 @@ namespace NMB_HLabSys_VIEWS.Data
             },
         };
 
+        // ── Consumables ────────────────────────────────────────
+
+        public static List<StubConsumable> Consumables { get; } = new()
+        {
+            new() { ConsumableId = 1, ConsumableName = "EDTA Tubes (2ml)", Unit = "boxes", QuantityInStock = 15, MinimumThreshold = 5 },
+            new() { ConsumableId = 2, ConsumableName = "Serum Separator Tubes (5ml)", Unit = "boxes", QuantityInStock = 8, MinimumThreshold = 3 },
+            new() { ConsumableId = 3, ConsumableName = "Citrate Tubes (3.2%)", Unit = "boxes", QuantityInStock = 10, MinimumThreshold = 4 },
+            new() { ConsumableId = 4, ConsumableName = "Sterile Needles (21G)", Unit = "boxes", QuantityInStock = 20, MinimumThreshold = 8 },
+            new() { ConsumableId = 5, ConsumableName = "Safety Lancets", Unit = "boxes", QuantityInStock = 12, MinimumThreshold = 5 },
+            new() { ConsumableId = 6, ConsumableName = "Centrifuge Caps", Unit = "packs", QuantityInStock = 6, MinimumThreshold = 2 },
+            new() { ConsumableId = 7, ConsumableName = "Alcohol Swabs 70%", Unit = "boxes", QuantityInStock = 25, MinimumThreshold = 10 },
+            new() { ConsumableId = 8, ConsumableName = "Gloves (Nitrile)", Unit = "boxes", QuantityInStock = 18, MinimumThreshold = 6 },
+        };
+
+        // ── Test-Consumable Requirements ───────────────────────
+
+        public static List<StubTestConsumableRequirement> TestConsumableRequirements { get; } = new()
+        {
+            // Full Blood Count (TestTypeId = 1)
+            new() { RequirementId = 1, TestTypeId = 1, ConsumableId = 1, QuantityRequired = 1 },
+            new() { RequirementId = 2, TestTypeId = 1, ConsumableId = 4, QuantityRequired = 1 },
+            new() { RequirementId = 3, TestTypeId = 1, ConsumableId = 7, QuantityRequired = 1 },
+            new() { RequirementId = 4, TestTypeId = 1, ConsumableId = 8, QuantityRequired = 1 },
+
+            // Haemoglobin (TestTypeId = 2)
+            new() { RequirementId = 5, TestTypeId = 2, ConsumableId = 1, QuantityRequired = 1 },
+            new() { RequirementId = 6, TestTypeId = 2, ConsumableId = 4, QuantityRequired = 1 },
+            new() { RequirementId = 7, TestTypeId = 2, ConsumableId = 7, QuantityRequired = 1 },
+            new() { RequirementId = 8, TestTypeId = 2, ConsumableId = 8, QuantityRequired = 1 },
+
+            // Platelet Count (TestTypeId = 3)
+            new() { RequirementId = 9, TestTypeId = 3, ConsumableId = 1, QuantityRequired = 2 },
+            new() { RequirementId = 10, TestTypeId = 3, ConsumableId = 4, QuantityRequired = 1 },
+            new() { RequirementId = 11, TestTypeId = 3, ConsumableId = 7, QuantityRequired = 2 },
+            new() { RequirementId = 12, TestTypeId = 3, ConsumableId = 8, QuantityRequired = 1 },
+
+            // Prothrombin Time (TestTypeId = 4)
+            new() { RequirementId = 13, TestTypeId = 4, ConsumableId = 3, QuantityRequired = 1 },
+            new() { RequirementId = 14, TestTypeId = 4, ConsumableId = 4, QuantityRequired = 1 },
+            new() { RequirementId = 15, TestTypeId = 4, ConsumableId = 7, QuantityRequired = 1 },
+            new() { RequirementId = 16, TestTypeId = 4, ConsumableId = 8, QuantityRequired = 1 },
+
+            // ESR (TestTypeId = 5)
+            new() { RequirementId = 17, TestTypeId = 5, ConsumableId = 1, QuantityRequired = 1 },
+            new() { RequirementId = 18, TestTypeId = 5, ConsumableId = 4, QuantityRequired = 1 },
+            new() { RequirementId = 19, TestTypeId = 5, ConsumableId = 7, QuantityRequired = 1 },
+            new() { RequirementId = 20, TestTypeId = 5, ConsumableId = 8, QuantityRequired = 1 },
+        };
+
+        // ── Notifications ──────────────────────────────────────
+
+        public static List<StubNotification> Notifications { get; } = new()
+        {
+            new()
+            {
+                NotificationId          = 1,
+                TechnicianUserId        = "demo-tech",
+                Title                   = "Urgent STAT Request Received",
+                Message                 = "New STAT request REQ-2026-006 from Dr. Patel - Emergency patient assessment",
+                NotificationType        = "Urgent",
+                CreatedAt               = DateTime.Now.AddHours(-2),
+                IsRead                  = false,
+                RelatedTestRequestId    = 6,
+            },
+            new()
+            {
+                NotificationId          = 2,
+                TechnicianUserId        = "demo-tech",
+                Title                   = "Test Approaching TAT Limit",
+                Message                 = "REQ-2026-002 due in 4 hours. Please prioritize completion.",
+                NotificationType        = "TAT",
+                CreatedAt               = DateTime.Now.AddHours(-1),
+                IsRead                  = false,
+                RelatedTestRequestId    = 2,
+            },
+            new()
+            {
+                NotificationId          = 3,
+                TechnicianUserId        = "demo-tech",
+                Title                   = "Overdue Test",
+                Message                 = "REQ-2026-001 is now 6 hours overdue. Immediate action required.",
+                NotificationType        = "Overdue",
+                CreatedAt               = DateTime.Now.AddHours(-1),
+                IsRead                  = false,
+                RelatedTestRequestId    = 1,
+            },
+            new()
+            {
+                NotificationId          = 4,
+                TechnicianUserId        = "demo-tech",
+                Title                   = "Result Rejected",
+                Message                 = "Result for REQ-2026-006 was rejected by S. Dlamini. Please recapture with new sample.",
+                NotificationType        = "Rejection",
+                CreatedAt               = DateTime.Now.AddHours(-3),
+                IsRead                  = true,
+                RelatedTestRequestId    = 6,
+                RelatedTestResultId     = 3,
+            },
+            new()
+            {
+                NotificationId          = 5,
+                TechnicianUserId        = "demo-tech",
+                Title                   = "Urgent STAT Request",
+                Message                 = "New STAT request REQ-2026-011 from Dr. Fischer - Acute kidney injury assessment",
+                NotificationType        = "Urgent",
+                CreatedAt               = DateTime.Now.AddHours(-3),
+                IsRead                  = true,
+                RelatedTestRequestId    = 11,
+            },
+        };
+
         // ── Next ID counter (thread-unsafe but fine for demo) ──
 
-        private static int _nextRequestId = 6;
-        private static int _nextResultId = 3;
+        private static int _nextRequestId = 16;
+        private static int _nextResultId = 13;
         private static int _nextRejectionId = 2;
+        private static int _nextNotificationId = 1;
 
         public static int NextRequestId() => _nextRequestId++;
         public static int NextResultId() => _nextResultId++;
         public static int NextRejectionId() => _nextRejectionId++;
+        public static int NextNotificationId() => _nextNotificationId++;
 
         // ── Helpers ────────────────────────────────────────────
 
@@ -387,6 +826,133 @@ namespace NMB_HLabSys_VIEWS.Data
                                      ? Hydrate(req) : null;
                     return r;
                 });
+        }
+
+        // ── Consumables helpers ────────────────────────────────
+
+        /// <summary>Returns consumables required for a specific test type.</summary>
+        public static List<StubTestConsumableRequirement> ConsumablesForTestType(int testTypeId)
+        {
+            return TestConsumableRequirements
+                .FindAll(r => r.TestTypeId == testTypeId)
+                .ConvertAll(r => {
+                    r.TestType = TestTypeById(testTypeId);
+                    r.Consumable = Consumables.Find(c => c.ConsumableId == r.ConsumableId);
+                    return r;
+                });
+        }
+
+        /// <summary>Returns summary of consumables assigned to technician's test types.</summary>
+        public static List<StubConsumable> ConsumablesForTechnician(string userId)
+        {
+            var assignedTypeIds = TechnicianAssignments
+                .FindAll(a => a.TechnicianUserId == userId || userId == "demo-tech")
+                .ConvertAll(a => a.TestTypeId);
+
+            var consumableIds = TestConsumableRequirements
+                .FindAll(r => assignedTypeIds.Contains(r.TestTypeId))
+                .ConvertAll(r => r.ConsumableId)
+                .Distinct()
+                .ToList();
+
+            return Consumables.FindAll(c => consumableIds.Contains(c.ConsumableId));
+        }
+
+        // ── Notifications helpers ──────────────────────────────
+
+        /// <summary>Returns unread notifications for a technician.</summary>
+        public static List<StubNotification> UnreadNotificationsForTechnician(string userId)
+        {
+            return Notifications
+                .FindAll(n => n.TechnicianUserId == userId && !n.IsRead)
+                .OrderByDescending(n => n.CreatedAt)
+                .ToList();
+        }
+
+        /// <summary>Returns all notifications for a technician, ordered by most recent.</summary>
+        public static List<StubNotification> AllNotificationsForTechnician(string userId)
+        {
+            return Notifications
+                .FindAll(n => n.TechnicianUserId == userId)
+                .OrderByDescending(n => n.CreatedAt)
+                .ToList();
+        }
+
+        /// <summary>Generates notifications based on current test state.</summary>
+        public static void GenerateNotificationsForTechnician(string userId)
+        {
+            var all = RequestsForTechnician(userId);
+            var completedId = RequestStatusId(StatusNames.Completed);
+
+            // Clear stale auto-generated notifications (keep manual ones)
+            Notifications.RemoveAll(n => n.TechnicianUserId == userId && n.NotificationType != "Rejection");
+
+            // STAT/Urgent tests
+            foreach (var req in all.Where(r => (r.Urgency == "STAT" || r.Urgency == "Urgent") && r.RequestStatusLookupId != completedId))
+            {
+                if (!Notifications.Any(n => n.RelatedTestRequestId == req.TestRequestId && n.NotificationType == "Urgent"))
+                {
+                    Notifications.Add(new()
+                    {
+                        NotificationId = NextNotificationId(),
+                        TechnicianUserId = userId,
+                        Title = $"{req.Urgency} Request: {req.RequestNumber}",
+                        Message = $"{req.PatientName} - {req.TestType?.TestName ?? "Test"}",
+                        NotificationType = "Urgent",
+                        CreatedAt = DateTime.Now,
+                        IsRead = false,
+                        RelatedTestRequestId = req.TestRequestId,
+                    });
+                }
+            }
+
+            // Tests nearing TAT (within 2 days)
+            foreach (var req in all.Where(r => r.DueDate.HasValue && r.DueDate.Value <= DateTime.Now.AddDays(2) && r.DueDate.Value > DateTime.Now && r.RequestStatusLookupId != completedId))
+            {
+                if (!Notifications.Any(n => n.RelatedTestRequestId == req.TestRequestId && n.NotificationType == "TAT"))
+                {
+                    var hoursRemaining = (req.DueDate.Value - DateTime.Now).TotalHours;
+                    Notifications.Add(new()
+                    {
+                        NotificationId = NextNotificationId(),
+                        TechnicianUserId = userId,
+                        Title = "Test Approaching TAT Limit",
+                        Message = $"{req.RequestNumber} due in {(int)hoursRemaining} hours.",
+                        NotificationType = "TAT",
+                        CreatedAt = DateTime.Now,
+                        IsRead = false,
+                        RelatedTestRequestId = req.TestRequestId,
+                    });
+                }
+            }
+
+            // Overdue tests
+            foreach (var req in all.Where(r => r.DueDate.HasValue && r.DueDate.Value < DateTime.Now && r.RequestStatusLookupId != completedId))
+            {
+                if (!Notifications.Any(n => n.RelatedTestRequestId == req.TestRequestId && n.NotificationType == "Overdue"))
+                {
+                    var hoursOverdue = (DateTime.Now - req.DueDate.Value).TotalHours;
+                    Notifications.Add(new()
+                    {
+                        NotificationId = NextNotificationId(),
+                        TechnicianUserId = userId,
+                        Title = "Overdue Test",
+                        Message = $"{req.RequestNumber} is now {(int)hoursOverdue} hours overdue.",
+                        NotificationType = "Overdue",
+                        CreatedAt = DateTime.Now,
+                        IsRead = false,
+                        RelatedTestRequestId = req.TestRequestId,
+                    });
+                }
+            }
+        }
+
+        /// <summary>Marks a notification as read.</summary>
+        public static void MarkNotificationAsRead(int notificationId)
+        {
+            var notif = Notifications.Find(n => n.NotificationId == notificationId);
+            if (notif != null)
+                notif.IsRead = true;
         }
     }
 }

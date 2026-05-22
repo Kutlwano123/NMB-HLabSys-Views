@@ -1,0 +1,65 @@
+@model List<NMB_HLabSys_VIEWS.ViewModels.RejectionHistoryViewModel>
+@{
+    ViewData["Title"] = "Results Rejected - Re-capture";
+    Layout = "~/Views/Shared/_TechnicianLayout.cshtml";
+    ViewData["ActivePage"] = "ReviewTests";
+}
+
+<h2>Rejected Results — Re-capture Required</h2>
+<p class="text-muted">Results that were rejected by peer technicians during verification. Click on any item to re-capture with new data.</p>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-success">
+        <i class="bi bi-check-circle"></i> No rejected results at this time. Great job!
+    </div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>Request #</th>
+                    <th>Patient</th>
+                    <th>Test Type</th>
+                    <th>Rejected By</th>
+                    <th>Previous Result</th>
+                    <th>Rejection Notes</th>
+                    <th class="text-center">Rejected At</th>
+                    <th class="text-center">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr class="table-warning">
+                        <td>
+                            <strong>@item.RequestNumber</strong>
+                        </td>
+                        <td>@item.PatientName</td>
+                        <td>@item.TestName</td>
+                        <td>@item.RejectedBy</td>
+                        <td>
+                            <code>@item.PreviousResultData</code>
+                        </td>
+                        <td>
+                            <small class="text-muted">@item.RejectionNotes</small>
+                        </td>
+                        <td class="text-center">
+                            <small>@item.RejectedAt.ToString("g")</small>
+                        </td>
+                        <td class="text-center">
+                            @if (item.CanRecapture)
+                            {
+                                <a href="/LabTechnician/RecaptureForm?testResultId=@item.TestResultId" class="btn btn-sm btn-warning">
+                                    <i class="bi bi-arrow-repeat"></i> Re-capture
+                                </a>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
