@@ -41,6 +41,21 @@ namespace NMB_HLabSys.Controllers
         //{
         //    return View();
         //}
+        public IActionResult EditTestCategory(int id)
+        {
+            ViewBag.CategoryId = id;
+
+            // prototype dummy data
+            ViewBag.CategoryName = id switch
+            {
+                1 => "Blood Tests",
+                2 => "Urine Analysis",
+                3 => "Microbiology",
+                _ => "Unknown Category"
+            };
+
+            return View();
+        }
 
         public IActionResult TestRequests()
         {
@@ -61,14 +76,48 @@ namespace NMB_HLabSys.Controllers
         {
             return View();
         }
-
+        public IActionResult EditMedication(int id)
+        {
+            ViewBag.MedicationId = id;
+            return View();
+        }
+        public IActionResult EditTestType(int id)
+        {
+            ViewBag.TestTypeId = id;
+            return View();
+        }
         public IActionResult Conditions()
         {
+            return View();
+        }
+        public IActionResult EditCondition(int id)
+        {
+            ViewBag.ConditionId = id;
             return View();
         }
 
         public IActionResult Allergies()
         {
+            return View();
+        }
+        public IActionResult EditAllergy(int id)
+        {
+            ViewBag.AllergyId = id;
+
+            // Prototype dummy data (replace later with DB)
+            var allergy = id switch
+            {
+                1 => "Penicillin",
+                2 => "Latex",
+                3 => "Peanuts",
+                _ => "Unknown Allergy"
+            };
+
+            var status = "Active";
+
+            ViewBag.AllergyName = allergy;
+            ViewBag.Status = status;
+
             return View();
         }
 
