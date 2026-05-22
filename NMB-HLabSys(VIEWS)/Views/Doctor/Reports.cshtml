@@ -4,7 +4,6 @@
     ViewData["ActiveNav"] = "reports";
     Layout = "_DoctorLayout";
 
-    // Read the fallback string keys assigned inside DoctorController safely
     string fromDateString = ViewBag.FromDate as string ?? string.Empty;
     string toDateString = ViewBag.ToDate as string ?? string.Empty;
 }
@@ -18,32 +17,45 @@
 <section class="panel-card">
     <h3>Generate Report</h3>
 
+    @* Quick ranges *@
     <div class="quick-range-bar">
         <span class="filter-bar-label">Quick range:</span>
-        <button type="button" class="filter-btn" data-report-range="7">Last 7 days</button>
-        <button type="button" class="filter-btn active" data-report-range="30">Last 30 days</button>
-        <button type="button" class="filter-btn" data-report-range="90">Last 90 days</button>
-        <button type="button" class="filter-btn" data-report-range="365">This year</button>
+        <button type="button" class="filter-btn" onclick="setRange(this,7)">Last 7 days</button>
+        <button type="button" class="filter-btn active" onclick="setRange(this,30)">Last 30 days</button>
+        <button type="button" class="filter-btn" onclick="setRange(this,90)">Last 90 days</button>
+        <button type="button" class="filter-btn" onclick="setRange(this,365)">This year</button>
     </div>
 
-    <form asp-action="GenerateReport" method="post" class="form-row cols-2">
-        <div class="form-group">
-            <label for="reportFrom">From Date</label>
-            <input type="date" id="reportFrom" name="FromDate" value="@fromDateString" />
+    <form asp-action="GenerateReport" method="post">
+        @Html.AntiForgeryToken()
+        <div class="form-row cols-2">
+            <div class="form-group">
+                <label for="reportFrom">From Date</label>
+                <input type="date" id="reportFrom" name="FromDate" value="@fromDateString" />
+            </div>
+            <div class="form-group">
+                <label for="reportTo">To Date</label>
+                <input type="date" id="reportTo" name="ToDate" value="@toDateString" />
+            </div>
         </div>
-
-        <div class="form-group">
-            <label for="reportTo">To Date</label>
-            <input type="date" id="reportTo" name="ToDate" value="@toDateString" />
-        </div>
-        <div class="form-actions" style="grid-column: 1 / -1; margin-top: 12px;">
-            <button class="btn" type="submit">Generate PDF</button>
+        <div class="form-actions" style="margin-top:12px">
+            <button class="btn" type="submit">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" /><polyline points="14 2 14 8 20 8" /></svg>
+                Generate PDF
+            </button>
             <button class="btn btn-outline" type="button" onclick="location.reload()">Reset</button>
         </div>
     </form>
 
-    <div class="preview-section" style="margin-top:18px;">
-        <h4>Preview <span id="reportPreviewCount" style="font-weight:400;color:var(--text-light)">@(Model?.Count ?? 0)</span></h4>
+    @* Preview table *@
+    <div class="preview-section" style="margin-top:22px">
+        <h4 style="margin-bottom:12px">
+            Preview
+            <span id="reportPreviewCount"
+                  style="font-weight:400;color:var(--text-light);font-family:'DM Sans',sans-serif;font-size:13px;margin-left:6px">
+                (@(Model?.Count ?? 0) requests)
+            </span>
+        </h4>
         <div class="table-wrap">
             <table>
                 <thead>
@@ -59,10 +71,26 @@
                     {
                         foreach (var r in Model)
                         {
+                            string chipClass = r.Status switch
+                            {
+                                "Submitted" => "chip pending",
+                                "SamplesReceived" => "chip progress",
+                                "InProgress" => "chip progress",
+                                "Completed" => "chip ok",
+                                "Released" => "chip ok",
+                                "Cancelled" => "chip danger",
+                                _ => "chip"
+                            };
+                            string statusLabel = r.Status switch
+                            {
+                                "SamplesReceived" => "Samples Received",
+                                "InProgress" => "In Progress",
+                                _ => r.Status
+                            };
                             <tr data-date="@r.UpdatedAt.ToString("yyyy-MM-dd")">
-                                <td>@r.RequestNumber</td>
+                                <td style="font-weight:600">@r.RequestNumber</td>
                                 <td>@r.PatientName</td>
-                                <td><span class="chip">@r.Status</span></td>
+                                <td><span class="@chipClass">@statusLabel</span></td>
                                 <td class="td-sm">@r.UpdatedAt.ToString("dd MMM yyyy")</td>
                             </tr>
                         }
@@ -70,7 +98,8 @@
                     else
                     {
                         <tr>
-                            <td colspan="4" class="td-sm text-center text-muted symmetric-padding" style="padding: 20px;">
+                            <td colspan="4" class="td-sm"
+                                style="padding:28px;text-align:center;color:var(--text-light);font-style:italic">
                                 No preview data for selected range.
                             </td>
                         </tr>
@@ -80,3 +109,32 @@
         </div>
     </div>
 </section>
+
+<script>
+    function setRange(btn, days) {
+        document.querySelectorAll('.quick-range-bar .filter-btn').forEach(function(b){ b.classList.remove('active'); });
+        btn.classList.add('active');
+
+        var today = new Date();
+        var from  = new Date();
+        from.setDate(today.getDate() - days);
+
+        function fmt(d) {
+            return d.getFullYear() + '-' +
+                   String(d.getMonth() + 1).padStart(2, '0') + '-' +
+                   String(d.getDate()).padStart(2, '0');
+        }
+        document.getElementById('reportFrom').value = fmt(from);
+        document.getElementById('reportTo').value   = fmt(today);
+
+        /* Filter preview table rows client-side */
+        var visible = 0;
+        document.querySelectorAll('#reportPreviewBody tr[data-date]').forEach(function(row) {
+            var d = new Date(row.dataset.date);
+            var show = d >= from && d <= today;
+            row.style.display = show ? '' : 'none';
+            if (show) visible++;
+        });
+        document.getElementById('reportPreviewCount').textContent = '(' + visible + ' requests)';
+    }
+</script>

@@ -215,38 +215,89 @@ namespace NMB_HLabSys_Views.Controllers
         // 6. VIEW RESULTS (Returns the single matching request directly)
         public IActionResult Results(int? id)
         {
-            if (id == null || id.Value == 0)
+            // Load completed requests for dropdown
+            var completedRequests = MockTestRequests
+                .Where(r => r.Status == "Completed" || r.Status == "Completed – Awaiting Release")
+                .Select(r =>
+                {
+                    var patient = MockPatients.FirstOrDefault(p => p.PatientID == r.PatientID);
+
+                    return new
+                    {
+                        Id = r.TestRequestID,
+                        RequestNumber = r.RequestNumber,
+                        PatientName = patient != null
+                            ? $"{patient.Name} {patient.Surname}"
+                            : "Unknown"
+                    };
+                }).ToList();
+
+            ViewBag.CompletedRequests = completedRequests;
+
+            // If no request selected
+            if (!id.HasValue || id.Value == 0)
             {
                 ViewBag.RequestFound = false;
-                return View();
+
+                // Empty stat cards
+                ViewBag.TotalTests = 0;
+                ViewBag.AbnormalTests = 0;
+                ViewBag.NormalTests = 0;
+                ViewBag.VerifiedTests = 0;
+
+                return View(new List<Dictionary<string, object>>());
             }
 
+            // Find request
             var request = MockTestRequests.FirstOrDefault(r => r.TestRequestID == id.Value);
-            if (request == null) return NotFound();
 
-            var patient = MockPatients.FirstOrDefault(p => p.PatientID == request.PatientID);
+            if (request == null)
+            {
+                ViewBag.RequestFound = false;
 
+                ViewBag.TotalTests = 0;
+                ViewBag.AbnormalTests = 0;
+                ViewBag.NormalTests = 0;
+                ViewBag.VerifiedTests = 0;
+
+                return View(new List<Dictionary<string, object>>());
+            }
+
+            // Find patient
+            var patientData = MockPatients.FirstOrDefault(p => p.PatientID == request.PatientID);
+
+            // Header info
             ViewBag.RequestFound = true;
             ViewBag.RequestId = request.TestRequestID;
             ViewBag.RequestNumber = request.RequestNumber;
-            ViewBag.PatientName = patient != null ? $"{patient.Name} {patient.Surname}" : "Unknown";
+            ViewBag.PatientName = patientData != null
+                ? $"{patientData.Name} {patientData.Surname}"
+                : "Unknown";
             ViewBag.Status = request.Status;
 
-            // Send a collection of item dictionaries containing joined information down to the loop framework
-            var resultsData = request.Items.Select(i => {
+            // Build result data
+            var resultsData = request.Items.Select(i =>
+            {
                 var tt = MockTestTypes.FirstOrDefault(t => t.TestTypeID == i.TestTypeID);
+
                 return new Dictionary<string, object>
-                {
-                    { "TestName", tt?.TestName ?? "Unknown" },
-                    { "Value", i.ResultValue },
-                    { "Units", tt?.UnitOfMeasurement ?? string.Empty },
-                    { "RefLow", i.RefLow },
-                    { "RefHigh", i.RefHigh },
-                    { "IsAbnormal", i.IsAbnormal },
-                    { "VerifiedBy", i.VerifiedBy ?? "In Queue" },
-                    { "VerifiedAt", i.ResultDate ?? (object)"—" }
-                };
+        {
+            { "TestName", tt?.TestName ?? "Unknown" },
+            { "Value", i.ResultValue ?? "—" },
+            { "Units", tt?.UnitOfMeasurement ?? "" },
+            { "RefLow", i.RefLow },
+            { "RefHigh", i.RefHigh },
+            { "IsAbnormal", i.IsAbnormal },
+            { "VerifiedBy", string.IsNullOrEmpty(i.VerifiedBy) ? "In Queue" : i.VerifiedBy },
+            { "VerifiedAt", i.ResultDate }
+        };
             }).ToList();
+
+            // Stat cards
+            ViewBag.TotalTests = resultsData.Count;
+            ViewBag.AbnormalTests = resultsData.Count(r => (bool)r["IsAbnormal"]);
+            ViewBag.NormalTests = resultsData.Count(r => !(bool)r["IsAbnormal"]);
+            ViewBag.VerifiedTests = resultsData.Count(r => r["VerifiedBy"].ToString() != "In Queue");
 
             return View(resultsData);
         }

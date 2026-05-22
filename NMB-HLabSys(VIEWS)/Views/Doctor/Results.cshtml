@@ -4,8 +4,7 @@
     ViewData["ActiveNav"] = "results";
     Layout = "_DoctorLayout";
 
-    // Safely determine if any result item has the "IsAbnormal" flag checked as true
-    bool hasAbnormalResults = Model != null && Model.Any(r => r.ContainsKey("IsAbnormal") && (bool)r["IsAbnormal"] == true);
+    bool hasAbnormal = Model != null && Model.Any(r => r.ContainsKey("IsAbnormal") && (bool)r["IsAbnormal"] == true);
 }
 
 <div class="page-header">
@@ -14,15 +13,40 @@
     <p class="doctor-sub">Review results, highlight abnormal values, and release verified reports to patients.</p>
 </div>
 
+@if (TempData["Success"] != null)
+{
+    <div class="settings-alert success" style="margin-bottom:16px">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5" /></svg>
+        @TempData["Success"]
+    </div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="info-strip" style="background:var(--danger-bg);border-color:rgba(139,26,26,0.25);margin-bottom:16px">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10" /><path d="M12 8v4M12 16h.01" /></svg>
+        @TempData["Error"]
+    </div>
+}
+
+@* ── Request selector card ── *@
 <section class="panel-card" style="margin-bottom:16px">
     <div class="form-row cols-3">
         <div class="form-group">
             <label for="resultsRequestSelect">Select Request</label>
-            <select id="resultsRequestSelect" name="requestId" onchange="location.href='/Doctor/Results/' + this.value;">
-                <option value="">— Choose a request —</option>
-                @if (ViewBag.RequestFound == true)
+            <select id="resultsRequestSelect"
+                    onchange="if(this.value!='0') location.href='/Doctor/Results/' + this.value">
+
+                <option value="0">— Choose a completed request —</option>
+
+                @if (ViewBag.CompletedRequests != null)
                 {
-                    <option selected value="@ViewBag.RequestId">@ViewBag.RequestNumber</option>
+                    foreach (var req in ViewBag.CompletedRequests)
+                    {
+                        <option value="@req.Id"
+                                selected="@(ViewBag.RequestId == req.Id)">
+                            @req.RequestNumber — @req.PatientName
+                        </option>
+                    }
                 }
             </select>
         </div>
@@ -32,20 +56,34 @@
         </div>
         <div class="form-group">
             <label>Status</label>
-            <input type="text" value="@ViewBag.Status" readonly style="font-weight:600;color:var(--success)" />
+            <input type="text" value="@ViewBag.Status" readonly
+                   style="font-weight:600;color:var(--success)" />
         </div>
     </div>
 </section>
 
+@* ── Results table ── *@
 <section class="panel-card">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px">
-        <h3 style="margin:0">Test Results</h3>
-        <!-- Fixed line using the local boolean evaluation variable -->
-        @if (hasAbnormalResults)
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px">
+        <h3 style="margin:0">
+            Test Results
+            @if (ViewBag.RequestNumber != null)
+            {
+                <span style="font-family:'DM Sans',sans-serif;font-size:14px;font-weight:400;color:var(--text-light);margin-left:8px">
+                    — @ViewBag.RequestNumber
+                </span>
+            }
+        </h3>
+        @if (hasAbnormal)
         {
-            <span class="badge b-abnormal" id="resultsAbnormalBadge">⚠ Abnormal</span>
+            <span class="chip danger">⚠ @Model.Count(r => (bool)r["IsAbnormal"]) Abnormal Result(s)</span>
+        }
+        else if (Model != null && Model.Any())
+        {
+            <span class="chip ok">All Normal</span>
         }
     </div>
+
     <div class="table-wrap">
         <table>
             <thead>
@@ -58,26 +96,29 @@
                     <th>Verified By</th>
                 </tr>
             </thead>
-            <tbody id="resultsTableBody">
+            <tbody>
                 @if (Model != null && Model.Any())
                 {
                     foreach (var r in Model)
                     {
                         bool isAbnormal = r.ContainsKey("IsAbnormal") && (bool)r["IsAbnormal"];
-
                         <tr class="@(isAbnormal ? "tr-abnormal" : "")">
                             <td style="font-weight:500">@r["TestName"]</td>
-                            <td><span class="@(isAbnormal ? "val-abnormal" : "val-mono")">@r["Value"]</span></td>
-                            <td><span class="val-range">@r["RefLow"] – @r["RefHigh"]</span></td>
+                            <td>
+                                <span class="@(isAbnormal ? "val-abnormal" : "val-mono")">@r["Value"]</span>
+                            </td>
+                            <td>
+                                <span class="val-range">@r["RefLow"] – @r["RefHigh"]</span>
+                            </td>
                             <td class="td-sm">@r["Units"]</td>
                             <td>
                                 @if (isAbnormal)
                                 {
-                                    <span class="badge b-abnormal">⚠ Abnormal</span>
+                                    <span class="chip danger">⚠ Abnormal</span>
                                 }
                                 else
                                 {
-                                    <span class="badge b-normal">Normal</span>
+                                    <span class="chip ok">Normal</span>
                                 }
                             </td>
                             <td class="td-sm">@r["VerifiedBy"] (@r["VerifiedAt"])</td>
@@ -87,19 +128,39 @@
                 else
                 {
                     <tr>
-                        <td colspan="6" class="td-sm text-center text-muted italic" style="padding: 20px;">
-                            No results available.
+                        <td colspan="6" class="td-sm"
+                            style="padding:28px;text-align:center;color:var(--text-light);font-style:italic">
+                            @if (ViewBag.RequestFound == true)
+                            {
+                                <span>No results captured yet for this request.</span>
+                            }
+                            else
+                            {
+                                <span>Select a request above to view its results.</span>
+                            }
                         </td>
                     </tr>
                 }
             </tbody>
         </table>
     </div>
-    <div class="form-actions" style="margin-top:18px">
-        <form asp-action="ReleaseResults" method="post" class="inline-form">
-            <input type="hidden" name="requestId" value="@ViewBag.RequestId" />
-            <button class="btn" type="submit">Release to Patient</button>
-        </form>
-        <a asp-controller="Doctor" asp-action="Reports" class="btn btn-outline">Download PDF</a>
-    </div>
+
+    @* ── Actions ── *@
+    @if (ViewBag.RequestFound == true && Model != null && Model.Any())
+    {
+        <div class="form-actions" style="margin-top:18px">
+            <form asp-action="ReleaseResults" method="post" style="display:inline">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="requestId" value="@ViewBag.RequestId" />
+                <button class="btn" type="submit">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5" /></svg>
+                    Release to Patient
+                </button>
+            </form>
+            <a asp-controller="Doctor" asp-action="Reports" class="btn btn-outline">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" /><polyline points="14 2 14 8 20 8" /><line x1="16" y1="13" x2="8" y2="13" /><line x1="16" y1="17" x2="8" y2="17" /></svg>
+                Download PDF
+            </a>
+        </div>
+    }
 </section>

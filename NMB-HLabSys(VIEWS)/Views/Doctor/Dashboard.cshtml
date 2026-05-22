@@ -6,7 +6,7 @@
 
     // Extract the stats dictionary safely from the ViewBag container
     var stats = ViewBag.Stats as Dictionary<string, int> ?? new Dictionary<string, int>();
-
+    
     int submittedToday = stats.ContainsKey("SubmittedToday") ? stats["SubmittedToday"] : 0;
     int pendingRelease = stats.ContainsKey("PendingRelease") ? stats["PendingRelease"] : 0;
     int abnormalAlerts = stats.ContainsKey("AbnormalAlerts") ? stats["AbnormalAlerts"] : 0;

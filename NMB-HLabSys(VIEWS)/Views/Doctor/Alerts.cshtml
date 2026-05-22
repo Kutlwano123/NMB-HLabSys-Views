@@ -11,38 +11,126 @@
     <p class="doctor-sub">Alerts for tests you ordered — default view shows the last 5 days.</p>
 </div>
 
+@* ── Filter bar ── *@
 <div class="filter-bar" id="alertFilterBar">
     <span class="filter-bar-label">Time range:</span>
-    <button type="button" class="filter-btn active" data-range="5">Last 5 days</button>
-    <button type="button" class="filter-btn" data-range="10">Last 10 days</button>
-    <button type="button" class="filter-btn" data-range="30">Last 30 days</button>
-    <button type="button" class="filter-btn" data-range="custom">Custom</button>
+    <button type="button" class="filter-btn active" onclick="applyRange(this, 5)">Last 5 days</button>
+    <button type="button" class="filter-btn" onclick="applyRange(this, 10)">Last 10 days</button>
+    <button type="button" class="filter-btn" onclick="applyRange(this, 30)">Last 30 days</button>
+    <button type="button" class="filter-btn" onclick="toggleCustom(this)">Custom</button>
     <div class="custom-range-inputs" id="alertCustomRange">
-        <input type="date" id="alertFromDate" aria-label="From date" />
-        <span>to</span>
-        <input type="date" id="alertToDate" aria-label="To date" />
+        <input type="date" id="alertFromDate" aria-label="From date" onchange="applyCustomRange()" />
+        <span style="font-size:12px;color:var(--text-light)">to</span>
+        <input type="date" id="alertToDate" aria-label="To date" onchange="applyCustomRange()" />
     </div>
 </div>
 
-<section class="card-grid" id="alertCardGrid">
-    @if (Model != null && Model.Any())
-    {
-        foreach (var a in Model)
+@* ── Alert count strip ── *@
+<div id="alertCount" style="font-size:13px;color:var(--text-mid);margin-bottom:14px">
+    Showing <strong id="visibleCount">@(Model?.Count ?? 0)</strong> alert(s)
+</div>
+
+@* ── Alert cards ── *@
+@if (Model != null && Model.Any())
+{
+    <div class="card-grid" id="alertCardGrid">
+        @foreach (var a in Model)
         {
             <article class="alert-card" data-date="@a.CreatedAt.ToString("yyyy-MM-dd")">
-                <h4>@a.RequestNumber — @a.TestName</h4>
-                <p>Patient: @a.PatientName · Value: @a.Value (ref @a.Range)</p>
-                <div class="alert-card-meta">
-                    <span class="chip danger">Alert</span>
-                    <span>@a.CreatedAt.ToString("dd MMM yyyy HH:mm")</span>
+
+                @* Header row *@
+                <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:10px">
+                    <div>
+                        <div style="font-size:11px;font-family:'DM Mono',monospace;color:var(--red);font-weight:500;margin-bottom:3px">
+                            @a.RequestNumber
+                        </div>
+                        <h4 style="margin:0;font-size:15px;font-weight:600;color:var(--black)">
+                            @a.TestName
+                        </h4>
+                    </div>
+                    <span class="chip danger">⚠ Abnormal</span>
                 </div>
+
+                @* Details *@
+                <div style="font-size:13px;color:var(--text-mid);line-height:1.75">
+                    <div>Patient: <strong style="color:var(--black)">@a.PatientName</strong></div>
+                    <div>
+                        Result: <strong style="color:var(--red);font-family:'DM Mono',monospace">@a.Value</strong>
+                        &nbsp;·&nbsp; Ref: <span style="font-family:'DM Mono',monospace">@a.Range</span>
+                    </div>
+                </div>
+
+                @* Footer *@
+                <div class="alert-card-meta">
+                    <span class="td-sm">@a.CreatedAt.ToString("dd MMM yyyy · HH:mm")</span>
+                    <a asp-action="Results" asp-route-id="@a.Id"
+                       class="btn btn-sm btn-outline"
+                       style="text-decoration:none;font-size:11px;padding:4px 12px">
+                        View Results
+                    </a>
+                </div>
+
             </article>
         }
+    </div>
+}
+else
+{
+    <div class="panel-card" style="text-align:center;padding:40px;color:var(--text-light);font-style:italic">
+        No abnormal alerts found for the selected period.
+    </div>
+}
+
+@* ── No results message (shown by JS) ── *@
+<div id="noAlertsMsg" style="display:none;text-align:center;padding:40px;color:var(--text-light);font-style:italic">
+    No alerts found for the selected date range.
+</div>
+
+<script>
+    var allCards = Array.from(document.querySelectorAll('.alert-card'));
+
+    function applyRange(btn, days) {
+        document.querySelectorAll('#alertFilterBar .filter-btn').forEach(function(b){ b.classList.remove('active'); });
+        btn.classList.add('active');
+        document.getElementById('alertCustomRange').classList.remove('show');
+
+        var cutoff = new Date();
+        cutoff.setDate(cutoff.getDate() - days);
+
+        filterCardsByDate(cutoff, new Date());
     }
-    else
-    {
-        <div class="td-sm" style="padding: 20px; color: var(--text-light); font-style: italic;">
-            No alerts found for the selected period.
-        </div>
+
+    function toggleCustom(btn) {
+        document.querySelectorAll('#alertFilterBar .filter-btn').forEach(function(b){ b.classList.remove('active'); });
+        btn.classList.add('active');
+        document.getElementById('alertCustomRange').classList.toggle('show');
     }
-</section>
+
+    function applyCustomRange() {
+        var from = document.getElementById('alertFromDate').value;
+        var to   = document.getElementById('alertToDate').value;
+        if (!from || !to) return;
+        filterCardsByDate(new Date(from), new Date(to));
+    }
+
+    function filterCardsByDate(from, to) {
+        var visible = 0;
+        allCards.forEach(function(card) {
+            var d = new Date(card.dataset.date);
+            var show = d >= from && d <= to;
+            card.style.display = show ? '' : 'none';
+            if (show) visible++;
+        });
+        document.getElementById('visibleCount').textContent = visible;
+        document.getElementById('noAlertsMsg').style.display = visible === 0 ? '' : 'none';
+        var grid = document.getElementById('alertCardGrid');
+        if (grid) grid.style.display = visible === 0 ? 'none' : '';
+    }
+
+    /* Default: last 5 days on page load */
+    (function() {
+        var cutoff = new Date();
+        cutoff.setDate(cutoff.getDate() - 5);
+        filterCardsByDate(cutoff, new Date());
+    })();
+</script>

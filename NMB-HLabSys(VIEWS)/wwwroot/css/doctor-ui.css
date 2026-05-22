@@ -1,4 +1,4 @@
-/* NMB-HLabSys Doctor Portal — red / white / black theme */
+
 :root {
     --black: #141414;
     --black-soft: #2a2a2a;
@@ -69,7 +69,7 @@ body {
 /* ── Sidebar ── */
 .doctor-sidebar {
     width: var(--sidebar-w);
-    background: var(--black);
+   
     color: rgba(255, 255, 255, 0.75);
     position: fixed;
     left: 0;
@@ -110,7 +110,7 @@ body {
 .brand-title {
     font-family: "DM Serif Display", serif;
     font-size: 15px;
-    color: var(--white);
+    color:black;
     line-height: 1.2;
 }
 .brand-sub {
@@ -478,8 +478,8 @@ body {
     position: relative;
     overflow: hidden;
     transition: transform var(--transition), box-shadow var(--transition);
-    opacity: 0;
-    transform: translateY(16px);
+    opacity: 1;
+    transform: translateY(0);
 }
 
 .stat-card.revealed {
@@ -1162,7 +1162,7 @@ tr.tr-abnormal:hover { background: #fceee4 !important; }
     border-radius: var(--radius);
     border: 1px solid rgba(255, 255, 255, 0.12);
     background: rgba(139, 26, 26, 0.2);
-    color: rgba(255, 200, 200, 0.9);
+    color: black;
     font-family: inherit;
     font-size: 13px;
     font-weight: 600;
@@ -1290,4 +1290,73 @@ a.topbar-profile-btn {
     .form-row.cols-2 { grid-template-columns: 1fr; }
     .topbar-profile-text { display: none; }
     .doctor-main { padding: 16px; }
+}
+/* ═══════════════════════════════════════════════════
+   SIDEBAR TEXT — BLACK  (append to bottom of doctor-ui.css)
+═══════════════════════════════════════════════════ */
+
+/* Nav links */
+.doctor-nav a {
+    color: rgba(0, 0, 0, 0.65);
+}
+
+    .doctor-nav a:hover {
+        color: var(--black);
+        background: rgba(0, 0, 0, 0.05);
+    }
+
+    .doctor-nav a.active {
+        color: var(--black);
+        background: rgba(139, 26, 26, 0.12);
+        border-color: rgba(139, 26, 26, 0.25);
+    }
+
+/* Section labels */
+.doctor-sidebar .nav-section,
+.doctor-sidebar p.nav-section {
+    color: rgba(0, 0, 0, 0.38);
+}
+
+/* Profile preview */
+.sidebar-profile-name {
+    color: var(--black);
+}
+
+.sidebar-profile-role {
+    color: rgba(0, 0, 0, 0.45);
+}
+
+/* Brand */
+.brand-title {
+    color: var(--black);
+}
+
+.brand-sub {
+    color: rgba(0, 0, 0, 0.4);
+}
+
+/* Doctor badge (if used inline in views) */
+.doctor-user-badge .badge-info strong {
+    color: var(--black);
+}
+
+.doctor-user-badge .badge-info span {
+    color: rgba(0, 0, 0, 0.45);
+}
+
+/* Settings / footer button */
+.sidebar-settings-btn {
+    color: rgba(0, 0, 0, 0.65);
+    border-color: rgba(0,0,0,0.12);
+    background: rgba(0,0,0,0.03);
+}
+
+    .sidebar-settings-btn:hover {
+        color: var(--black);
+        background: rgba(0,0,0,0.07);
+    }
+
+/* Logout button */
+.doctor-logout-btn {
+    color: var(--black);
 }
