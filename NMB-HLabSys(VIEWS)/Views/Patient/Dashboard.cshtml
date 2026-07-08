@@ -23,11 +23,26 @@
             align-items: center;
             gap: 14px;
             transition: 0.2s ease;
+            cursor: pointer;
+            text-align: left;
+            width: 100%;
+            font: inherit;
         }
 
-        .stat-card:hover {
-            transform: translateY(-2px);
-        }
+            .stat-card:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 16px rgba(0,0,0,0.06);
+            }
+
+            .stat-card:focus-visible {
+                outline: 3px solid var(--accent);
+                outline-offset: 2px;
+            }
+
+            .stat-card.active {
+                border-color: var(--accent);
+                box-shadow: 0 0 0 2px var(--accent-pale);
+            }
 
         .stat-icon {
             width: 46px;
@@ -37,12 +52,28 @@
             align-items: center;
             justify-content: center;
             font-size: 18px;
+            flex-shrink: 0;
         }
 
-        .stat-icon.red { background: var(--accent-pale); color: var(--accent); }
-        .stat-icon.gold { background: #fff3cd; color: #b58900; }
-        .stat-icon.green { background: #e8f5e9; color: #2e7d32; }
-        .stat-icon.slate { background: #eef2f7; color: #3b4a5a; }
+            .stat-icon.red {
+                background: var(--accent-pale);
+                color: var(--accent);
+            }
+
+            .stat-icon.gold {
+                background: #fff3cd;
+                color: #b58900;
+            }
+
+            .stat-icon.green {
+                background: #e8f5e9;
+                color: #2e7d32;
+            }
+
+            .stat-icon.slate {
+                background: #eef2f7;
+                color: #3b4a5a;
+            }
 
         .stat-value {
             font-family: 'DM Serif Display', serif;
@@ -84,9 +115,20 @@
             display: inline-block;
         }
 
-        .status-pending { background: #fff3cd; color: #b58900; }
-        .status-completed { background: #e8f5e9; color: #2e7d32; }
-        .status-processing { background: #e8ecf3; color: #415a77; }
+        .status-pending {
+            background: #fff3cd;
+            color: #7a5d00;
+        }
+
+        .status-completed {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .status-processing {
+            background: #e8ecf3;
+            color: #415a77;
+        }
 
         .tag {
             display: inline-block;
@@ -96,7 +138,28 @@
             background: var(--accent-pale);
             color: var(--accent);
             margin: 2px;
+            cursor: pointer;
+            border: none;
         }
+
+            .tag:focus-visible {
+                outline: 2px solid var(--accent);
+                outline-offset: 2px;
+            }
+
+        .tag-detail {
+            font-size: 11px;
+            color: var(--text-light);
+            background: #f6f7f9;
+            border-radius: 8px;
+            padding: 8px 10px;
+            margin: 4px 2px 10px;
+            display: none;
+        }
+
+            .tag-detail.open {
+                display: block;
+            }
 
         .panel {
             background: var(--surface);
@@ -112,6 +175,181 @@
             font-size: 13px;
         }
 
+        /* --- Table toolbar --- */
+        .table-toolbar {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+
+            .table-toolbar input[type="search"] {
+                flex: 1;
+                min-width: 140px;
+                padding: 6px 10px;
+                border: 1px solid var(--border);
+                border-radius: 8px;
+                font-size: 12px;
+            }
+
+            .table-toolbar select {
+                padding: 6px 10px;
+                border: 1px solid var(--border);
+                border-radius: 8px;
+                font-size: 12px;
+                background: #fff;
+            }
+
+        th.sortable {
+            cursor: pointer;
+            user-select: none;
+            white-space: nowrap;
+        }
+
+            th.sortable .bi {
+                font-size: 10px;
+                opacity: 0.5;
+                margin-left: 4px;
+            }
+
+            th.sortable.sort-active .bi {
+                opacity: 1;
+            }
+
+        .row-fade {
+            transition: opacity 0.15s ease;
+        }
+
+        .row-hidden {
+            display: none;
+        }
+
+        .link-btn {
+            background: none;
+            border: none;
+            color: var(--accent);
+            padding: 0;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+            .link-btn:hover {
+                text-decoration: underline;
+            }
+
+        /* --- Modal --- */
+        .result-modal-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(20,24,30,0.45);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+            .result-modal-backdrop.open {
+                display: flex;
+            }
+
+        .result-modal {
+            background: #fff;
+            border-radius: 14px;
+            max-width: 420px;
+            width: 90%;
+            padding: 22px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+        }
+
+            .result-modal h3 {
+                font-family: 'DM Serif Display', serif;
+                font-size: 18px;
+                margin: 0 0 4px;
+            }
+
+            .result-modal .modal-sub {
+                font-size: 12px;
+                color: var(--text-light);
+                margin-bottom: 16px;
+            }
+
+            .result-modal .modal-close {
+                background: none;
+                border: none;
+                font-size: 20px;
+                float: right;
+                cursor: pointer;
+                color: var(--text-light);
+                line-height: 1;
+            }
+
+        /* --- Toast --- */
+        .toast-stack {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1100;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .toast-msg {
+            background: #2e2e2e;
+            color: #fff;
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            opacity: 0;
+            transform: translateY(6px);
+            transition: 0.25s ease;
+        }
+
+            .toast-msg.show {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0,0,0,0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        .action-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--accent-pale);
+            color: var(--accent);
+            padding: 6px 12px;
+            border-radius: 18px;
+            font-size: 10px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: 0.15s ease;
+        }
+
+            .action-btn:hover {
+                background: var(--accent);
+                color: #fff;
+                text-decoration: none;
+            }
+
+            .action-btn:focus-visible {
+                outline: 2px solid var(--accent);
+                outline-offset: 2px;
+            }
+
+            .action-btn i {
+                font-size: 8px;
+            }
     </style>
 }
 
@@ -120,11 +358,40 @@
 
     <div>
         <h2 style="margin:0;">
-            Welcome, Ntando 👋
+            Welcome, Ntando
         </h2>
-        <div style="font-size:12px;color:var(--text-light);">
-            Friday, 22 May 2026
+        <div style="font-size:12px;color:var(--text-light);" id="todayDate">
         </div>
+
+        <script>
+                    (function () {
+                        function updateDate() {
+                            var el = document.getElementById('todayDate');
+                            var today = new Date();
+                            var formatted = today.toLocaleDateString('en-ZA', {
+                                weekday: 'long',
+                                day: 'numeric',
+                                month: 'long',
+                                year: 'numeric'
+                            });
+                            el.textContent = formatted;
+                        }
+
+                        updateDate();
+
+                        // re-check at the top of every minute so it flips over
+                        // to the new day automatically if the dashboard stays open
+                        function scheduleNextCheck() {
+                            var now = new Date();
+                            var msToNextMinute = (60 - now.getSeconds()) * 1000;
+                            setTimeout(function () {
+                                updateDate();
+                                scheduleNextCheck();
+                            }, msToNextMinute);
+                        }
+                        scheduleNextCheck();
+                    })();
+        </script>
     </div>
 
     <a href="~/Patient/TestRequests"
@@ -135,39 +402,33 @@
 </div>
 
 <!-- STATS -->
-<div class="stat-grid">
+<div class="stat-grid" id="statGrid" role="group" aria-label="Test request filters">
 
-    <div class="stat-card">
-        <div class="stat-icon red"><i class="bi bi-file-medical"></i></div>
+    <button type="button" class="stat-card" data-filter="all" aria-pressed="true" title="Show all requests">
+        <div class="stat-icon red" aria-hidden="true"><i class="bi bi-file-medical"></i></div>
         <div>
-            <div class="stat-value">4</div>
+            <div class="stat-value" data-count="4">0</div>
             <div class="stat-label">Total Requests</div>
         </div>
-    </div>
+    </button>
 
-    <div class="stat-card">
-        <div class="stat-icon gold"><i class="bi bi-hourglass-split"></i></div>
+    <button type="button" class="stat-card" data-filter="pending" aria-pressed="false" title="Show pending requests only">
+        <div class="stat-icon gold" aria-hidden="true"><i class="bi bi-hourglass-split"></i></div>
         <div>
-            <div class="stat-value">2</div>
+            <div class="stat-value" data-count="2">0</div>
             <div class="stat-label">Pending</div>
         </div>
-    </div>
+    </button>
 
-    <div class="stat-card">
-        <div class="stat-icon green"><i class="bi bi-check-circle"></i></div>
+    <button type="button" class="stat-card" data-filter="completed" aria-pressed="false" title="Show completed requests only">
+        <div class="stat-icon green" aria-hidden="true"><i class="bi bi-check-circle"></i></div>
         <div>
-            <div class="stat-value">2</div>
+            <div class="stat-value" data-count="2">0</div>
             <div class="stat-label">Completed</div>
         </div>
-    </div>
+    </button>
 
-    <div class="stat-card">
-        <div class="stat-icon slate"><i class="bi bi-shield-check"></i></div>
-        <div>
-            <div class="stat-value">2</div>
-            <div class="stat-label">Consents</div>
-        </div>
-    </div>
+  
 
 </div>
 
@@ -178,50 +439,74 @@
     <div>
 
         <div class="section-heading">
-            <i class="bi bi-file-medical" style="color:var(--accent);"></i>
+            <i class="bi bi-file-medical" style="color:var(--accent);" aria-hidden="true"></i>
             Recent Test Requests
         </div>
 
         <div class="panel">
 
-            <table class="table table-sm">
+            <div class="table-toolbar">
+                <label class="sr-only" for="testSearch">Search test requests</label>
+                <input type="search" id="testSearch" placeholder="Search by date or status...">
+
+                <label class="sr-only" for="statusFilter">Filter by status</label>
+                <select id="statusFilter">
+                    <option value="">All statuses</option>
+                    <option value="completed">Completed</option>
+                    <option value="pending">Pending</option>
+                    <option value="processing">Processing</option>
+                </select>
+            </div>
+
+            <table class="table table-sm" id="testTable">
                 <thead>
                     <tr>
-                        <th>Date</th>
-                        <th>Status</th>
-                        <th>Action</th>
+                        <th class="sortable" data-sort="date" scope="col">
+                            Date <i class="bi bi-arrow-down-up"></i>
+                        </th>
+                        <th class="sortable" data-sort="status" scope="col">
+                            Status <i class="bi bi-arrow-down-up"></i>
+                        </th>
+                        <th scope="col">Action</th>
                     </tr>
                 </thead>
 
                 <tbody>
 
-                    <tr>
+                    <tr class="test-row" data-status="completed" data-date="2026-05-10">
                         <td>10 May 2026</td>
                         <td><span class="status-badge status-completed">Completed</span></td>
-                        <td><a href="/Patient/ViewResult/1">View</a></td>
+                        <td>
+                            <a href="~/Patient/TestRequests" class="action-btn">
+                                Go to Results <i class="bi bi-arrow-right"></i>
+                            </a>
+                        </td>
                     </tr>
 
-                    <tr>
+                    <tr class="test-row" data-status="pending" data-date="2026-05-15">
                         <td>15 May 2026</td>
                         <td><span class="status-badge status-pending">Pending</span></td>
-                        <td>Waiting</td>
+                        <td><span style="font-size:12px;color:var(--text-light);">Waiting</span></td>
                     </tr>
 
-                    <tr>
+                    <tr class="test-row" data-status="processing" data-date="2026-05-18">
                         <td>18 May 2026</td>
                         <td><span class="status-badge status-processing">Processing</span></td>
-                        <td>In progress</td>
+                        <td><span style="font-size:12px;color:var(--text-light);">Est. 2-3 days</span></td>
                     </tr>
 
                 </tbody>
 
             </table>
 
+            <div class="empty" id="noResultsMsg" style="display:none;">
+                No test requests match your search or filter.
+            </div>
+
         </div>
 
-        <a href="~/Patient/TestRequests"
-           style="font-size:12px;color:var(--accent);display:block;margin-top:8px;">
-            View all →
+        <a href="~/Patient/TestRequests" class="action-btn">
+            Go to Results <i class="bi bi-arrow-right"></i>
         </a>
 
     </div>
@@ -230,37 +515,222 @@
     <div>
 
         <div class="section-heading">
-            <i class="bi bi-heart-pulse" style="color:var(--accent);"></i>
+            <i class="bi bi-heart-pulse" style="color:var(--accent);" aria-hidden="true"></i>
             Medical Summary
         </div>
 
         <div class="panel">
 
-            <div style="margin-bottom:12px;">
+            <div style="margin-bottom:4px;">
                 <strong style="font-size:12px;">Conditions</strong><br />
-                <span class="tag">Diabetes</span>
-                <span class="tag">Hypertension</span>
+                <button type="button" class="tag" data-detail="detail-diabetes" aria-expanded="false">Diabetes</button>
+                <button type="button" class="tag" data-detail="detail-hyper" aria-expanded="false">Hypertension</button>
+                <div class="tag-detail" id="detail-diabetes">Type 2 Diabetes — diagnosed Mar 2022. Managed by Dr. Naidoo.</div>
+                <div class="tag-detail" id="detail-hyper">Hypertension — diagnosed Aug 2023. Managed by Dr. Naidoo.</div>
             </div>
 
-            <div style="margin-bottom:12px;">
+            <div style="margin-bottom:4px;">
                 <strong style="font-size:12px;">Allergies</strong><br />
-                <span class="tag" style="background:#fff3cd;color:#b58900;">Penicillin</span>
-                <span class="tag" style="background:#fff3cd;color:#b58900;">Latex</span>
+                <button type="button" class="tag" style="background:#fff3cd;color:#7a5d00;" data-detail="detail-pen" aria-expanded="false">Penicillin</button>
+                <button type="button" class="tag" style="background:#fff3cd;color:#7a5d00;" data-detail="detail-latex" aria-expanded="false">Latex</button>
+                <div class="tag-detail" id="detail-pen">Penicillin — severe reaction (rash, swelling). Recorded May 2019.</div>
+                <div class="tag-detail" id="detail-latex">Latex — mild reaction (contact dermatitis). Recorded May 2019.</div>
             </div>
 
             <div>
                 <strong style="font-size:12px;">Medications</strong><br />
-                <span class="tag" style="background:#eef2f7;color:#3b4a5a;">Metformin</span>
-                <span class="tag" style="background:#eef2f7;color:#3b4a5a;">Aspirin</span>
+                <button type="button" class="tag" style="background:#eef2f7;color:#3b4a5a;" data-detail="detail-metformin" aria-expanded="false">Metformin</button>
+                <button type="button" class="tag" style="background:#eef2f7;color:#3b4a5a;" data-detail="detail-aspirin" aria-expanded="false">Aspirin</button>
+                <div class="tag-detail" id="detail-metformin">Metformin 500mg — twice daily, prescribed by Dr. Naidoo.</div>
+                <div class="tag-detail" id="detail-aspirin">Aspirin 75mg — once daily, prescribed by Dr. Naidoo.</div>
             </div>
 
         </div>
 
-        <a href="~/Patient/MedicalHistory"
-           style="font-size:12px;color:var(--accent);display:block;margin-top:8px;">
-            Update history →
+        <a href="~/Patient/TestRequests" class="action-btn">
+            Update History <i class="bi bi-arrow-right"></i>
         </a>
 
     </div>
 
 </div>
+
+<!-- RESULT MODAL -->
+<div class="result-modal-backdrop" id="resultModalBackdrop" role="dialog" aria-modal="true" aria-labelledby="resultModalTitle">
+    <div class="result-modal">
+        <button type="button" class="modal-close" id="resultModalClose" aria-label="Close">&times;</button>
+        <h3 id="resultModalTitle">Test Result</h3>
+        <div class="modal-sub" id="resultModalDate"></div>
+        <p style="font-size:13px;line-height:1.5;margin-bottom:16px;">
+            This is a placeholder summary. Connect this modal to your results endpoint to show the full report here.
+        </p>
+        <a id="resultModalFullLink" href="#" style="font-size:13px;color:var(--accent);">Open full result page →</a>
+    </div>
+</div>
+
+<!-- TOASTS -->
+<div class="toast-stack" id="toastStack" aria-live="polite"></div>
+
+@section Scripts {
+    <script>
+        (function () {
+            // ---------- Count-up animation ----------
+            document.querySelectorAll('.stat-value[data-count]').forEach(function (el) {
+                var target = parseInt(el.getAttribute('data-count'), 10) || 0;
+                var current = 0;
+                var step = Math.max(1, Math.ceil(target / 20));
+                var timer = setInterval(function () {
+                    current += step;
+                    if (current >= target) {
+                        current = target;
+                        clearInterval(timer);
+                    }
+                    el.textContent = current;
+                }, 30);
+            });
+
+            // ---------- Toast helper ----------
+            function showToast(message) {
+                var stack = document.getElementById('toastStack');
+                var toast = document.createElement('div');
+                toast.className = 'toast-msg';
+                toast.textContent = message;
+                stack.appendChild(toast);
+                requestAnimationFrame(function () { toast.classList.add('show'); });
+                setTimeout(function () {
+                    toast.classList.remove('show');
+                    setTimeout(function () { toast.remove(); }, 300);
+                }, 2500);
+            }
+
+            // ---------- Stat card filtering ----------
+            var statCards = document.querySelectorAll('.stat-card');
+            var statusSelect = document.getElementById('statusFilter');
+
+            statCards.forEach(function (card) {
+                card.addEventListener('click', function () {
+                    statCards.forEach(function (c) {
+                        c.classList.remove('active');
+                        c.setAttribute('aria-pressed', 'false');
+                    });
+                    card.classList.add('active');
+                    card.setAttribute('aria-pressed', 'true');
+
+                    var filter = card.getAttribute('data-filter');
+
+                    if (filter === 'consents') {
+                        showToast('Consents are managed on the Update History page.');
+                        return;
+                    }
+
+                    statusSelect.value = (filter === 'all') ? '' : filter;
+                    applyFilters();
+                });
+            });
+            // set default active state
+            document.querySelector('.stat-card[data-filter="all"]').classList.add('active');
+
+            // ---------- Search + filter + sort ----------
+            var searchInput = document.getElementById('testSearch');
+            var tableBody = document.querySelector('#testTable tbody');
+            var noResultsMsg = document.getElementById('noResultsMsg');
+            var sortState = { key: null, dir: 1 };
+
+            function applyFilters() {
+                var query = searchInput.value.trim().toLowerCase();
+                var status = statusSelect.value;
+                var visibleCount = 0;
+
+                document.querySelectorAll('.test-row').forEach(function (row) {
+                    var rowStatus = row.getAttribute('data-status');
+                    var text = row.textContent.toLowerCase();
+                    var matchesStatus = !status || rowStatus === status;
+                    var matchesQuery = !query || text.indexOf(query) !== -1;
+                    var visible = matchesStatus && matchesQuery;
+                    row.classList.toggle('row-hidden', !visible);
+                    if (visible) visibleCount++;
+                });
+
+                noResultsMsg.style.display = visibleCount === 0 ? 'block' : 'none';
+            }
+
+            searchInput.addEventListener('input', applyFilters);
+            statusSelect.addEventListener('change', function () {
+                // clicking the dropdown directly clears the stat-card highlight
+                statCards.forEach(function (c) {
+                    c.classList.remove('active');
+                    c.setAttribute('aria-pressed', 'false');
+                });
+                if (!statusSelect.value) {
+                    document.querySelector('.stat-card[data-filter="all"]').classList.add('active');
+                }
+                applyFilters();
+            });
+
+            document.querySelectorAll('th.sortable').forEach(function (th) {
+                th.addEventListener('click', function () {
+                    var key = th.getAttribute('data-sort');
+                    sortState.dir = (sortState.key === key) ? sortState.dir * -1 : 1;
+                    sortState.key = key;
+
+                    document.querySelectorAll('th.sortable').forEach(function (h) {
+                        h.classList.remove('sort-active');
+                    });
+                    th.classList.add('sort-active');
+
+                    var rows = Array.prototype.slice.call(tableBody.querySelectorAll('.test-row'));
+                    rows.sort(function (a, b) {
+                        var av = key === 'date' ? a.getAttribute('data-date') : a.getAttribute('data-status');
+                        var bv = key === 'date' ? b.getAttribute('data-date') : b.getAttribute('data-status');
+                        if (av < bv) return -1 * sortState.dir;
+                        if (av > bv) return 1 * sortState.dir;
+                        return 0;
+                    });
+                    rows.forEach(function (row) { tableBody.appendChild(row); });
+                });
+            });
+
+            // ---------- Result modal ----------
+            var backdrop = document.getElementById('resultModalBackdrop');
+            var modalDate = document.getElementById('resultModalDate');
+            var modalFullLink = document.getElementById('resultModalFullLink');
+            var lastFocused = null;
+
+            function openModal(id, dateLabel) {
+                lastFocused = document.activeElement;
+                modalDate.textContent = 'Recorded ' + dateLabel;
+                modalFullLink.href = '/Patient/ViewResult/' + id;
+                backdrop.classList.add('open');
+                document.getElementById('resultModalClose').focus();
+            }
+
+            function closeModal() {
+                backdrop.classList.remove('open');
+                if (lastFocused) lastFocused.focus();
+            }
+
+            document.querySelectorAll('[data-view-result]').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    openModal(btn.getAttribute('data-view-result'), btn.getAttribute('data-date'));
+                });
+            });
+
+            document.getElementById('resultModalClose').addEventListener('click', closeModal);
+            backdrop.addEventListener('click', function (e) {
+                if (e.target === backdrop) closeModal();
+            });
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape' && backdrop.classList.contains('open')) closeModal();
+            });
+
+            // ---------- Expandable medical tags ----------
+            document.querySelectorAll('.tag[data-detail]').forEach(function (tag) {
+                tag.addEventListener('click', function () {
+                    var detail = document.getElementById(tag.getAttribute('data-detail'));
+                    var isOpen = detail.classList.toggle('open');
+                    tag.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+                });
+            });
+        })();
+    </script>
+}

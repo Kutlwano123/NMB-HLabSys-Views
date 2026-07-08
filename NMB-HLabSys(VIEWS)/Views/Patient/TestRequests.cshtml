@@ -6,6 +6,8 @@
     // =========================
     // DUMMY DATA (STATIC ONLY)
     // =========================
+    // Status is one of only two values: "Completed" or "Pending".
+    // A result is only ever viewable once the status is "Completed".
     var testRequests = new[]
     {
         new {
@@ -14,7 +16,6 @@
             TestName = "Full Blood Count",
             Category = "Haematology",
             Status = "Completed",
-            HasResult = true,
             ResultId = 101
         },
         new {
@@ -22,8 +23,7 @@
             Date = new DateTime(2026, 2, 15),
             TestName = "Glucose Test",
             Category = "Chemical Pathology",
-            Status = "In Progress",
-            HasResult = true,
+            Status = "Completed",
             ResultId = 102
         },
         new {
@@ -32,7 +32,6 @@
             TestName = "Lipid Profile",
             Category = "Biochemistry",
             Status = "Pending",
-            HasResult = false,
             ResultId = 0
         },
         new {
@@ -40,11 +39,12 @@
             Date = new DateTime(2026, 4, 5),
             TestName = "Vitamin D Test",
             Category = "Endocrinology",
-            Status = "Urgent",
-            HasResult = false,
+            Status = "Pending",
             ResultId = 0
         }
     };
+
+    var distinctTestNames = testRequests.Select(r => r.TestName).Distinct().OrderBy(n => n).ToList();
 }
 
 @section Styles {
@@ -67,16 +67,6 @@
             color: #3a6b3a;
         }
 
-        .status-urgent {
-            background: var(--accent-pale);
-            color: var(--accent);
-        }
-
-        .status-progress {
-            background: #e8eaee;
-            color: #3a4a5a;
-        }
-
         .result-btn {
             background: var(--accent);
             color: white;
@@ -87,11 +77,85 @@
             display: inline-flex;
             align-items: center;
             gap: 6px;
+            border: none;
+            cursor: pointer;
         }
 
-        .pending-text {
-            font-size: 11px;
+            .result-btn:hover {
+                opacity: 0.9;
+            }
+
+            .result-btn.disabled {
+                background: #e3e3e3;
+                color: #9a9a9a;
+                cursor: not-allowed;
+                pointer-events: none;
+            }
+
+        /* --- Toolbar --- */
+        .requests-toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: flex-end;
+            padding: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .toolbar-field {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+            .toolbar-field label {
+                font-size: 11px;
+                font-weight: 600;
+                color: var(--text-light);
+            }
+
+            .toolbar-field input,
+            .toolbar-field select {
+                padding: 7px 10px;
+                border: 1px solid var(--border);
+                border-radius: 8px;
+                font-size: 12.5px;
+                background: #fff;
+            }
+
+        #searchInput {
+            min-width: 200px;
+        }
+
+        .toolbar-field.grow {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .clear-filters-btn {
+            background: none;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 7px 12px;
+            font-size: 12px;
             color: var(--text-light);
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+            .clear-filters-btn:hover {
+                background: #f4f4f4;
+            }
+
+        .empty-state {
+            text-align: center;
+            padding: 30px 20px;
+            color: var(--text-light);
+            font-size: 13px;
+        }
+
+        .request-row.row-hidden {
+            display: none;
         }
     </style>
 }
@@ -106,7 +170,52 @@
 
 <!-- TABLE -->
 <div class="card" style="padding:0;overflow:hidden;">
-    <table class="table" style="margin:0;">
+
+    <!-- TOOLBAR -->
+    <div class="requests-toolbar">
+
+        <div class="toolbar-field grow">
+            <label for="searchInput">Search</label>
+            <input type="search" id="searchInput" placeholder="Search by test type or category...">
+        </div>
+
+        @* <div class="toolbar-field">
+            <label for="testTypeFilter">Test Type</label>
+            <select id="testTypeFilter">
+                <option value="">All types</option>
+                @foreach (var name in distinctTestNames)
+                {
+                    <option value="@name">@name</option>
+                }
+            </select>
+        </div> *@
+
+        <div class="toolbar-field">
+            <label for="statusFilter">Status</label>
+            <select id="statusFilter">
+                <option value="">All statuses</option>
+                <option value="Completed">Completed</option>
+                <option value="Pending">Pending</option>
+            </select>
+        </div>
+
+        <div class="toolbar-field">
+            <label for="dateFromFilter">From</label>
+            <input type="date" id="dateFromFilter">
+        </div>
+
+        <div class="toolbar-field">
+            <label for="dateToFilter">To</label>
+            <input type="date" id="dateToFilter">
+        </div>
+
+        <button type="button" class="clear-filters-btn" id="clearFiltersBtn">
+            Clear filters
+        </button>
+
+    </div>
+
+    <table class="table" style="margin:0;" id="requestsTable">
         <thead>
             <tr>
                 <th>#</th>
@@ -114,7 +223,6 @@
                 <th>Test Type</th>
                 <th>Category</th>
                 <th>Status</th>
-                <th>Result Status</th>
                 <th>Action</th>
             </tr>
         </thead>
@@ -126,15 +234,14 @@
 
             @foreach (var r in testRequests)
             {
-                var statusClass = r.Status switch
-                {
-                    "Completed" => "status-complete",
-                    "Urgent" => "status-urgent",
-                    "In Progress" => "status-progress",
-                    _ => "status-pending"
-                };
+                bool isCompleted = r.Status == "Completed";
+                var statusClass = isCompleted ? "status-complete" : "status-pending";
 
-                <tr>
+                <tr class="request-row"
+                    data-test="@r.TestName"
+                    data-category="@r.Category"
+                    data-status="@r.Status"
+                    data-date="@r.Date.ToString("yyyy-MM-dd")">
 
                     <!-- NUMBER -->
                     <td style="font-size:12px;color:var(--text-light);">
@@ -163,32 +270,9 @@
                         </span>
                     </td>
 
-                    <!-- RESULT STATUS -->
-                    <td>
-                        @if (r.HasResult)
-                        {
-                            <span style="font-size:11px;
-                                background:#e8f0e8;
-                                color:#3a6b3a;
-                                padding:3px 8px;
-                                border-radius:10px;">
-
-                                <i class="bi bi-check-circle"></i>
-                                Available
-
-                            </span>
-                        }
-                        else
-                        {
-                            <span class="pending-text">
-                                Awaiting Result
-                            </span>
-                        }
-                    </td>
-
                     <!-- ACTION -->
                     <td>
-                        @if (r.HasResult)
+                        @if (isCompleted)
                         {
                             <a href="~/Patient/ViewResult/@r.ResultId"
                                class="result-btn">
@@ -200,7 +284,16 @@
                         }
                         else
                         {
-                            <span class="pending-text">Pending</span>
+                            <button type="button"
+                                    class="result-btn disabled"
+                                    disabled
+                                    aria-disabled="true"
+                                    title="Result not available yet">
+
+                                <i class="bi bi-eye-slash"></i>
+                                View Result
+
+                            </button>
                         }
                     </td>
 
@@ -210,4 +303,104 @@
             }
         </tbody>
     </table>
+
+    <div class="empty-state" id="emptyState" style="display:none;">
+        No test requests match your search or filters.
+    </div>
+
 </div>
+
+@section Scripts {
+    <script>
+        (function () {
+
+            var searchInput = document.getElementById('searchInput');
+            var statusFilter = document.getElementById('statusFilter');
+            var dateFromFilter = document.getElementById('dateFromFilter');
+            var dateToFilter = document.getElementById('dateToFilter');
+            var clearFiltersBtn = document.getElementById('clearFiltersBtn');
+            var emptyState = document.getElementById('emptyState');
+            var rows = document.querySelectorAll('.request-row');
+
+            function applyFilters() {
+
+                var query = searchInput.value.trim().toLowerCase();
+                var status = statusFilter.value;
+                var fromDate = dateFromFilter.value;
+                var toDate = dateToFilter.value;
+
+                var visibleCount = 0;
+
+                rows.forEach(function (row) {
+
+                    var rowTest = row.getAttribute('data-test');
+                    var rowCategory = row.getAttribute('data-category');
+                    var rowStatus = row.getAttribute('data-status');
+                    var rowDate = row.getAttribute('data-date');
+
+                    // Search
+                    var matchesQuery =
+                        !query ||
+                        rowTest.toLowerCase().includes(query) ||
+                        rowCategory.toLowerCase().includes(query);
+
+                    // Status
+                    var matchesStatus =
+                        !status || rowStatus === status;
+
+                    // Date range
+                    var matchesFrom =
+                        !fromDate || rowDate >= fromDate;
+
+                    var matchesTo =
+                        !toDate || rowDate <= toDate;
+
+                    var visible =
+                        matchesQuery &&
+                        matchesStatus &&
+                        matchesFrom &&
+                        matchesTo;
+
+                    row.classList.toggle("row-hidden", !visible);
+
+                    if (visible) {
+                        visibleCount++;
+                    }
+                });
+
+                emptyState.style.display =
+                    visibleCount === 0 ? "block" : "none";
+            }
+
+            // Apply filters automatically whenever a value changes
+            [
+                searchInput,
+                statusFilter,
+                dateFromFilter,
+                dateToFilter
+            ].forEach(function (element) {
+
+                element.addEventListener("input", applyFilters);
+                element.addEventListener("change", applyFilters);
+
+            });
+
+            // Clear all filters
+            clearFiltersBtn.addEventListener("click", function () {
+
+                searchInput.value = "";
+                statusFilter.value = "";
+                dateFromFilter.value = "";
+                dateToFilter.value = "";
+
+                applyFilters();
+
+            });
+
+            // Initial state
+            applyFilters();
+
+        })();
+    </script>
+
+}

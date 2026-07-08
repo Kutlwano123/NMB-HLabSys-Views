@@ -2,180 +2,349 @@
     ViewData["Title"] = "My Profile";
     ViewData["ActivePage"] = "Profile";
     Layout = "~/Views/Shared/_PatientLayout.cshtml";
+
+    // Safely extract raw string values supplied by the controller
+    string firstName = ViewBag.FirstName as string ?? string.Empty;
+    string surname = ViewBag.Surname as string ?? string.Empty;
+    string idNumber = ViewBag.IdNumber as string ?? string.Empty;
+    string dateOfBirth = ViewBag.DateOfBirth as string ?? string.Empty;
+    string phone = ViewBag.Phone as string ?? string.Empty;
+    string email = ViewBag.Email as string ?? string.Empty;
+    string address = ViewBag.Address as string ?? string.Empty;
 }
 
 @section Styles {
 
-<style>
+    <style>
 
-    .success-alert {
-        background: var(--accent-pale);
-        border: 1px solid rgba(122,48,48,0.2);
-        border-radius: 8px;
-        padding: 10px 14px;
-        font-size: 13px;
-        color: var(--accent);
-        margin-bottom: 18px;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
+        .success-alert {
+            background: #e8f5e9;
+            border: 1px solid #c8e6c9;
+            border-radius: 8px;
+            padding: 10px 14px;
+            font-size: 13px;
+            color: #2e7d32;
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
 
-    .custom-modal {
-        display: none;
-        position: fixed;
-        inset: 0;
-        z-index: 9999;
-        background: rgba(0,0,0,0.45);
-        backdrop-filter: blur(4px);
-        justify-content: center;
-        align-items: center;
-        padding: 20px;
-    }
+        .error-alert {
+            background: #fdecea;
+            border: 1px solid #f5c6cb;
+            border-radius: 8px;
+            padding: 10px 14px;
+            font-size: 13px;
+            color: #a52a2a;
+            margin-bottom: 18px;
+        }
 
-    .custom-modal-content {
-        background: var(--surface);
-        width: 100%;
-        max-width: 520px;
-        border-radius: 18px;
-        padding: 28px;
-        animation: modalFade .25s ease;
-        box-shadow: 0 20px 50px rgba(0,0,0,0.18);
-    }
+        .settings-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            align-items: start;
+        }
 
-    .modal-icon {
-        width: 70px;
-        height: 70px;
-        border-radius: 50%;
-        background: var(--accent-pale);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin: 0 auto 18px;
-    }
+        @@media (max-width: 900px) {
+            .settings-grid {
+                grid-template-columns: 1fr;
+            }
+        }
 
-    .modal-icon i {
-        font-size: 30px;
-        color: var(--accent);
-    }
+        .card h3 {
+            margin-top: 0;
+            font-family: 'DM Serif Display', serif;
+            font-size: 17px;
+        }
 
-    .summary-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 12px;
-        margin-bottom: 20px;
-    }
+        .card-desc {
+            color: var(--text-light);
+            font-size: 12.5px;
+            margin-top: -6px;
+            margin-bottom: 18px;
+        }
 
-    .summary-box {
-        background: var(--bg);
-        border: 1px solid var(--border);
-        border-radius: 10px;
-        padding: 12px;
-    }
+        .form-row.cols-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
 
-    .summary-label {
-        font-size: 11px;
-        color: var(--text-light);
-        margin-bottom: 4px;
-    }
+        .form-group {
+            margin-bottom: 16px;
+        }
 
-    .summary-value {
-        font-size: 13px;
-        font-weight: 600;
-    }
+            .form-group label {
+                display: block;
+                font-size: 12px;
+                font-weight: 600;
+                margin-bottom: 5px;
+                color: var(--text, #2b2b2b);
+            }
 
-    .modal-actions {
-        display: flex;
-        gap: 12px;
-        margin-top: 24px;
-    }
+        .form-control[readonly] {
+            background: #f4f4f4;
+            color: var(--text-light);
+            cursor: not-allowed;
+        }
 
-    .modal-actions button {
-        flex: 1;
-        border: none;
-        border-radius: 10px;
-        padding: 12px;
-        cursor: pointer;
-        font-weight: 600;
-    }
+        .pw-hint {
+            font-size: 11.5px;
+            color: var(--text-light);
+            margin-top: -8px;
+            margin-bottom: 16px;
+        }
 
-    .btn-cancel { background: #ececec; }
-    .btn-save { background: var(--accent); color: white; }
+        .pw-strength-bars span {
+            flex: 1;
+            height: 4px;
+            background: var(--border);
+            border-radius: 2px;
+            transition: background 0.2s;
+        }
 
-    .success-popup {
-        position: fixed;
-        top: 24px;
-        right: 24px;
-        background: #e8f5e9;
-        color: #2e7d32;
-        border: 1px solid #c8e6c9;
-        padding: 14px 18px;
-        border-radius: 10px;
-        display: none;
-        align-items: center;
-        gap: 10px;
-        z-index: 99999;
-    }
+        /* --- Confirm modal (profile save) --- */
+        .custom-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background: rgba(0,0,0,0.45);
+            backdrop-filter: blur(4px);
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
 
-    @@keyframes modalFade {
-        from { opacity: 0; transform: scale(.94); }
-        to { opacity: 1; transform: scale(1); }
-    }
+            .custom-modal.open {
+                display: flex;
+            }
 
-</style>
+        .custom-modal-content {
+            background: var(--surface);
+            width: 100%;
+            max-width: 520px;
+            border-radius: 18px;
+            padding: 28px;
+            animation: modalFade .25s ease;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.18);
+        }
+
+        .modal-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: var(--accent-pale);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 18px;
+        }
+
+            .modal-icon i {
+                font-size: 30px;
+                color: var(--accent);
+            }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .summary-box {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 12px;
+        }
+
+        .summary-label {
+            font-size: 11px;
+            color: var(--text-light);
+            margin-bottom: 4px;
+        }
+
+        .summary-value {
+            font-size: 13px;
+            font-weight: 600;
+            word-break: break-word;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+            .modal-actions button {
+                flex: 1;
+                border: none;
+                border-radius: 10px;
+                padding: 12px;
+                cursor: pointer;
+                font-weight: 600;
+            }
+
+        .btn-cancel {
+            background: #ececec;
+        }
+
+        .btn-save {
+            background: var(--accent);
+            color: white;
+        }
+
+            .btn-save:disabled {
+                opacity: 0.6;
+                cursor: not-allowed;
+            }
+
+        @@keyframes modalFade {
+            from {
+                opacity: 0;
+                transform: scale(.94);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+    </style>
 
 }
 
 <div style="margin-bottom:20px;">
     <h2 style="margin:0;">My Profile</h2>
     <p style="color:var(--text-light);font-size:13px;margin-top:4px;">
-        View and update your personal details
+        View and update your personal details, contact information, and password.
     </p>
 </div>
 
-<div class="card" style="max-width:700px;">
+@if (TempData["ProfileSuccess"] != null)
+{
+    <div class="success-alert" role="status">
+        <i class="bi bi-check-circle-fill"></i>
+        @TempData["ProfileSuccess"]
+    </div>
+}
 
-    <form id="profileForm">
+@if (TempData["ProfileError"] != null)
+{
+    <div class="error-alert" role="alert">
+        @TempData["ProfileError"]
+    </div>
+}
 
-        <!-- STATIC INPUTS -->
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
-            <input id="nameInput" class="form-control" value="Ntando" placeholder="First Name" />
-            <input id="surnameInput" class="form-control" value="Mbeki" placeholder="Surname" />
-        </div>
+<div class="settings-grid">
 
-        <div style="margin-bottom:16px;">
-            <input id="saIdNumber" class="form-control" value="0203056123456" maxlength="13" placeholder="SA ID" />
-        </div>
+    <!-- PROFILE & CONTACT -->
+    <section class="card">
 
-        <div style="margin-bottom:16px;">
-            <input id="dateOfBirth" class="form-control" value="2002-03-05" readonly />
-        </div>
+        <h3>Profile &amp; Contact</h3>
+        <p class="card-desc">Update your personal and contact details. Your current password is required to save changes.</p>
 
-        <div style="margin-bottom:16px;">
-            <input id="phoneInput" class="form-control" value="0712345678" />
-        </div>
+        <form id="profileForm" asp-action="UpdateProfile" asp-controller="Patient" method="post">
+            @Html.AntiForgeryToken()
 
-        <div style="margin-bottom:16px;">
-            <input id="emailInput" class="form-control" value="ntando@email.com" />
-        </div>
+            <div class="form-row cols-2">
+                <div class="form-group">
+                    <label for="nameInput">First Name</label>
+                    <input id="nameInput" name="firstName" class="form-control" value="@firstName" placeholder="First Name" autocomplete="given-name" required />
+                </div>
+                <div class="form-group">
+                    <label for="surnameInput">Surname</label>
+                    <input id="surnameInput" name="surname" class="form-control" value="@surname" placeholder="Surname" autocomplete="family-name" required />
+                </div>
+            </div>
 
-        <div style="margin-bottom:24px;">
-            <input id="addressInput" class="form-control" value="Cape Road, Gqeberha" />
-        </div>
+            <div class="form-group">
+                <label for="saIdNumber">SA ID Number</label>
+                <input id="saIdNumber" name="idNumber" class="form-control" value="@idNumber" maxlength="13" inputmode="numeric" pattern="\d{13}" placeholder="13-digit SA ID number" />
+                @* <div class="pw-hint" id="idHint">Your date of birth is worked out automatically from the first 6 digits.</div> *@
+                <div class="pw-hint" id="idErrorHint" style="display:none;color:#a52a2a;">That doesn't look like a valid SA ID number — check the first 6 digits (YYMMDD).</div>
+            </div>
 
-        <button type="button"
-                onclick="openProfileModal()"
-                class="btn-primary">
-            <i class="bi bi-save"></i>
-            Save Changes
-        </button>
+            <div class="form-group">
+                <label for="dateOfBirth">Date of Birth</label>
+                <input id="dateOfBirth" name="dateOfBirth" class="form-control" value="@dateOfBirth" readonly title="Calculated automatically from your ID number" />
+            </div>
 
-    </form>
+            <div class="form-row cols-2">
+                <div class="form-group">
+                    <label for="phoneInput">Phone Number</label>
+                    <input id="phoneInput" name="phone" type="tel" class="form-control" value="@phone" placeholder="+27 …" autocomplete="tel" required />
+                </div>
+                <div class="form-group">
+                    <label for="emailInput">Email Address</label>
+                    <input id="emailInput" name="email" type="email" class="form-control" value="@email" autocomplete="email" required />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="addressInput">Address</label>
+                <input id="addressInput" name="address" class="form-control" value="@address" placeholder="Street, City" autocomplete="street-address" required />
+            </div>
+
+            
+
+            <button type="button" class="btn-primary" onclick="openProfileModal()">
+                <i class="bi bi-save"></i>
+                Save Changes
+            </button>
+
+        </form>
+
+    </section>
+
+    <!-- CHANGE PASSWORD -->
+    <section class="card">
+
+        <h3>Change Password</h3>
+        <p class="card-desc">Choose a strong password with at least 8 characters, including uppercase, a number, and a special character.</p>
+
+        <form asp-action="UpdatePassword" asp-controller="Patient" method="post">
+            @Html.AntiForgeryToken()
+
+            <div class="form-group" style="margin-top:15px;padding-top:15px;border-top:1px solid #eee;">
+                <label for="currentPasswordProfile">Confirm Current Password <span class="text-danger">*</span></label>
+                <input id="currentPasswordProfile" name="currentPassword" type="password" class="form-control" autocomplete="current-password" required />
+            </div>
+
+            <div class="form-group">
+                <label for="pwdNew">New Password</label>
+                <input id="pwdNew" name="newPassword" type="password" class="form-control" autocomplete="new-password" required />
+                <div class="pw-strength-bars" id="pwBars" aria-hidden="true" style="display:flex;gap:4px;margin-top:5px;">
+                    <span></span><span></span><span></span><span></span>
+                </div>
+                <div class="pw-hint">Uppercase, number, and special character all improve strength.</div>
+            </div>
+
+            <div class="form-group">
+                <label for="pwdConfirm">Confirm New Password</label>
+                <input id="pwdConfirm" name="confirmPassword" type="password" class="form-control" autocomplete="new-password" required />
+                <div class="pw-hint" id="pwMatchHint" style="display:none;color:#a52a2a;">Passwords don't match.</div>
+            </div>
+
+            <button type="submit" class="btn-primary" id="pwSubmitBtn">
+                <i class="bi bi-shield-lock"></i>
+                Update Password
+            </button>
+            
+
+        </form>
+
+    </section>
 
 </div>
 
-<!-- MODAL -->
-<div id="profileModal" class="custom-modal">
+<!-- PROFILE CONFIRM MODAL -->
+<div id="profileModal" class="custom-modal" role="dialog" aria-modal="true" aria-labelledby="profileModalTitle">
 
     <div class="custom-modal-content">
 
@@ -183,8 +352,8 @@
             <i class="bi bi-person-check"></i>
         </div>
 
-        <h3 style="text-align:center;">Confirm Profile Update</h3>
-        <p style="text-align:center;">Review details before saving</p>
+        <h3 id="profileModalTitle" style="text-align:center;">Confirm Profile Update</h3>
+        <p style="text-align:center;color:var(--text-light);font-size:13px;">Review your details before saving</p>
 
         <div class="summary-grid">
 
@@ -199,11 +368,6 @@
             </div>
 
             <div class="summary-box">
-                <div class="summary-label">DOB</div>
-                <div class="summary-value" id="summaryDob"></div>
-            </div>
-
-            <div class="summary-box">
                 <div class="summary-label">Phone</div>
                 <div class="summary-value" id="summaryPhone"></div>
             </div>
@@ -213,7 +377,7 @@
                 <div class="summary-value" id="summaryEmail"></div>
             </div>
 
-            <div class="summary-box">
+            <div class="summary-box" style="grid-column:1 / -1;">
                 <div class="summary-label">Address</div>
                 <div class="summary-value" id="summaryAddress"></div>
             </div>
@@ -226,8 +390,8 @@
                 Cancel
             </button>
 
-            <button class="btn-save" type="button" onclick="submitProfileForm()">
-                Confirm
+            <button class="btn-save" type="button" id="confirmSaveBtn" onclick="submitProfileForm()">
+                Confirm &amp; Save
             </button>
 
         </div>
@@ -236,56 +400,154 @@
 
 </div>
 
-<!-- SUCCESS -->
-<div id="successPopup" class="success-popup">
-    <i class="bi bi-check-circle-fill"></i>
-    Profile updated successfully.
-</div>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        (function () {
+            // ---------- Profile confirm modal ----------
+            var modal = document.getElementById('profileModal');
+            var lastFocused = null;
 
-<script>
+            window.openProfileModal = function () {
+                var form = document.getElementById('profileForm');
+                if (!form.reportValidity()) return; // require native validation (incl. current password) first
 
-    function openProfileModal() {
+                document.getElementById('summaryName').innerText = document.getElementById('nameInput').value;
+                document.getElementById('summarySurname').innerText = document.getElementById('surnameInput').value;
+                document.getElementById('summaryPhone').innerText = document.getElementById('phoneInput').value;
+                document.getElementById('summaryEmail').innerText = document.getElementById('emailInput').value;
+                document.getElementById('summaryAddress').innerText = document.getElementById('addressInput').value;
 
-        document.getElementById("summaryName").innerText =
-            document.getElementById("nameInput").value;
+                lastFocused = document.activeElement;
+                modal.classList.add('open');
+                document.getElementById('confirmSaveBtn').focus();
+            };
 
-        document.getElementById("summarySurname").innerText =
-            document.getElementById("surnameInput").value;
+            window.closeProfileModal = function () {
+                modal.classList.remove('open');
+                if (lastFocused) lastFocused.focus();
+            };
 
-        document.getElementById("summaryDob").innerText =
-            document.getElementById("dateOfBirth").value;
+            window.submitProfileForm = function () {
+                var btn = document.getElementById('confirmSaveBtn');
+                btn.disabled = true;
+                btn.textContent = 'Saving…';
+                document.getElementById('profileForm').submit();
+            };
 
-        document.getElementById("summaryPhone").innerText =
-            document.getElementById("phoneInput").value;
+            modal.addEventListener('click', function (e) {
+                if (e.target === modal) closeProfileModal();
+            });
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape' && modal.classList.contains('open')) closeProfileModal();
+            });
 
-        document.getElementById("summaryEmail").innerText =
-            document.getElementById("emailInput").value;
+            // ---------- SA ID number → auto date of birth ----------
+            var idInput = document.getElementById('saIdNumber');
+            var dobInput = document.getElementById('dateOfBirth');
+            var idErrorHint = document.getElementById('idErrorHint');
 
-        document.getElementById("summaryAddress").innerText =
-            document.getElementById("addressInput").value;
+            function pad(n) {
+                return n < 10 ? '0' + n : '' + n;
+            }
 
-        document.getElementById("profileModal").style.display = "flex";
-    }
+            // Reads the first 6 digits (YYMMDD) of an SA ID number and returns
+            // an { year, month, day } object, or null if they don't form a real date.
+            function parseDobFromId(id) {
+                if (!/^\d{6}/.test(id)) return null;
 
-    function closeProfileModal() {
-        document.getElementById("profileModal").style.display = "none";
-    }
+                var yy = parseInt(id.substring(0, 2), 10);
+                var mm = parseInt(id.substring(2, 4), 10);
+                var dd = parseInt(id.substring(4, 6), 10);
 
-    function submitProfileForm() {
+                if (mm < 1 || mm > 12) return null;
 
-        closeProfileModal();
+                // SA ID numbers don't encode the century directly, so we use the
+                // common convention: if treating yy as 20yy gives a future date,
+                // it must actually be 19yy instead.
+                var currentYear = new Date().getFullYear();
+                var currentYY = currentYear % 100;
+                var century = (yy <= currentYY) ? 2000 : 1900;
+                var fullYear = century + yy;
 
-        document.getElementById("successPopup").style.display = "flex";
+                var date = new Date(fullYear, mm - 1, dd);
+                var isRealDate = date.getFullYear() === fullYear &&
+                    date.getMonth() === mm - 1 &&
+                    date.getDate() === dd;
 
-        setTimeout(() => {
-            // fake submit (prototype only)
-            document.getElementById("successPopup").style.display = "none";
-        }, 1500);
-    }
+                if (!isRealDate) return null;
 
-    window.onclick = function (event) {
-        const modal = document.getElementById("profileModal");
-        if (event.target === modal) closeProfileModal();
-    };
+                return { year: fullYear, month: mm, day: dd };
+            }
 
-</script>
+            function updateDobFromId() {
+                var digitsOnly = idInput.value.replace(/\D/g, '');
+                if (digitsOnly !== idInput.value) {
+                    idInput.value = digitsOnly;
+                }
+
+                if (digitsOnly.length < 6) {
+                    dobInput.value = '';
+                    idErrorHint.style.display = 'none';
+                    idInput.setCustomValidity('');
+                    return;
+                }
+
+                var dob = parseDobFromId(digitsOnly);
+
+                if (!dob) {
+                    dobInput.value = '';
+                    idErrorHint.style.display = 'block';
+                    idInput.setCustomValidity('Invalid SA ID number');
+                    return;
+                }
+
+                idErrorHint.style.display = 'none';
+                idInput.setCustomValidity('');
+                dobInput.value = dob.year + '-' + pad(dob.month) + '-' + pad(dob.day);
+            }
+
+            if (idInput && dobInput) {
+                idInput.addEventListener('input', updateDobFromId);
+                // populate on page load in case the ID field already has a value
+                updateDobFromId();
+            }
+
+            // ---------- Password strength meter ----------
+
+            var pwInput = document.getElementById('pwdNew');
+            var bars = document.querySelectorAll('#pwBars span');
+            if (pwInput && bars.length) {
+                pwInput.addEventListener('input', function () {
+                    var pw = pwInput.value;
+                    var score = [pw.length >= 8, /[A-Z]/.test(pw), /\d/.test(pw), /[^a-zA-Z\d]/.test(pw)].filter(Boolean).length;
+                    var colors = ['#e0e0e0', '#c41e3a', '#8a6a20', '#2d5a4a', '#2d5a4a'];
+                    bars.forEach(function (b, i) {
+                        b.style.background = i < score ? colors[score] : '#e0e0e0';
+                    });
+                });
+            }
+
+            // ---------- Confirm-password live check ----------
+            var pwNew = document.getElementById('pwdNew');
+            var pwConfirm = document.getElementById('pwdConfirm');
+            var pwMatchHint = document.getElementById('pwMatchHint');
+            var pwSubmitBtn = document.getElementById('pwSubmitBtn');
+
+            function checkMatch() {
+                if (pwConfirm.value && pwNew.value !== pwConfirm.value) {
+                    pwMatchHint.style.display = 'block';
+                    pwConfirm.setCustomValidity('Passwords do not match');
+                } else {
+                    pwMatchHint.style.display = 'none';
+                    pwConfirm.setCustomValidity('');
+                }
+            }
+
+            if (pwNew && pwConfirm) {
+                pwNew.addEventListener('input', checkMatch);
+                pwConfirm.addEventListener('input', checkMatch);
+            }
+        })();
+    </script>
+}
