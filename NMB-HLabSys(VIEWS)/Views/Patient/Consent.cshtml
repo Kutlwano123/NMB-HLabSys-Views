@@ -5,181 +5,546 @@
 }
 
 @section Styles {
-<style>
-    .add-form {
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: 12px;
-        padding: 20px;
-        margin-bottom: 24px;
-    }
+    <style>
 
-    .add-form h4 {
-        margin-bottom: 14px;
-        font-size: 15px;
-    }
+        /* ---------- Page header / grant button ---------- */
 
-    .form-row {
-        display: grid;
-        grid-template-columns: 1fr 1fr auto;
-        gap: 10px;
-        align-items: end;
-    }
+        .grant-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            border: none;
+            border-radius: 8px;
+            background: var(--accent);
+            color: #fff;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+        }
 
-    .form-group label {
-        display: block;
-        font-size: 12px;
-        font-weight: 600;
-        color: var(--text-mid);
-        margin-bottom: 5px;
-    }
+            .grant-btn:hover {
+                opacity: 0.92;
+            }
 
-    .form-group select {
-        width: 100%;
-        padding: 10px 12px;
-        border: 1px solid var(--border);
-        border-radius: 8px;
-        font-size: 13px;
-        background: var(--bg);
-        outline: none;
-    }
+        .section-heading {
+            font-family: 'DM Serif Display',serif;
+            font-size: 16px;
+            margin-bottom: 14px;
+        }
 
-    .custom-modal {
-        display: none;
-        position: fixed;
-        z-index: 9999;
-        inset: 0;
-        background: rgba(0,0,0,0.45);
-        backdrop-filter: blur(4px);
-        justify-content: center;
-        align-items: center;
-        padding: 20px;
-    }
+        /* ---------- Active consent cards ---------- */
 
-    .custom-modal-content {
-        background: var(--surface);
-        width: 100%;
-        max-width: 420px;
-        border-radius: 18px;
-        padding: 28px;
-        text-align: center;
-        animation: modalFade .25s ease;
-    }
+        .consent-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 14px;
+            margin-bottom: 28px;
+        }
 
-    .modal-icon {
-        width: 70px;
-        height: 70px;
-        margin: 0 auto 18px;
-        border-radius: 50%;
-        background: rgba(122,48,48,0.08);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
+        .consent-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 18px;
+        }
 
-    .modal-icon i {
-        font-size: 30px;
-        color: var(--accent);
-    }
+        .consent-card-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
 
-    .modal-actions {
-        display: flex;
-        gap: 12px;
-        margin-top: 18px;
-    }
+        .doctor-avatar {
+            flex: 0 0 auto;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--accent-pale);
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'DM Serif Display',serif;
+            font-size: 15px;
+        }
 
-    .modal-actions button {
-        flex: 1;
-        border: none;
-        border-radius: 10px;
-        padding: 12px;
-        font-weight: 600;
-        cursor: pointer;
-    }
+        .doctor-name {
+            font-size: 14px;
+            font-weight: 600;
+        }
 
-    .btn-cancel { background: #f1f1f1; }
-    .btn-revoke { background: var(--accent); color: white; }
+        .doctor-specialty {
+            font-size: 11px;
+            color: var(--text-light);
+        }
 
-    @@keyframes modalFade {
-        from { opacity: 0; transform: scale(.92); }
-        to { opacity: 1; transform: scale(1); }
-    }
-</style>
+        .consent-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 14px;
+        }
+
+        .cat-chip {
+            font-size: 11px;
+            padding: 4px 10px;
+            border-radius: 999px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            color: var(--text-mid, #444);
+        }
+
+        .consent-card-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-manage {
+            flex: 1;
+            padding: 8px 10px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: var(--bg);
+            font-size: 12.5px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+            .btn-manage:hover {
+                border-color: var(--accent);
+                color: var(--accent);
+            }
+
+        .btn-revoke-all {
+            flex: 1;
+            padding: 8px 10px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: transparent;
+            color: #c0392b;
+            font-size: 12.5px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+            .btn-revoke-all:hover {
+                background: #fbeaea;
+                border-color: #c0392b;
+            }
+
+        .empty {
+            text-align: center;
+            padding: 30px 20px;
+            color: var(--text-light);
+            font-size: 13px;
+            background: var(--surface);
+            border: 1px dashed var(--border);
+            border-radius: 12px;
+            margin-bottom: 28px;
+        }
+
+        /* ---------- Drawer (doctor picker + categorized result checklist) ---------- */
+        /* Docked to the right edge at full height, same pattern as the
+                   Medical History "Add" picker, so it's always fully visible. */
+
+        .picker-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(20,24,30,0.4);
+            display: none;
+            z-index: 999;
+        }
+
+            .picker-backdrop.open {
+                display: block;
+            }
+
+        .picker-drawer {
+            position: fixed;
+            top: 0;
+            right: -440px;
+            height: 100vh;
+            width: 420px;
+            max-width: 92vw;
+            background: #fff;
+            box-shadow: -14px 0 36px rgba(0,0,0,0.18);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            transition: right 0.28s ease;
+        }
+
+            .picker-drawer.open {
+                right: 0;
+            }
+
+        .picker-drawer-header {
+            padding: 18px 20px;
+            border-bottom: 1px solid var(--border);
+            flex: 0 0 auto;
+        }
+
+        .picker-drawer-header-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .picker-drawer-header h3 {
+            font-family: 'DM Serif Display',serif;
+            font-size: 17px;
+            margin: 0;
+        }
+
+        .picker-close {
+            border: none;
+            background: transparent;
+            font-size: 20px;
+            line-height: 1;
+            color: #888;
+            cursor: pointer;
+            padding: 2px 6px;
+        }
+
+            .picker-close:hover {
+                color: #c0392b;
+            }
+
+        .doctor-select-wrap {
+            margin-top: 12px;
+        }
+
+            .doctor-select-wrap label {
+                display: block;
+                font-size: 11px;
+                font-weight: 600;
+                color: var(--text-mid, #666);
+                margin-bottom: 5px;
+            }
+
+            .doctor-select-wrap select {
+                width: 100%;
+                padding: 9px 10px;
+                border: 1px solid var(--border);
+                border-radius: 8px;
+                font-size: 13px;
+                background: var(--bg);
+            }
+
+            .doctor-select-wrap .doctor-select-sub {
+                font-size: 11px;
+                color: var(--text-light);
+                margin-top: 4px;
+            }
+
+        .picker-search-wrap {
+            padding: 12px 20px;
+            border-bottom: 1px solid var(--border);
+            flex: 0 0 auto;
+        }
+
+            .picker-search-wrap input {
+                width: 100%;
+                padding: 9px 12px;
+                border: 1px solid var(--border);
+                border-radius: 8px;
+                font-size: 13px;
+                box-sizing: border-box;
+            }
+
+                .picker-search-wrap input:focus {
+                    outline: 2px solid var(--accent);
+                    outline-offset: 1px;
+                }
+
+        .picker-body {
+            flex: 1 1 auto;
+            display: flex;
+            overflow: hidden;
+        }
+
+        .picker-types {
+            flex: 0 0 128px;
+            border-right: 1px solid var(--border);
+            overflow-y: auto;
+            padding: 10px 6px;
+        }
+
+        .type-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 6px;
+            width: 100%;
+            text-align: left;
+            padding: 9px 10px;
+            border: none;
+            border-radius: 8px;
+            background: transparent;
+            font-size: 12.5px;
+            cursor: pointer;
+            margin-bottom: 2px;
+            color: #333;
+        }
+
+            .type-row:hover {
+                background: var(--bg);
+            }
+
+            .type-row.active {
+                background: var(--accent);
+                color: #fff;
+            }
+
+            .type-row .t-count {
+                font-size: 10px;
+                opacity: 0.65;
+            }
+
+        .picker-list {
+            flex: 1 1 auto;
+            overflow-y: auto;
+            padding: 8px;
+        }
+
+        .result-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 9px 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+            .result-item:hover {
+                background: var(--bg);
+            }
+
+            .result-item input {
+                margin-top: 3px;
+                accent-color: var(--accent);
+                flex: 0 0 auto;
+            }
+
+        .ri-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            overflow: hidden;
+        }
+
+        .ri-name {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .ri-meta {
+            font-size: 11px;
+            color: #888;
+        }
+
+        .picker-empty {
+            padding: 18px 10px;
+            text-align: center;
+            font-size: 13px;
+            color: #999;
+        }
+
+        .picker-footer {
+            flex: 0 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 12px 20px;
+            border-top: 1px solid var(--border);
+            font-size: 11px;
+            color: #888;
+        }
+
+            .picker-footer .btn-save {
+                flex: 0 0 auto;
+                padding: 8px 18px;
+                font-size: 12.5px;
+                background: var(--accent);
+                color: #fff;
+                border: none;
+                border-radius: 8px;
+                cursor: pointer;
+            }
+
+        /* ---------- Revoke confirm modal ---------- */
+
+        .custom-modal {
+            display: none;
+            position: fixed;
+            z-index: 1200;
+            inset: 0;
+            background: rgba(0,0,0,0.45);
+            backdrop-filter: blur(4px);
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .custom-modal-content {
+            background: var(--surface);
+            width: 100%;
+            max-width: 420px;
+            border-radius: 18px;
+            padding: 28px;
+            text-align: center;
+            animation: modalFade .25s ease;
+        }
+
+        .modal-icon {
+            width: 70px;
+            height: 70px;
+            margin: 0 auto 18px;
+            border-radius: 50%;
+            background: rgba(122,48,48,0.08);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+            .modal-icon i {
+                font-size: 30px;
+                color: var(--accent);
+            }
+
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 18px;
+        }
+
+            .modal-actions button {
+                flex: 1;
+                border: none;
+                border-radius: 10px;
+                padding: 12px;
+                font-weight: 600;
+                cursor: pointer;
+            }
+
+        .btn-cancel {
+            background: #f1f1f1;
+        }
+
+        .btn-revoke {
+            background: var(--accent);
+            color: white;
+        }
+
+        @@keyframes modalFade {
+            from {
+                opacity: 0;
+                transform: scale(.92);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* ---------- Toast ---------- */
+
+        .toast-stack {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1300;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .toast-msg {
+            background: #2e2e2e;
+            color: #fff;
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            opacity: 0;
+            transform: translateY(6px);
+            transition: 0.25s ease;
+        }
+
+            .toast-msg.show {
+                opacity: 1;
+                transform: translateY(0);
+            }
+    </style>
 }
 
-<div style="margin-bottom:20px;">
-    <h2 style="margin:0;">Consent Management</h2>
-    <p style="color:var(--text-light);font-size:13px;margin-top:4px;">
-        Control which doctors can access your test results
-    </p>
+<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:22px;flex-wrap:wrap;">
+    <div>
+        <h2 style="margin:0;">Consent Management</h2>
+        <p style="color:var(--text-light);font-size:13px;margin-top:4px;">
+            Choose exactly which results each doctor can see — for example, share your diabetes
+            results with one doctor while keeping other results private.
+        </p>
+    </div>
+
+    <button type="button" class="grant-btn" onclick="openDrawer()">
+        <i class="bi bi-shield-plus"></i> Grant Access
+    </button>
+</div>
+
+<div class="section-heading">Active Consents</div>
+
+<div id="consentGrid" class="consent-grid"></div>
+<div id="consentEmpty" class="empty" style="display:none;">
+    No doctors have access to any results yet. Use <strong>Grant Access</strong> to share results with a doctor.
 </div>
 
 <!-- =========================
-GRANT FORM (STATIC)
+DRAWER: pick a doctor, then tick which results they can see
 ========================= -->
-<div class="add-form">
-    <h4><i class="bi bi-shield-plus" style="color:var(--accent);"></i> Grant Access to a Doctor</h4>
+<div id="pickerBackdrop" class="picker-backdrop" onclick="closeDrawer()"></div>
 
-    <form>
-        <div class="form-row">
+<div id="pickerDrawer" class="picker-drawer" role="dialog" aria-modal="true" aria-labelledby="pickerTitle">
 
-            <div class="form-group">
-                <label>Doctor ID</label>
-                <select>
-                    <option>— Select Doctor —</option>
-                    <option>Dr Modise</option>
-                    <option>Dr Smith</option>
-                    <option>Dr Johnson</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label>Test Request</label>
-                <select>
-                    <option>— Select Request —</option>
-                    <option>Request #1 — 12 May 2026</option>
-                    <option>Request #2 — 15 May 2026</option>
-                    <option>Request #3 — 20 May 2026</option>
-                </select>
-            </div>
-
-            <button type="button" class="btn-primary" style="height:42px;">
-                <i class="bi bi-shield-check"></i> Grant
-            </button>
-
+    <div class="picker-drawer-header">
+        <div class="picker-drawer-header-top">
+            <h3 id="pickerTitle">Manage Access</h3>
+            <button type="button" class="picker-close" onclick="closeDrawer()" aria-label="Close">&times;</button>
         </div>
-    </form>
+
+        <div class="doctor-select-wrap">
+            <label for="doctorSelect">Doctor</label>
+            <select id="doctorSelect" onchange="onDoctorChange()"></select>
+            <div class="doctor-select-sub" id="doctorSelectSub"></div>
+        </div>
+    </div>
+
+    <div class="picker-search-wrap">
+        <input type="text" id="pickerSearch" placeholder="Search results..." autocomplete="off">
+    </div>
+
+    <div class="picker-body">
+        <div class="picker-types" id="pickerTypeFilters"></div>
+        <div class="picker-list" id="pickerList"></div>
+    </div>
+
+    <div class="picker-footer">
+        <span id="pickerCount"></span>
+        <button type="button" class="btn-save" onclick="closeDrawer()">Done</button>
+    </div>
+
 </div>
 
-<!-- =========================
-TABLE TITLE
-========================= -->
-<div style="font-family:'DM Serif Display',serif;font-size:16px;margin-bottom:14px;">
-    Active Consents
-</div>
+<!-- TOASTS -->
+<div class="toast-stack" id="toastStack" aria-live="polite"></div>
 
 <!-- =========================
-TABLE (STATIC DATA)
-========================= -->
-<div class="card" style="padding:0;overflow:hidden;">
-    <table class="table" style="margin:0;">
-        <thead>
-            <tr>
-                <th>#</th>
-                <th>Doctor ID</th>
-                <th>Request #</th>
-                <th>Granted Date</th>
-                <th>Status</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-
-        <tbody id="consentTable"></tbody>
-    </table>
-</div>
-
-<!-- =========================
-MODAL
+REVOKE-ALL CONFIRM MODAL
 ========================= -->
 <div id="revokeModal" class="custom-modal">
     <div class="custom-modal-content">
@@ -188,83 +553,294 @@ MODAL
             <i class="bi bi-exclamation-triangle-fill"></i>
         </div>
 
-        <h3>Revoke Consent?</h3>
-        <p>This doctor will immediately lose access.</p>
+        <h3>Revoke All Access?</h3>
+        <p id="revokeModalText">This doctor will immediately lose access to all shared results.</p>
 
         <div class="modal-actions">
             <button class="btn-cancel" onclick="closeRevokeModal()">Cancel</button>
-            <button class="btn-revoke" onclick="revokeConfirmed()">Revoke</button>
+            <button class="btn-revoke" onclick="revokeConfirmed()">Revoke All</button>
         </div>
 
     </div>
 </div>
 
 <script>
-    // =========================
-    // STATIC DATA SOURCE
-    // =========================
-    const consents = [
-        { id: 1, doctor: 101, request: 12, date: "10 May 2026" },
-        { id: 2, doctor: 205, request: 14, date: "15 May 2026" },
-        { id: 3, doctor: 309, request: 18, date: "20 May 2026" }
+
+    // -----------------------------------------------------------------
+    // Reference data. In production, DOCTORS would come from the care-team
+    // / referral list and RESULTS from the lab results API. Consent grants
+    // (which doctor can see which result) would be read from and written
+    // to a consents endpoint instead of the in-memory object below.
+    // -----------------------------------------------------------------
+    const DOCTORS = [
+        { id: 101, name: "Dr. Naidoo", specialty: "Endocrinology" },
+        { id: 205, name: "Dr. Smith", specialty: "General Practice" },
+        { id: 309, name: "Dr. Johnson", specialty: "Cardiology" },
+        { id: 412, name: "Dr. Mokoena", specialty: "Infectious Disease" },
+        { id: 518, name: "Dr. Modise", specialty: "Dermatology" }
     ];
 
-    let selectedConsentId = null;
+    const RESULTS = [
+        { id: 1, name: "HbA1c – Diabetes Panel", type: "Diabetes", date: "10 May 2026" },
+        { id: 2, name: "Fasting Glucose", type: "Diabetes", date: "10 May 2026" },
+        { id: 3, name: "HIV Antibody Test", type: "HIV", date: "15 May 2026" },
+        { id: 4, name: "CD4 Count", type: "HIV", date: "15 May 2026" },
+        { id: 5, name: "Lipid Panel (Cholesterol)", type: "Cardiovascular", date: "18 May 2026" },
+        { id: 6, name: "Blood Pressure Panel", type: "Cardiovascular", date: "18 May 2026" },
+        { id: 7, name: "Full Blood Count", type: "General", date: "20 May 2026" },
+        { id: 8, name: "Liver Function Test", type: "General", date: "20 May 2026" },
+        { id: 9, name: "Thyroid Function Test", type: "Endocrine", date: "22 May 2026" },
+        { id: 10, name: "Kidney Function Test", type: "General", date: "22 May 2026" }
+    ];
 
-    // =========================
-    // RENDER TABLE
-    // =========================
-    function renderTable() {
-        const table = document.getElementById("consentTable");
-        table.innerHTML = "";
+    // Seed: Dr. Naidoo already sees the diabetes results, Dr. Smith sees
+    // the general panel, Dr. Johnson sees the cardiovascular results.
+    // consents = { doctorId: Set(resultId) }
+    const consents = {
+        101: new Set([1, 2]),
+        205: new Set([7, 8]),
+        309: new Set([5, 6])
+    };
 
-        consents.forEach((c, i) => {
-            table.innerHTML += `
-                <tr>
-                    <td style="color:var(--text-light);font-size:12px;">${i + 1}</td>
-                    <td>Doctor #${c.doctor}</td>
-                    <td>Request #${c.request}</td>
-                    <td style="font-size:12px;color:var(--text-light);">${c.date}</td>
-                    <td>
-                        <span style="font-size:11px;background:#e8f0e8;color:#3a6b3a;padding:2px 8px;border-radius:10px;">
-                            Active
-                        </span>
-                    </td>
-                    <td>
-                        <button onclick="openRevokeModal(${c.id})"
-                            style="background:var(--accent-pale);border:1px solid var(--border);padding:4px 10px;border-radius:6px;">
-                            Revoke
-                        </button>
-                    </td>
-                </tr>
-            `;
+    let drawerDoctorId = null;
+    let activeTypeFilter = "All";
+    let searchDebounce = null;
+    let pendingRevokeDoctorId = null;
+
+    function doctorById(id) {
+        return DOCTORS.find(d => d.id === Number(id));
+    }
+
+    function initials(name) {
+        return name.replace("Dr.", "").trim().split(" ").map(p => p[0]).filter(Boolean).slice(0, 2).join("").toUpperCase();
+    }
+
+    // ---------------- Active consent cards ----------------
+
+    function renderConsentCards() {
+        const grid = document.getElementById("consentGrid");
+        const emptyEl = document.getElementById("consentEmpty");
+
+        const activeDoctors = DOCTORS.filter(d => consents[d.id] && consents[d.id].size > 0);
+
+        if (!activeDoctors.length) {
+            grid.innerHTML = "";
+            emptyEl.style.display = "block";
+            return;
+        }
+        emptyEl.style.display = "none";
+
+        grid.innerHTML = activeDoctors.map(doc => {
+            const grantedIds = consents[doc.id];
+            const byType = {};
+            RESULTS.forEach(r => {
+                if (grantedIds.has(r.id)) {
+                    byType[r.type] = (byType[r.type] || 0) + 1;
+                }
+            });
+
+            const chips = Object.keys(byType).map(t => `<span class="cat-chip">${t} · ${byType[t]}</span>`).join("");
+
+            return `
+                    <div class="consent-card">
+                        <div class="consent-card-header">
+                            <div class="doctor-avatar">${initials(doc.name)}</div>
+                            <div>
+                                <div class="doctor-name">${doc.name}</div>
+                                <div class="doctor-specialty">${doc.specialty}</div>
+                            </div>
+                        </div>
+                        <div class="consent-chips">${chips}</div>
+                        <div class="consent-card-actions">
+                            <button type="button" class="btn-manage" onclick="openDrawer(${doc.id})">
+                                <i class="bi bi-sliders"></i> Manage
+                            </button>
+                            <button type="button" class="btn-revoke-all" onclick="openRevokeModal(${doc.id})">
+                                Revoke All
+                            </button>
+                        </div>
+                    </div>
+                `;
+        }).join("");
+    }
+
+    // ---------------- Drawer: doctor select + categorized checklist ----------------
+    // Docked to the right at full height so it's always fully visible.
+    // Switching the doctor dropdown re-renders the checklist for that
+    // doctor's current grants — so a patient can jump between doctors and
+    // adjust each one's access without closing the drawer.
+
+    function populateDoctorSelect() {
+        const select = document.getElementById("doctorSelect");
+        select.innerHTML = DOCTORS.map(d => `<option value="${d.id}">${d.name}</option>`).join("");
+    }
+
+    function openDrawer(presetDoctorId) {
+        populateDoctorSelect();
+
+        drawerDoctorId = presetDoctorId || DOCTORS[0].id;
+        document.getElementById("doctorSelect").value = drawerDoctorId;
+        activeTypeFilter = "All";
+
+        renderDoctorSub();
+        renderTypeFilters();
+        document.getElementById("pickerSearch").value = "";
+        renderResultsList();
+
+        document.getElementById("pickerBackdrop").classList.add("open");
+        document.getElementById("pickerDrawer").classList.add("open");
+    }
+
+    function closeDrawer() {
+        document.getElementById("pickerBackdrop").classList.remove("open");
+        document.getElementById("pickerDrawer").classList.remove("open");
+    }
+
+    function onDoctorChange() {
+        drawerDoctorId = Number(document.getElementById("doctorSelect").value);
+        activeTypeFilter = "All";
+        renderDoctorSub();
+        renderTypeFilters();
+        renderResultsList();
+    }
+
+    function renderDoctorSub() {
+        const doc = doctorById(drawerDoctorId);
+        const count = (consents[drawerDoctorId] || new Set()).size;
+        document.getElementById("doctorSelectSub").textContent =
+            `${doc.specialty} · ${count} result${count === 1 ? "" : "s"} currently shared`;
+    }
+
+    function renderTypeFilters() {
+        const types = ["All", ...new Set(RESULTS.map(r => r.type))];
+        const wrap = document.getElementById("pickerTypeFilters");
+
+        wrap.innerHTML = types.map(t => {
+            const count = t === "All" ? RESULTS.length : RESULTS.filter(r => r.type === t).length;
+            return `
+                    <button type="button" class="type-row ${t === activeTypeFilter ? "active" : ""}" data-type="${t}">
+                        <span>${t}</span>
+                        <span class="t-count">${count}</span>
+                    </button>
+                `;
+        }).join("");
+
+        wrap.querySelectorAll(".type-row").forEach(btn => {
+            btn.addEventListener("click", () => {
+                activeTypeFilter = btn.dataset.type;
+                renderTypeFilters();
+                renderResultsList();
+            });
         });
     }
 
-    // =========================
-    // MODAL LOGIC
-    // =========================
-    function openRevokeModal(id) {
-        selectedConsentId = id;
+    function renderResultsList() {
+        const query = document.getElementById("pickerSearch").value.trim().toLowerCase();
+        const list = document.getElementById("pickerList");
+        const countEl = document.getElementById("pickerCount");
+        const granted = consents[drawerDoctorId] || (consents[drawerDoctorId] = new Set());
+
+        const results = RESULTS.filter(r => {
+            const matchesType = activeTypeFilter === "All" || r.type === activeTypeFilter;
+            const matchesQuery = !query || r.name.toLowerCase().includes(query);
+            return matchesType && matchesQuery;
+        });
+
+        if (!results.length) {
+            list.innerHTML = `<div class="picker-empty">No matches. Try a different search or filter.</div>`;
+        } else {
+            list.innerHTML = results.map(r => `
+                    <label class="result-item">
+                        <input type="checkbox" data-id="${r.id}" ${granted.has(r.id) ? "checked" : ""}>
+                        <span class="ri-info">
+                            <span class="ri-name">${r.name}</span>
+                            <span class="ri-meta">${r.type} · ${r.date}</span>
+                        </span>
+                    </label>
+                `).join("");
+
+            list.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+                cb.addEventListener("change", () => {
+                    const id = Number(cb.dataset.id);
+                    if (cb.checked) {
+                        granted.add(id);
+                    } else {
+                        granted.delete(id);
+                    }
+                    renderDoctorSub();
+                    updateFooterCount(results.length);
+                    renderConsentCards();
+                });
+            });
+        }
+
+        updateFooterCount(results.length);
+    }
+
+    function updateFooterCount(resultCount) {
+        const granted = consents[drawerDoctorId] || new Set();
+        const countEl = document.getElementById("pickerCount");
+        countEl.textContent = `${resultCount} shown · ${granted.size} shared with this doctor`;
+    }
+
+    document.getElementById("pickerSearch").addEventListener("input", () => {
+        clearTimeout(searchDebounce);
+        searchDebounce = setTimeout(renderResultsList, 120);
+    });
+
+    document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
+            closeDrawer();
+            closeRevokeModal();
+        }
+    });
+
+    // ---------------- Revoke-all modal ----------------
+
+    function openRevokeModal(doctorId) {
+        pendingRevokeDoctorId = doctorId;
+        const doc = doctorById(doctorId);
+        document.getElementById("revokeModalText").textContent =
+            `${doc.name} will immediately lose access to all shared results.`;
         document.getElementById("revokeModal").style.display = "flex";
     }
 
     function closeRevokeModal() {
         document.getElementById("revokeModal").style.display = "none";
+        pendingRevokeDoctorId = null;
     }
 
     function revokeConfirmed() {
-        const index = consents.findIndex(c => c.id === selectedConsentId);
-        if (index !== -1) consents.splice(index, 1);
-
+        if (pendingRevokeDoctorId != null) {
+            consents[pendingRevokeDoctorId] = new Set();
+            const doc = doctorById(pendingRevokeDoctorId);
+            showToast(`Access revoked for ${doc.name}`);
+        }
         closeRevokeModal();
-        renderTable();
+        renderConsentCards();
     }
 
-    window.onclick = function (e) {
+    window.addEventListener("click", (e) => {
         if (e.target.id === "revokeModal") closeRevokeModal();
-    };
+    });
 
-    // INIT
-    renderTable();
+    // ---------------- Toast ----------------
+
+    function showToast(message) {
+        const stack = document.getElementById("toastStack");
+        const toast = document.createElement("div");
+        toast.className = "toast-msg";
+        toast.textContent = message;
+        stack.appendChild(toast);
+        requestAnimationFrame(() => toast.classList.add("show"));
+        setTimeout(() => {
+            toast.classList.remove("show");
+            setTimeout(() => toast.remove(), 300);
+        }, 2500);
+    }
+
+    // ---------------- Init ----------------
+
+    renderConsentCards();
+
 </script>

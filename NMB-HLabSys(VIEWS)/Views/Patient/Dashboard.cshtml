@@ -147,6 +147,16 @@
                 outline-offset: 2px;
             }
 
+            .tag.tag-allergies {
+                background: #fff3cd;
+                color: #7a5d00;
+            }
+
+            .tag.tag-meds {
+                background: #eef2f7;
+                color: #3b4a5a;
+            }
+
         .tag-detail {
             font-size: 11px;
             color: var(--text-light);
@@ -160,6 +170,20 @@
             .tag-detail.open {
                 display: block;
             }
+
+        .summary-block {
+            margin-bottom: 12px;
+        }
+
+            .summary-block:last-child {
+                margin-bottom: 0;
+            }
+
+        .summary-empty {
+            font-size: 12px;
+            color: var(--text-light);
+            font-style: italic;
+        }
 
         .panel {
             background: var(--surface);
@@ -364,7 +388,7 @@
         </div>
 
         <script>
-                    (function () {
+                    (function() {
                         function updateDate() {
                             var el = document.getElementById('todayDate');
                             var today = new Date();
@@ -384,7 +408,7 @@
                         function scheduleNextCheck() {
                             var now = new Date();
                             var msToNextMinute = (60 - now.getSeconds()) * 1000;
-                            setTimeout(function () {
+                            setTimeout(function() {
                                 updateDate();
                                 scheduleNextCheck();
                             }, msToNextMinute);
@@ -519,35 +543,26 @@
             Medical Summary
         </div>
 
-        <div class="panel">
+        <div class="panel" id="medicalSummaryPanel">
 
-            <div style="margin-bottom:4px;">
+            <div class="summary-block" data-category="conditions">
                 <strong style="font-size:12px;">Conditions</strong><br />
-                <button type="button" class="tag" data-detail="detail-diabetes" aria-expanded="false">Diabetes</button>
-                <button type="button" class="tag" data-detail="detail-hyper" aria-expanded="false">Hypertension</button>
-                <div class="tag-detail" id="detail-diabetes">Type 2 Diabetes — diagnosed Mar 2022. Managed by Dr. Naidoo.</div>
-                <div class="tag-detail" id="detail-hyper">Hypertension — diagnosed Aug 2023. Managed by Dr. Naidoo.</div>
+                <span id="summary-conditions"></span>
             </div>
 
-            <div style="margin-bottom:4px;">
+            <div class="summary-block" data-category="allergies">
                 <strong style="font-size:12px;">Allergies</strong><br />
-                <button type="button" class="tag" style="background:#fff3cd;color:#7a5d00;" data-detail="detail-pen" aria-expanded="false">Penicillin</button>
-                <button type="button" class="tag" style="background:#fff3cd;color:#7a5d00;" data-detail="detail-latex" aria-expanded="false">Latex</button>
-                <div class="tag-detail" id="detail-pen">Penicillin — severe reaction (rash, swelling). Recorded May 2019.</div>
-                <div class="tag-detail" id="detail-latex">Latex — mild reaction (contact dermatitis). Recorded May 2019.</div>
+                <span id="summary-allergies"></span>
             </div>
 
-            <div>
+            <div class="summary-block" data-category="meds">
                 <strong style="font-size:12px;">Medications</strong><br />
-                <button type="button" class="tag" style="background:#eef2f7;color:#3b4a5a;" data-detail="detail-metformin" aria-expanded="false">Metformin</button>
-                <button type="button" class="tag" style="background:#eef2f7;color:#3b4a5a;" data-detail="detail-aspirin" aria-expanded="false">Aspirin</button>
-                <div class="tag-detail" id="detail-metformin">Metformin 500mg — twice daily, prescribed by Dr. Naidoo.</div>
-                <div class="tag-detail" id="detail-aspirin">Aspirin 75mg — once daily, prescribed by Dr. Naidoo.</div>
+                <span id="summary-meds"></span>
             </div>
 
         </div>
 
-        <a href="~/Patient/TestRequests" class="action-btn">
+        <a href="~/Patient/MedicalHistory" class="action-btn">
             Update History <i class="bi bi-arrow-right"></i>
         </a>
 
@@ -573,13 +588,13 @@
 
 @section Scripts {
     <script>
-        (function () {
+        (function() {
             // ---------- Count-up animation ----------
-            document.querySelectorAll('.stat-value[data-count]').forEach(function (el) {
+            document.querySelectorAll('.stat-value[data-count]').forEach(function(el) {
                 var target = parseInt(el.getAttribute('data-count'), 10) || 0;
                 var current = 0;
                 var step = Math.max(1, Math.ceil(target / 20));
-                var timer = setInterval(function () {
+                var timer = setInterval(function() {
                     current += step;
                     if (current >= target) {
                         current = target;
@@ -596,10 +611,10 @@
                 toast.className = 'toast-msg';
                 toast.textContent = message;
                 stack.appendChild(toast);
-                requestAnimationFrame(function () { toast.classList.add('show'); });
-                setTimeout(function () {
+                requestAnimationFrame(function() { toast.classList.add('show'); });
+                setTimeout(function() {
                     toast.classList.remove('show');
-                    setTimeout(function () { toast.remove(); }, 300);
+                    setTimeout(function() { toast.remove(); }, 300);
                 }, 2500);
             }
 
@@ -607,9 +622,9 @@
             var statCards = document.querySelectorAll('.stat-card');
             var statusSelect = document.getElementById('statusFilter');
 
-            statCards.forEach(function (card) {
-                card.addEventListener('click', function () {
-                    statCards.forEach(function (c) {
+            statCards.forEach(function(card) {
+                card.addEventListener('click', function() {
+                    statCards.forEach(function(c) {
                         c.classList.remove('active');
                         c.setAttribute('aria-pressed', 'false');
                     });
@@ -641,7 +656,7 @@
                 var status = statusSelect.value;
                 var visibleCount = 0;
 
-                document.querySelectorAll('.test-row').forEach(function (row) {
+                document.querySelectorAll('.test-row').forEach(function(row) {
                     var rowStatus = row.getAttribute('data-status');
                     var text = row.textContent.toLowerCase();
                     var matchesStatus = !status || rowStatus === status;
@@ -655,9 +670,9 @@
             }
 
             searchInput.addEventListener('input', applyFilters);
-            statusSelect.addEventListener('change', function () {
+            statusSelect.addEventListener('change', function() {
                 // clicking the dropdown directly clears the stat-card highlight
-                statCards.forEach(function (c) {
+                statCards.forEach(function(c) {
                     c.classList.remove('active');
                     c.setAttribute('aria-pressed', 'false');
                 });
@@ -667,26 +682,26 @@
                 applyFilters();
             });
 
-            document.querySelectorAll('th.sortable').forEach(function (th) {
-                th.addEventListener('click', function () {
+            document.querySelectorAll('th.sortable').forEach(function(th) {
+                th.addEventListener('click', function() {
                     var key = th.getAttribute('data-sort');
                     sortState.dir = (sortState.key === key) ? sortState.dir * -1 : 1;
                     sortState.key = key;
 
-                    document.querySelectorAll('th.sortable').forEach(function (h) {
+                    document.querySelectorAll('th.sortable').forEach(function(h) {
                         h.classList.remove('sort-active');
                     });
                     th.classList.add('sort-active');
 
                     var rows = Array.prototype.slice.call(tableBody.querySelectorAll('.test-row'));
-                    rows.sort(function (a, b) {
+                    rows.sort(function(a, b) {
                         var av = key === 'date' ? a.getAttribute('data-date') : a.getAttribute('data-status');
                         var bv = key === 'date' ? b.getAttribute('data-date') : b.getAttribute('data-status');
                         if (av < bv) return -1 * sortState.dir;
                         if (av > bv) return 1 * sortState.dir;
                         return 0;
                     });
-                    rows.forEach(function (row) { tableBody.appendChild(row); });
+                    rows.forEach(function(row) { tableBody.appendChild(row); });
                 });
             });
 
@@ -709,27 +724,108 @@
                 if (lastFocused) lastFocused.focus();
             }
 
-            document.querySelectorAll('[data-view-result]').forEach(function (btn) {
-                btn.addEventListener('click', function () {
+            document.querySelectorAll('[data-view-result]').forEach(function(btn) {
+                btn.addEventListener('click', function() {
                     openModal(btn.getAttribute('data-view-result'), btn.getAttribute('data-date'));
                 });
             });
 
             document.getElementById('resultModalClose').addEventListener('click', closeModal);
-            backdrop.addEventListener('click', function (e) {
+            backdrop.addEventListener('click', function(e) {
                 if (e.target === backdrop) closeModal();
             });
-            document.addEventListener('keydown', function (e) {
+            document.addEventListener('keydown', function(e) {
                 if (e.key === 'Escape' && backdrop.classList.contains('open')) closeModal();
             });
 
-            // ---------- Expandable medical tags ----------
-            document.querySelectorAll('.tag[data-detail]').forEach(function (tag) {
-                tag.addEventListener('click', function () {
-                    var detail = document.getElementById(tag.getAttribute('data-detail'));
-                    var isOpen = detail.classList.toggle('open');
-                    tag.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-                });
+            // ---------- Medical Summary (synced from the Medical History page) ----------
+            // Falls back to sample data on a first-ever visit, before anything
+            // has been saved on the Medical History page yet.
+            var MEDICAL_HISTORY_STORAGE_KEY = 'medicalHistoryData';
+
+            var DEFAULT_SUMMARY = {
+                conditions: [
+                    { name: 'Diabetes', detail: 'Type 2 Diabetes — diagnosed Mar 2022. Managed by Dr. Naidoo.' },
+                    { name: 'Hypertension', detail: 'Hypertension — diagnosed Aug 2023. Managed by Dr. Naidoo.' }
+                ],
+                allergies: [
+                    { name: 'Penicillin', detail: 'Penicillin — severe reaction (rash, swelling). Recorded May 2019.' },
+                    { name: 'Latex', detail: 'Latex — mild reaction (contact dermatitis). Recorded May 2019.' }
+                ],
+                meds: [
+                    { name: 'Metformin', detail: 'Metformin 500mg — twice daily, prescribed by Dr. Naidoo.' },
+                    { name: 'Aspirin', detail: 'Aspirin 75mg — once daily, prescribed by Dr. Naidoo.' }
+                ]
+            };
+
+            var CATEGORY_TAG_CLASS = { conditions: '', allergies: 'tag-allergies', meds: 'tag-meds' };
+
+            function formatSavedDate(iso) {
+                var d = new Date(iso);
+                if (isNaN(d.getTime())) return '';
+                return d.toLocaleDateString('en-ZA', { day: 'numeric', month: 'short', year: 'numeric' });
+            }
+
+            function detailFor(item) {
+                if (item.detail) return item.detail;
+                var when = item.addedAt ? formatSavedDate(item.addedAt) : null;
+                return item.type + (when ? (' · Added ' + when) : '');
+            }
+
+            function renderSummaryCategory(category, items) {
+                var container = document.getElementById('summary-' + category);
+                var tagClass = CATEGORY_TAG_CLASS[category];
+
+                if (!items || !items.length) {
+                    container.innerHTML = '<div class="summary-empty">No ' + category + ' recorded yet.</div>';
+                    return;
+                }
+
+                var buttonsHtml = items.map(function(item, i) {
+                    var id = 'detail-' + category + '-' + i;
+                    return '<button type="button" class="tag ' + tagClass + '" data-detail="' + id + '" aria-expanded="false">' +
+                        item.name + '</button>';
+                }).join('');
+
+                var detailsHtml = items.map(function(item, i) {
+                    var id = 'detail-' + category + '-' + i;
+                    return '<div class="tag-detail" id="' + id + '">' + detailFor(item) + '</div>';
+                }).join('');
+
+                container.innerHTML = buttonsHtml + detailsHtml;
+            }
+
+            function loadMedicalSummary() {
+                var raw = null;
+                try {
+                    raw = JSON.parse(localStorage.getItem(MEDICAL_HISTORY_STORAGE_KEY));
+                } catch (err) {
+                    raw = null;
+                }
+
+                var data = raw || DEFAULT_SUMMARY;
+
+                renderSummaryCategory('conditions', data.conditions);
+                renderSummaryCategory('allergies', data.allergies);
+                renderSummaryCategory('meds', data.meds);
+            }
+
+            loadMedicalSummary();
+
+            // Expandable medical tags (event delegation, since tags are
+            // rendered dynamically).
+            document.getElementById('medicalSummaryPanel').addEventListener('click', function(e) {
+                var tag = e.target.closest('.tag[data-detail]');
+                if (!tag) return;
+                var detail = document.getElementById(tag.getAttribute('data-detail'));
+                var isOpen = detail.classList.toggle('open');
+                tag.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+            });
+
+            // If the user saves Medical History in another tab, pick that up
+            // here too without needing a manual refresh.
+            window.addEventListener('storage', function(e) {
+                if (e.key === MEDICAL_HISTORY_STORAGE_KEY) loadMedicalSummary();
             });
         })();
     </script>

@@ -2,9 +2,38 @@
     ViewData["Title"] = "My Reports";
     ViewData["ActivePage"] = "Reports";
     Layout = "~/Views/Shared/_PatientLayout.cshtml";
+
+    // TODO (backend): pass real data in from the controller instead of the
+    // placeholder JSON below. Expected shape per test result:
+    //
+    //   public class TestResultViewModel
+    //   {
+    //       public string TestType { get; set; }          // "Blood Pressure", "Cholesterol", "Weight"...
+    //       public DateTime Date { get; set; }
+    //       public double Value { get; set; }              // primary reading (e.g. systolic, or the only value)
+    //       public double? SecondaryValue { get; set; }    // e.g. diastolic - null for single-value tests
+    //       public string Unit { get; set; }                // "mmHg", "mg/dL", "kg"...
+    //       public string PrimaryLabel { get; set; }        // "Systolic" (null for single-value tests)
+    //       public string SecondaryLabel { get; set; }      // "Diastolic" (null if not applicable)
+    //       public double? NormalLow { get; set; }
+    //       public double? NormalHigh { get; set; }
+    //       public double? SecondaryNormalLow { get; set; }
+    //       public double? SecondaryNormalHigh { get; set; }
+    //   }
+    //
+    // Controller:
+    //   var results = _reportService.GetResultsForPatient(patientId);
+    //   return View(results);
+    //
+    // View (replace the placeholder script block below):
+    //   <script id="test-data" type="application/json">
+    //       @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model))
+    //   </script>
+    // and read it with: JSON.parse(document.getElementById('test-data').textContent)
 }
 
 @section Styles {
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css">
     <style>
         .filter-bar {
             background: var(--surface);
@@ -26,23 +55,172 @@
             margin-bottom: 5px;
         }
 
-        .filter-group input {
+        .filter-group input,
+        .filter-group select {
             padding: 8px 12px;
             border: 1px solid var(--border);
             border-radius: 7px;
             font-size: 13px;
             background: var(--bg);
             outline: none;
+            min-width: 170px;
         }
 
-        .filter-group input:focus {
-            border-color: var(--accent);
-        }
+            .filter-group input:focus,
+            .filter-group select:focus {
+                border-color: var(--accent);
+            }
 
         .empty-state {
             text-align: center;
             padding: 40px;
             color: var(--text-light);
+        }
+
+        /* Tabs */
+        .tab-row {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .tab-btn {
+            border: none;
+            background: none;
+            padding: 10px 18px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-light);
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -1px;
+        }
+
+            .tab-btn.active {
+                color: var(--accent);
+                border-bottom-color: var(--accent);
+            }
+
+        .tab-panel {
+            display: none;
+        }
+
+            .tab-panel.active {
+                display: block;
+            }
+
+        /* Trends layout */
+        .trend-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+            align-items: start;
+        }
+
+        @@media (max-width: 860px) {
+            .trend-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .chart-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+            .chart-card canvas {
+                max-height: 340px;
+            }
+
+        .analysis-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .analysis-current {
+            display: flex;
+            align-items: baseline;
+            gap: 10px;
+        }
+
+            .analysis-current .value {
+                font-size: 32px;
+                font-weight: 700;
+                color: var(--text-dark, #222);
+            }
+
+            .analysis-current .unit {
+                font-size: 13px;
+                color: var(--text-light);
+            }
+
+        .trend-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 3px 10px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+            .trend-pill.up {
+                background: #fde2e2;
+                color: #b42318;
+            }
+
+            .trend-pill.down {
+                background: #dcf5e6;
+                color: #1a7f4e;
+            }
+
+            .trend-pill.flat {
+                background: #eee;
+                color: #555;
+            }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            padding: 6px 0;
+            border-bottom: 1px dashed var(--border);
+        }
+
+            .stat-row:last-child {
+                border-bottom: none;
+            }
+
+            .stat-row .label {
+                color: var(--text-light);
+            }
+
+            .stat-row .val {
+                font-weight: 600;
+            }
+
+        .analysis-note {
+            font-size: 12.5px;
+            line-height: 1.5;
+            background: var(--accent-pale, #f7ecec);
+            border: 1px solid rgba(122,48,48,0.15);
+            border-radius: 8px;
+            padding: 12px 14px;
+        }
+
+        .no-data-msg {
+            text-align: center;
+            color: var(--text-light);
+            font-size: 13px;
+            padding: 60px 20px;
         }
     </style>
 }
@@ -51,87 +229,342 @@
     <div>
         <h2 style="margin:0;">My Reports</h2>
         <p style="color:var(--text-light);font-size:13px;margin-top:4px;">
-            Download your lab result PDF reports
+            Track your results over time and download report PDFs
         </p>
     </div>
 </div>
 
-<!-- FILTER (STATIC UI ONLY) -->
-<div class="filter-bar">
-    <div class="filter-group">
-        <label>From Date</label>
-        <input type="date" />
-    </div>
-
-    <div class="filter-group">
-        <label>To Date</label>
-        <input type="date" />
-    </div>
-
-    <button class="btn-primary" style="padding:9px 20px;font-size:13px;height:38px;">
-        <i class="bi bi-file-pdf"></i> Generate Report
-    </button>
+<!-- TABS -->
+<div class="tab-row">
+    <button class="tab-btn active" data-tab="trends">Trends</button>
+    <button class="tab-btn" data-tab="reports">Report Downloads</button>
 </div>
 
-<!-- STATIC TABLE -->
-<div class="card" style="padding:0;overflow:hidden;">
-    <table class="table" style="margin:0;">
-        <thead>
-            <tr>
-                <th>#</th>
-                <th>Date Range</th>
-                <th>Generated</th>
-                <th>Download</th>
-            </tr>
-        </thead>
+<!-- ============ TRENDS TAB ============ -->
+<div class="tab-panel active" id="tab-trends">
 
-        <tbody>
+    <div class="filter-bar">
+        <div class="filter-group">
+            <label>Test Type</label>
+            <select id="testTypeSelect"></select>
+        </div>
 
-            <!-- DUMMY DATA 1 -->
-            <tr>
-                <td style="color:var(--text-light);font-size:12px;">1</td>
-                <td>01 Jan 2026 — 10 Jan 2026</td>
-                <td style="font-size:12px;color:var(--text-light);">
-                    10 Jan 2026
-                </td>
-                <td>
-                    <a href="#" download
-                       style="display:inline-flex;align-items:center;gap:6px;padding:4px 12px;background:var(--accent-pale);color:var(--accent);border:1px solid rgba(122,48,48,0.2);border-radius:6px;font-size:12px;font-weight:600;text-decoration:none;">
-                        <i class="bi bi-download"></i> Download
-                    </a>
-                </td>
-            </tr>
+        <div class="filter-group">
+            <label>From Date</label>
+            <input type="date" id="fromDate" />
+        </div>
 
-            <!-- DUMMY DATA 2 -->
-            <tr>
-                <td style="color:var(--text-light);font-size:12px;">2</td>
-                <td>15 Feb 2026 — 20 Feb 2026</td>
-                <td style="font-size:12px;color:var(--text-light);">
-                    20 Feb 2026
-                </td>
-                <td>
-                    <a href="#" download
-                       style="display:inline-flex;align-items:center;gap:6px;padding:4px 12px;background:var(--accent-pale);color:var(--accent);border:1px solid rgba(122,48,48,0.2);border-radius:6px;font-size:12px;font-weight:600;text-decoration:none;">
-                        <i class="bi bi-download"></i> Download
-                    </a>
-                </td>
-            </tr>
+        <div class="filter-group">
+            <label>To Date</label>
+            <input type="date" id="toDate" />
+        </div>
 
-            <!-- DUMMY DATA 3 -->
-            <tr>
-                <td style="color:var(--text-light);font-size:12px;">3</td>
-                <td>01 Apr 2026 — 05 Apr 2026</td>
-                <td style="font-size:12px;color:var(--text-light);">
-                    05 Apr 2026
-                </td>
-                <td>
-                    <a href="#" download
-                       style="display:inline-flex;align-items:center;gap:6px;padding:4px 12px;background:var(--accent-pale);color:var(--accent);border:1px solid rgba(122,48,48,0.2);border-radius:6px;font-size:12px;font-weight:600;text-decoration:none;">
-                        <i class="bi bi-download"></i> Download
-                    </a>
-                </td>
-            </tr>
+        <button class="btn-primary" style="padding:9px 20px;font-size:13px;height:38px;" id="applyFilterBtn">
+            <i class="bi bi-funnel"></i> Apply
+        </button>
+    </div>
 
-        </tbody>
-    </table>
+    <div id="trendsContent">
+        <div class="trend-grid">
+            <div class="chart-card">
+                <canvas id="trendChart"></canvas>
+            </div>
+            <div class="analysis-card" id="analysisCard">
+                <!-- filled by JS -->
+            </div>
+        </div>
+    </div>
+
+    <div class="no-data-msg" id="noDataMsg" style="display:none;">
+        No results found for this test type in the selected date range.
+    </div>
 </div>
+
+<!-- ============ REPORTS TAB (unchanged download list) ============ -->
+<div class="tab-panel" id="tab-reports">
+    <div class="card" style="padding:0;overflow:hidden;">
+        <table class="table" style="margin:0;">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Date Range</th>
+                    <th>Generated</th>
+                    <th>Download</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="color:var(--text-light);font-size:12px;">1</td>
+                    <td>01 Jan 2026 — 10 Jan 2026</td>
+                    <td style="font-size:12px;color:var(--text-light);">10 Jan 2026</td>
+                    <td>
+                        <a href="#" download style="display:inline-flex;align-items:center;gap:6px;padding:4px 12px;background:var(--accent-pale);color:var(--accent);border:1px solid rgba(122,48,48,0.2);border-radius:6px;font-size:12px;font-weight:600;text-decoration:none;">
+                            <i class="bi bi-download"></i> Download
+                        </a>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="color:var(--text-light);font-size:12px;">2</td>
+                    <td>15 Feb 2026 — 20 Feb 2026</td>
+                    <td style="font-size:12px;color:var(--text-light);">20 Feb 2026</td>
+                    <td>
+                        <a href="#" download style="display:inline-flex;align-items:center;gap:6px;padding:4px 12px;background:var(--accent-pale);color:var(--accent);border:1px solid rgba(122,48,48,0.2);border-radius:6px;font-size:12px;font-weight:600;text-decoration:none;">
+                            <i class="bi bi-download"></i> Download
+                        </a>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="color:var(--text-light);font-size:12px;">3</td>
+                    <td>01 Apr 2026 — 05 Apr 2026</td>
+                    <td style="font-size:12px;color:var(--text-light);">05 Apr 2026</td>
+                    <td>
+                        <a href="#" download style="display:inline-flex;align-items:center;gap:6px;padding:4px 12px;background:var(--accent-pale);color:var(--accent);border:1px solid rgba(122,48,48,0.2);border-radius:6px;font-size:12px;font-weight:600;text-decoration:none;">
+                            <i class="bi bi-download"></i> Download
+                        </a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
+    <script>
+        // =====================================================================
+        // PLACEHOLDER DATA — replace with the real @Html.Raw(Json.Serialize(Model))
+        // block described in the comment at the top of this file.
+        // Shape matches TestResultViewModel exactly so wiring up the backend
+        // is a drop-in swap.
+        // =====================================================================
+        const testData = [
+            // --- Blood Pressure (two values) ---
+            { testType: "Blood Pressure", date: "2026-01-05", value: 138, secondaryValue: 89, unit: "mmHg", primaryLabel: "Systolic", secondaryLabel: "Diastolic", normalLow: 90, normalHigh: 120, secondaryNormalLow: 60, secondaryNormalHigh: 80 },
+            { testType: "Blood Pressure", date: "2026-02-10", value: 134, secondaryValue: 86, unit: "mmHg", primaryLabel: "Systolic", secondaryLabel: "Diastolic", normalLow: 90, normalHigh: 120, secondaryNormalLow: 60, secondaryNormalHigh: 80 },
+            { testType: "Blood Pressure", date: "2026-03-15", value: 129, secondaryValue: 83, unit: "mmHg", primaryLabel: "Systolic", secondaryLabel: "Diastolic", normalLow: 90, normalHigh: 120, secondaryNormalLow: 60, secondaryNormalHigh: 80 },
+            { testType: "Blood Pressure", date: "2026-04-20", value: 124, secondaryValue: 80, unit: "mmHg", primaryLabel: "Systolic", secondaryLabel: "Diastolic", normalLow: 90, normalHigh: 120, secondaryNormalLow: 60, secondaryNormalHigh: 80 },
+            { testType: "Blood Pressure", date: "2026-05-25", value: 121, secondaryValue: 79, unit: "mmHg", primaryLabel: "Systolic", secondaryLabel: "Diastolic", normalLow: 90, normalHigh: 120, secondaryNormalLow: 60, secondaryNormalHigh: 80 },
+            { testType: "Blood Pressure", date: "2026-06-28", value: 118, secondaryValue: 77, unit: "mmHg", primaryLabel: "Systolic", secondaryLabel: "Diastolic", normalLow: 90, normalHigh: 120, secondaryNormalLow: 60, secondaryNormalHigh: 80 },
+
+            // --- Cholesterol (single value) ---
+            { testType: "Cholesterol (LDL)", date: "2026-01-10", value: 148, unit: "mg/dL", normalLow: 0, normalHigh: 130 },
+            { testType: "Cholesterol (LDL)", date: "2026-03-10", value: 139, unit: "mg/dL", normalLow: 0, normalHigh: 130 },
+            { testType: "Cholesterol (LDL)", date: "2026-05-10", value: 126, unit: "mg/dL", normalLow: 0, normalHigh: 130 },
+
+            // --- Weight (single value) ---
+            { testType: "Weight", date: "2026-01-01", value: 84.2, unit: "kg" },
+            { testType: "Weight", date: "2026-02-01", value: 83.5, unit: "kg" },
+            { testType: "Weight", date: "2026-03-01", value: 82.9, unit: "kg" },
+            { testType: "Weight", date: "2026-04-01", value: 82.1, unit: "kg" },
+            { testType: "Weight", date: "2026-05-01", value: 81.6, unit: "kg" },
+            { testType: "Weight", date: "2026-06-01", value: 80.8, unit: "kg" },
+
+            // --- Glucose (single value) ---
+            { testType: "Fasting Glucose", date: "2026-01-15", value: 108, unit: "mg/dL", normalLow: 70, normalHigh: 99 },
+            { testType: "Fasting Glucose", date: "2026-03-15", value: 102, unit: "mg/dL", normalLow: 70, normalHigh: 99 },
+            { testType: "Fasting Glucose", date: "2026-05-15", value: 97, unit: "mg/dL", normalLow: 70, normalHigh: 99 },
+        ];
+
+        // ---------------------------------------------------------------
+        // Tabs
+        // ---------------------------------------------------------------
+        document.querySelectorAll(".tab-btn").forEach(btn => {
+            btn.addEventListener("click", () => {
+                document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+                document.querySelectorAll(".tab-panel").forEach(p => p.classList.remove("active"));
+                btn.classList.add("active");
+                document.getElementById("tab-" + btn.dataset.tab).classList.add("active");
+            });
+        });
+
+        // ---------------------------------------------------------------
+        // Populate test type dropdown
+        // ---------------------------------------------------------------
+        const testTypes = [...new Set(testData.map(d => d.testType))];
+        const select = document.getElementById("testTypeSelect");
+        testTypes.forEach(t => {
+            const opt = document.createElement("option");
+            opt.value = t;
+            opt.textContent = t;
+            select.appendChild(opt);
+        });
+
+        let chartInstance = null;
+
+        function getFilteredData(testType, from, to) {
+            return testData
+                .filter(d => d.testType === testType)
+                .filter(d => !from || d.date >= from)
+                .filter(d => !to || d.date <= to)
+                .sort((a, b) => a.date.localeCompare(b.date));
+        }
+
+        function formatDate(iso) {
+            const d = new Date(iso + "T00:00:00");
+            return d.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
+        }
+
+        function renderChart(rows) {
+            const ctx = document.getElementById("trendChart").getContext("2d");
+            if (chartInstance) chartInstance.destroy();
+
+            const labels = rows.map(r => formatDate(r.date));
+            const hasSecondary = rows.some(r => r.secondaryValue !== undefined && r.secondaryValue !== null);
+
+            const datasets = [{
+                label: rows[0].primaryLabel || rows[0].testType,
+                data: rows.map(r => r.value),
+                borderColor: "#7a3030",
+                backgroundColor: "rgba(122,48,48,0.08)",
+                tension: 0.3,
+                fill: hasSecondary ? false : true,
+                pointRadius: 4,
+                pointBackgroundColor: rows.map(r => isOutOfRange(r.value, r.normalLow, r.normalHigh) ? "#b42318" : "#7a3030")
+            }];
+
+            if (hasSecondary) {
+                datasets.push({
+                    label: rows[0].secondaryLabel || "Secondary",
+                    data: rows.map(r => r.secondaryValue),
+                    borderColor: "#c98a4b",
+                    backgroundColor: "rgba(201,138,75,0.08)",
+                    tension: 0.3,
+                    fill: false,
+                    pointRadius: 4,
+                    pointBackgroundColor: rows.map(r => isOutOfRange(r.secondaryValue, r.secondaryNormalLow, r.secondaryNormalHigh) ? "#b42318" : "#c98a4b")
+                });
+            }
+
+            chartInstance = new Chart(ctx, {
+                type: "line",
+                data: { labels, datasets },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: hasSecondary, position: "top" },
+                        tooltip: {
+                            callbacks: {
+                                label: ctx => `${ctx.dataset.label}: ${ctx.parsed.y} ${rows[0].unit}`
+                            }
+                        }
+                    },
+                    scales: {
+                        y: { grid: { color: "rgba(0,0,0,0.05)" } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+
+            document.getElementById("trendChart").style.height = "300px";
+        }
+
+        function isOutOfRange(value, low, high) {
+            if (value === undefined || value === null) return false;
+            if (low === undefined && high === undefined) return false;
+            if (low !== null && low !== undefined && value < low) return true;
+            if (high !== null && high !== undefined && value > high) return true;
+            return false;
+        }
+
+        function renderAnalysis(rows) {
+            const card = document.getElementById("analysisCard");
+            const latest = rows[rows.length - 1];
+            const previous = rows.length > 1 ? rows[rows.length - 2] : null;
+
+            const values = rows.map(r => r.value);
+            const min = Math.min(...values).toFixed(1);
+            const max = Math.max(...values).toFixed(1);
+            const avg = (values.reduce((a, b) => a + b, 0) / values.length).toFixed(1);
+
+            let trendHtml = "";
+            if (previous) {
+                const diff = +(latest.value - previous.value).toFixed(1);
+                const dir = diff > 0 ? "up" : diff < 0 ? "down" : "flat";
+                const arrow = diff > 0 ? "↑" : diff < 0 ? "↓" : "→";
+                trendHtml = `<span class="trend-pill ${dir}">${arrow} ${Math.abs(diff)} ${latest.unit} vs previous</span>`;
+            }
+
+            const outOfRangeNow = isOutOfRange(latest.value, latest.normalLow, latest.normalHigh) ||
+                isOutOfRange(latest.secondaryValue, latest.secondaryNormalLow, latest.secondaryNormalHigh);
+
+            let secondaryLine = "";
+            if (latest.secondaryValue !== undefined && latest.secondaryValue !== null) {
+                secondaryLine = `<div class="analysis-current"><span class="value" style="font-size:20px;">${latest.secondaryValue}</span><span class="unit">${latest.secondaryLabel || ""} ${latest.unit}</span></div>`;
+            }
+
+            const note = buildAnalysisNote(rows, latest, previous, outOfRangeNow);
+
+            card.innerHTML = `
+                        <div>
+                            <div style="font-size:11px;font-weight:700;color:var(--text-light);text-transform:uppercase;letter-spacing:.03em;">
+                                Latest reading — ${formatDate(latest.date)}
+                            </div>
+                            <div class="analysis-current" style="margin-top:6px;">
+                                <span class="value">${latest.value}</span>
+                                <span class="unit">${latest.primaryLabel ? latest.primaryLabel + " · " : ""}${latest.unit}</span>
+                            </div>
+                            ${secondaryLine}
+                            <div style="margin-top:8px;">${trendHtml}</div>
+                        </div>
+
+                        <div>
+                            <div class="stat-row"><span class="label">Minimum (period)</span><span class="val">${min} ${latest.unit}</span></div>
+                            <div class="stat-row"><span class="label">Maximum (period)</span><span class="val">${max} ${latest.unit}</span></div>
+                            <div class="stat-row"><span class="label">Average (period)</span><span class="val">${avg} ${latest.unit}</span></div>
+                            <div class="stat-row"><span class="label">Readings in range</span><span class="val">${rows.length}</span></div>
+                        </div>
+
+                        <div class="analysis-note">${note}</div>
+                    `;
+        }
+
+        function buildAnalysisNote(rows, latest, previous, outOfRangeNow) {
+            const testType = latest.testType;
+
+            if (rows.length < 2) {
+                return `This is your only recorded ${testType} reading so far. Once you have more results, this panel will show how it's trending over time.`;
+            }
+
+            const first = rows[0];
+            const overallDiff = +(latest.value - first.value).toFixed(1);
+            const direction = overallDiff < 0 ? "decreased" : overallDiff > 0 ? "increased" : "stayed the same";
+
+            let rangeNote = "";
+            if (latest.normalLow !== undefined && latest.normalHigh !== undefined) {
+                rangeNote = outOfRangeNow
+                    ? ` Your most recent reading is currently <strong>outside the typical reference range</strong> (${latest.normalLow}–${latest.normalHigh} ${latest.unit}).`
+                    : ` Your most recent reading is within the typical reference range (${latest.normalLow}–${latest.normalHigh} ${latest.unit}).`;
+            }
+
+            return `Over this period, your ${testType.toLowerCase()} has ${direction} from ${first.value} to ${latest.value} ${latest.unit}.${rangeNote} This is a general summary, not medical advice — please discuss any changes with your doctor.`;
+        }
+
+        function refresh() {
+            const testType = select.value;
+            const from = document.getElementById("fromDate").value;
+            const to = document.getElementById("toDate").value;
+            const rows = getFilteredData(testType, from, to);
+
+            const content = document.getElementById("trendsContent");
+            const noData = document.getElementById("noDataMsg");
+
+            if (rows.length === 0) {
+                content.style.display = "none";
+                noData.style.display = "block";
+                return;
+            }
+
+            content.style.display = "block";
+            noData.style.display = "none";
+            renderChart(rows);
+            renderAnalysis(rows);
+        }
+
+        select.addEventListener("change", refresh);
+        document.getElementById("applyFilterBtn").addEventListener("click", refresh);
+
+        // initial render
+        refresh();
+    </script>
+}

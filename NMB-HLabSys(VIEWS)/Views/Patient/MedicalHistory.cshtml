@@ -23,29 +23,293 @@
             gap: 8px;
         }
 
-        .checkbox-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill,minmax(200px,1fr));
-            gap: 10px;
+        /* ---------- Selected item chips ---------- */
+
+        .chip-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 12px;
         }
 
-        .check-item {
+        .item-chip {
             display: flex;
             align-items: center;
-            gap: 8px;
-            padding: 8px 12px;
+            gap: 6px;
+            padding: 6px 8px 6px 12px;
             border: 1px solid var(--border);
-            border-radius: 8px;
+            border-radius: 999px;
             background: var(--bg);
-        }
-
-        .check-item input {
-            accent-color: var(--accent);
-        }
-
-        .check-item label {
             font-size: 13px;
         }
+
+            .item-chip .chip-type {
+                font-size: 10px;
+                text-transform: uppercase;
+                letter-spacing: .03em;
+                color: var(--accent);
+                border: 1px solid var(--accent);
+                border-radius: 999px;
+                padding: 1px 6px;
+                opacity: .8;
+            }
+
+            .item-chip button {
+                border: none;
+                background: transparent;
+                cursor: pointer;
+                line-height: 1;
+                font-size: 15px;
+                color: #888;
+                padding: 0 2px;
+            }
+
+                .item-chip button:hover {
+                    color: #c0392b;
+                }
+
+        .chip-empty {
+            font-size: 13px;
+            color: #999;
+            font-style: italic;
+            padding: 4px 0 12px;
+        }
+
+        /* ---------- Add button ---------- */
+
+        .add-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 14px;
+            border: 1px dashed var(--accent);
+            border-radius: 8px;
+            background: transparent;
+            color: var(--accent);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+            .add-btn:hover {
+                background: var(--accent);
+                color: #fff;
+            }
+
+        /* ---------- Picker drawer (search + type list + results) ---------- */
+        /* Docked to the right edge of the viewport at full height, so it is
+                   always fully visible no matter where the triggering button sits
+                   or how small the viewport is — instead of floating near the
+                   button, where it could run off the bottom/edge of the screen. */
+
+        .picker-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(20,24,30,0.4);
+            display: none;
+            z-index: 999;
+        }
+
+            .picker-backdrop.open {
+                display: block;
+            }
+
+        .picker-drawer {
+            position: fixed;
+            top: 0;
+            right: -420px;
+            height: 100vh;
+            width: 400px;
+            max-width: 92vw;
+            background: #fff;
+            box-shadow: -14px 0 36px rgba(0,0,0,0.18);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            transition: right 0.28s ease;
+        }
+
+            .picker-drawer.open {
+                right: 0;
+            }
+
+        .picker-drawer-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 18px 20px;
+            border-bottom: 1px solid var(--border);
+            flex: 0 0 auto;
+        }
+
+            .picker-drawer-header h3 {
+                font-family: 'DM Serif Display',serif;
+                font-size: 17px;
+                margin: 0;
+            }
+
+        .picker-close {
+            border: none;
+            background: transparent;
+            font-size: 20px;
+            line-height: 1;
+            color: #888;
+            cursor: pointer;
+            padding: 2px 6px;
+        }
+
+            .picker-close:hover {
+                color: #c0392b;
+            }
+
+        .picker-search-wrap {
+            padding: 14px 20px;
+            border-bottom: 1px solid var(--border);
+            flex: 0 0 auto;
+        }
+
+            .picker-search-wrap input {
+                width: 100%;
+                padding: 9px 12px;
+                border: 1px solid var(--border);
+                border-radius: 8px;
+                font-size: 13px;
+                box-sizing: border-box;
+            }
+
+                .picker-search-wrap input:focus {
+                    outline: 2px solid var(--accent);
+                    outline-offset: 1px;
+                }
+
+        .picker-body {
+            flex: 1 1 auto;
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* Vertical, always-visible type list instead of a horizontal
+                   scrolling row of pills — easier to scan and click. */
+        .picker-types {
+            flex: 0 0 132px;
+            border-right: 1px solid var(--border);
+            overflow-y: auto;
+            padding: 10px 6px;
+        }
+
+        .type-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 6px;
+            width: 100%;
+            text-align: left;
+            padding: 9px 10px;
+            border: none;
+            border-radius: 8px;
+            background: transparent;
+            font-size: 12.5px;
+            cursor: pointer;
+            margin-bottom: 2px;
+            color: #333;
+        }
+
+            .type-row:hover {
+                background: var(--bg);
+            }
+
+            .type-row.active {
+                background: var(--accent);
+                color: #fff;
+            }
+
+            .type-row .t-count {
+                font-size: 10px;
+                opacity: 0.65;
+            }
+
+        .picker-list {
+            flex: 1 1 auto;
+            overflow-y: auto;
+            padding: 8px;
+        }
+
+        .picker-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            padding: 9px 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+            .picker-item:hover {
+                background: var(--bg);
+            }
+
+            .picker-item.selected {
+                background: rgba(0,0,0,0.04);
+            }
+
+            .picker-item .name-wrap {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                overflow: hidden;
+            }
+
+            .picker-item .pi-name {
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+
+            .picker-item .pi-type {
+                flex: 0 0 auto;
+                font-size: 10px;
+                text-transform: uppercase;
+                color: #888;
+            }
+
+            .picker-item .pi-check {
+                flex: 0 0 auto;
+                font-size: 13px;
+                color: var(--accent);
+                visibility: hidden;
+            }
+
+            .picker-item.selected .pi-check {
+                visibility: visible;
+            }
+
+        .picker-empty {
+            padding: 18px 10px;
+            text-align: center;
+            font-size: 13px;
+            color: #999;
+        }
+
+        .picker-footer {
+            flex: 0 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 12px 20px;
+            border-top: 1px solid var(--border);
+            font-size: 11px;
+            color: #888;
+        }
+
+            .picker-footer .btn-save {
+                flex: 0 0 auto;
+                padding: 8px 18px;
+                font-size: 12.5px;
+            }
+
+        /* ---------- Confirm modal ---------- */
 
         .custom-modal {
             display: none;
@@ -54,6 +318,7 @@
             background: rgba(0,0,0,0.45);
             justify-content: center;
             align-items: center;
+            z-index: 900;
         }
 
         .custom-modal-content {
@@ -62,6 +327,8 @@
             max-width: 550px;
             padding: 24px;
             border-radius: 14px;
+            max-height: 80vh;
+            overflow-y: auto;
         }
 
         .summary-section {
@@ -70,6 +337,17 @@
             margin-bottom: 12px;
             border-radius: 10px;
         }
+
+            .summary-section li {
+                display: flex;
+                justify-content: space-between;
+                gap: 8px;
+            }
+
+            .summary-section .s-type {
+                font-size: 11px;
+                color: #888;
+            }
 
         .modal-actions {
             display: flex;
@@ -81,6 +359,8 @@
             background: #eee;
             border: none;
             padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
         }
 
         .btn-save {
@@ -89,96 +369,74 @@
             color: white;
             border: none;
             padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
         }
+
+        .toast-stack {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1100;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .toast-msg {
+            background: #2e2e2e;
+            color: #fff;
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            opacity: 0;
+            transform: translateY(6px);
+            transition: 0.25s ease;
+        }
+
+            .toast-msg.show {
+                opacity: 1;
+                transform: translateY(0);
+            }
     </style>
 }
 
 <h2>Medical History</h2>
-<p style="color:gray;">Select your medical information</p>
+<p style="color:gray;">Search and add your medical information</p>
 
 <form id="medicalHistoryForm">
 
     <!-- CONDITIONS -->
-    <div class="history-section">
+    <div class="history-section" data-category="conditions">
         <div class="history-heading">
             <i class="bi bi-heart-pulse"></i> Conditions
         </div>
-
-        <div class="checkbox-grid">
-
-            <div class="check-item">
-                <input type="checkbox" name="conditions">
-                <label>Type 2 Diabetes</label>
-            </div>
-
-            <div class="check-item">
-                <input type="checkbox" name="conditions">
-                <label>Hypertension</label>
-            </div>
-
-            <div class="check-item">
-                <input type="checkbox" name="conditions">
-                <label>Asthma</label>
-            </div>
-
-            <div class="check-item">
-                <input type="checkbox" name="conditions">
-                <label>Heart Disease</label>
-            </div>
-
-        </div>
+        <div class="chip-row" id="chips-conditions"></div>
+        <button type="button" class="add-btn" onclick="togglePicker('conditions', this)">
+            <i class="bi bi-plus-lg"></i> Add condition
+        </button>
     </div>
 
     <!-- ALLERGIES -->
-    <div class="history-section">
+    <div class="history-section" data-category="allergies">
         <div class="history-heading">
             <i class="bi bi-exclamation-triangle"></i> Allergies
         </div>
-
-        <div class="checkbox-grid">
-
-            <div class="check-item">
-                <input type="checkbox" name="allergies">
-                <label>Penicillin</label>
-            </div>
-
-            <div class="check-item">
-                <input type="checkbox" name="allergies">
-                <label>Latex</label>
-            </div>
-
-            <div class="check-item">
-                <input type="checkbox" name="allergies">
-                <label>Dust</label>
-            </div>
-
-        </div>
+        <div class="chip-row" id="chips-allergies"></div>
+        <button type="button" class="add-btn" onclick="togglePicker('allergies', this)">
+            <i class="bi bi-plus-lg"></i> Add allergy
+        </button>
     </div>
 
     <!-- MEDICATIONS -->
-    <div class="history-section">
+    <div class="history-section" data-category="meds">
         <div class="history-heading">
             <i class="bi bi-capsule"></i> Medications
         </div>
-
-        <div class="checkbox-grid">
-
-            <div class="check-item">
-                <input type="checkbox" name="meds">
-                <label>Metformin</label>
-            </div>
-
-            <div class="check-item">
-                <input type="checkbox" name="meds">
-                <label>Insulin</label>
-            </div>
-
-            <div class="check-item">
-                <input type="checkbox" name="meds">
-                <label>Ventolin</label>
-            </div>
-
-        </div>
+        <div class="chip-row" id="chips-meds"></div>
+        <button type="button" class="add-btn" onclick="togglePicker('meds', this)">
+            <i class="bi bi-plus-lg"></i> Add medication
+        </button>
     </div>
 
     <button type="button" onclick="openModal()" class="btn-primary">
@@ -187,9 +445,37 @@
 
 </form>
 
-<!-- MODAL -->
-<div id="modal" class="custom-modal">
+<!-- SHARED SEARCH / FILTER PICKER (docked drawer, always fully on-screen) -->
+<div id="pickerBackdrop" class="picker-backdrop" onclick="closePicker()"></div>
 
+<div id="pickerDrawer" class="picker-drawer" role="dialog" aria-modal="true" aria-labelledby="pickerTitle">
+
+    <div class="picker-drawer-header">
+        <h3 id="pickerTitle">Add item</h3>
+        <button type="button" class="picker-close" onclick="closePicker()" aria-label="Close">&times;</button>
+    </div>
+
+    <div class="picker-search-wrap">
+        <input type="text" id="pickerSearch" placeholder="Start typing to search..." autocomplete="off">
+    </div>
+
+    <div class="picker-body">
+        <div class="picker-types" id="pickerTypeFilters"></div>
+        <div class="picker-list" id="pickerList"></div>
+    </div>
+
+    <div class="picker-footer">
+        <span id="pickerCount"></span>
+        <button type="button" class="btn-save" onclick="closePicker()">Done</button>
+    </div>
+
+</div>
+
+<!-- TOASTS -->
+<div class="toast-stack" id="toastStack" aria-live="polite"></div>
+
+<!-- CONFIRM MODAL -->
+<div id="modal" class="custom-modal">
     <div class="custom-modal-content">
 
         <h3>Confirm Selection</h3>
@@ -219,21 +505,259 @@
 
 <script>
 
-    function getSelected(name) {
-        return Array.from(document.querySelectorAll(`input[name="${name}"]:checked`))
-            .map(x => x.nextElementSibling.innerText);
+    // -----------------------------------------------------------------
+    // Reference data.
+    // In production this would come from an API (e.g. GET /api/reference-data/{category}?q=&type=)
+    // backed by a database table, so it scales to hundreds/thousands of entries
+    // and the typing/filtering below would just debounce and hit that endpoint
+    // instead of filtering an in-memory array. The array below is sample data
+    // to demonstrate the interaction.
+    // -----------------------------------------------------------------
+    const DATA = {
+        conditions: [
+            { name: "Type 2 Diabetes", type: "Endocrine" },
+            { name: "Type 1 Diabetes", type: "Endocrine" },
+            { name: "Hypothyroidism", type: "Endocrine" },
+            { name: "Hyperthyroidism", type: "Endocrine" },
+            { name: "Hypertension", type: "Cardiovascular" },
+            { name: "Heart Disease", type: "Cardiovascular" },
+            { name: "Atrial Fibrillation", type: "Cardiovascular" },
+            { name: "High Cholesterol", type: "Cardiovascular" },
+            { name: "Asthma", type: "Respiratory" },
+            { name: "COPD", type: "Respiratory" },
+            { name: "Sleep Apnea", type: "Respiratory" },
+            { name: "Osteoarthritis", type: "Musculoskeletal" },
+            { name: "Rheumatoid Arthritis", type: "Musculoskeletal" },
+            { name: "Osteoporosis", type: "Musculoskeletal" },
+            { name: "Migraine", type: "Neurological" },
+            { name: "Epilepsy", type: "Neurological" },
+            { name: "Parkinson's Disease", type: "Neurological" },
+            { name: "Acid Reflux (GERD)", type: "Digestive" },
+            { name: "Irritable Bowel Syndrome", type: "Digestive" },
+            { name: "Crohn's Disease", type: "Digestive" },
+            { name: "Depression", type: "Mental Health" },
+            { name: "Anxiety Disorder", type: "Mental Health" },
+            { name: "Chronic Kidney Disease", type: "Other" },
+            { name: "Anemia", type: "Other" }
+        ],
+        allergies: [
+            { name: "Penicillin", type: "Drug" },
+            { name: "Sulfa Drugs", type: "Drug" },
+            { name: "Aspirin", type: "Drug" },
+            { name: "Ibuprofen", type: "Drug" },
+            { name: "Codeine", type: "Drug" },
+            { name: "Peanuts", type: "Food" },
+            { name: "Tree Nuts", type: "Food" },
+            { name: "Shellfish", type: "Food" },
+            { name: "Eggs", type: "Food" },
+            { name: "Dairy", type: "Food" },
+            { name: "Gluten", type: "Food" },
+            { name: "Latex", type: "Environmental" },
+            { name: "Dust", type: "Environmental" },
+            { name: "Pollen", type: "Environmental" },
+            { name: "Pet Dander", type: "Environmental" },
+            { name: "Mold", type: "Environmental" },
+            { name: "Bee Stings", type: "Insect" },
+            { name: "Wasp Stings", type: "Insect" }
+        ],
+        meds: [
+            { name: "Metformin", type: "Diabetes" },
+            { name: "Insulin", type: "Diabetes" },
+            { name: "Glipizide", type: "Diabetes" },
+            { name: "Lisinopril", type: "Cardiovascular" },
+            { name: "Amlodipine", type: "Cardiovascular" },
+            { name: "Atorvastatin", type: "Cardiovascular" },
+            { name: "Warfarin", type: "Cardiovascular" },
+            { name: "Ventolin (Albuterol)", type: "Respiratory" },
+            { name: "Fluticasone Inhaler", type: "Respiratory" },
+            { name: "Montelukast", type: "Respiratory" },
+            { name: "Paracetamol", type: "Pain Relief" },
+            { name: "Ibuprofen", type: "Pain Relief" },
+            { name: "Tramadol", type: "Pain Relief" },
+            { name: "Amoxicillin", type: "Antibiotic" },
+            { name: "Azithromycin", type: "Antibiotic" },
+            { name: "Ciprofloxacin", type: "Antibiotic" },
+            { name: "Sertraline", type: "Mental Health" },
+            { name: "Fluoxetine", type: "Mental Health" },
+            { name: "Diazepam", type: "Mental Health" },
+            { name: "Omeprazole", type: "Other" },
+            { name: "Levothyroxine", type: "Other" }
+        ]
+    };
+
+    const CATEGORY_LABEL = { conditions: "condition", allergies: "allergy", meds: "medication" };
+
+    // Selected items per category, keyed by item name.
+    const selected = {
+        conditions: new Map(),
+        allergies: new Map(),
+        meds: new Map()
+    };
+
+    let activeCategory = null;
+    let activeTypeFilter = "All";
+    let searchDebounce = null;
+
+    // ---------------- Chip rendering ----------------
+
+    function renderChips(category) {
+        const row = document.getElementById(`chips-${category}`);
+        const items = Array.from(selected[category].values());
+
+        if (!items.length) {
+            row.innerHTML = `<div class="chip-empty">No ${CATEGORY_LABEL[category]}s added yet.</div>`;
+            return;
+        }
+
+        row.innerHTML = items.map(item => `
+                <span class="item-chip">
+                    ${item.name}
+                    <span class="chip-type">${item.type}</span>
+                    <button type="button" aria-label="Remove ${item.name}" onclick="removeItem('${category}', '${item.name.replace(/'/g, "\\'")}')">&times;</button>
+                </span>
+            `).join("");
     }
 
-    function fill(id, items) {
+    function removeItem(category, name) {
+        selected[category].delete(name);
+        renderChips(category);
+        if (activeCategory === category) renderPickerList();
+    }
+
+    // ---------------- Picker drawer ----------------
+    // Docked to the right edge at full height (see CSS), so it's always
+    // fully visible regardless of where the Add button sits on the page
+    // or how small the viewport is.
+
+    function togglePicker(category) {
+        const drawer = document.getElementById("pickerDrawer");
+
+        if (drawer.classList.contains("open") && activeCategory === category) {
+            closePicker();
+            return;
+        }
+
+        activeCategory = category;
+        activeTypeFilter = "All";
+
+        document.getElementById("pickerTitle").textContent = `Add ${CATEGORY_LABEL[category]}`;
+
+        renderTypeFilters(category);
+        renderPickerList();
+
+        document.getElementById("pickerBackdrop").classList.add("open");
+        drawer.classList.add("open");
+        document.getElementById("pickerSearch").value = "";
+        document.getElementById("pickerSearch").focus();
+    }
+
+    function closePicker() {
+        document.getElementById("pickerBackdrop").classList.remove("open");
+        document.getElementById("pickerDrawer").classList.remove("open");
+        activeCategory = null;
+    }
+
+    function renderTypeFilters(category) {
+        const types = ["All", ...new Set(DATA[category].map(i => i.type))];
+        const wrap = document.getElementById("pickerTypeFilters");
+
+        // Vertical list (rather than a horizontal scrolling row of pills)
+        // so every type is visible and reachable without scrolling sideways.
+        wrap.innerHTML = types.map(t => {
+            const count = t === "All" ? DATA[category].length : DATA[category].filter(i => i.type === t).length;
+            return `
+                    <button type="button" class="type-row ${t === activeTypeFilter ? "active" : ""}" data-type="${t}">
+                        <span>${t}</span>
+                        <span class="t-count">${count}</span>
+                    </button>
+                `;
+        }).join("");
+
+        wrap.querySelectorAll(".type-row").forEach(btn => {
+            btn.addEventListener("click", () => {
+                activeTypeFilter = btn.dataset.type;
+                renderTypeFilters(category);
+                renderPickerList();
+            });
+        });
+    }
+
+    function renderPickerList() {
+        if (!activeCategory) return;
+
+        const query = document.getElementById("pickerSearch").value.trim().toLowerCase();
+        const list = document.getElementById("pickerList");
+        const countEl = document.getElementById("pickerCount");
+
+        const results = DATA[activeCategory].filter(item => {
+            const matchesType = activeTypeFilter === "All" || item.type === activeTypeFilter;
+            const matchesQuery = !query || item.name.toLowerCase().includes(query);
+            return matchesType && matchesQuery;
+        });
+
+        if (!results.length) {
+            list.innerHTML = `<div class="picker-empty">No matches. Try a different search or filter.</div>`;
+            countEl.textContent = "";
+            return;
+        }
+
+        list.innerHTML = results.map(item => {
+            const isSelected = selected[activeCategory].has(item.name);
+            return `
+                    <div class="picker-item ${isSelected ? "selected" : ""}" data-name="${item.name.replace(/"/g, "&quot;")}">
+                        <span class="name-wrap">
+                            <span class="pi-check"><i class="bi bi-check-lg"></i></span>
+                            <span class="pi-name">${item.name}</span>
+                        </span>
+                        <span class="pi-type">${item.type}</span>
+                    </div>
+                `;
+        }).join("");
+
+        list.querySelectorAll(".picker-item").forEach(el => {
+            el.addEventListener("click", () => {
+                const name = el.dataset.name;
+                const item = DATA[activeCategory].find(i => i.name === name);
+                if (selected[activeCategory].has(name)) {
+                    selected[activeCategory].delete(name);
+                } else {
+                    selected[activeCategory].set(name, {
+                        name: item.name,
+                        type: item.type,
+                        addedAt: new Date().toISOString()
+                    });
+                }
+                renderChips(activeCategory);
+                renderPickerList();
+            });
+        });
+
+        countEl.textContent = `${results.length} result${results.length === 1 ? "" : "s"} · ${selected[activeCategory].size} selected`;
+    }
+
+    document.getElementById("pickerSearch").addEventListener("input", () => {
+        clearTimeout(searchDebounce);
+        searchDebounce = setTimeout(renderPickerList, 120);
+    });
+
+    document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") closePicker();
+    });
+
+    // ---------------- Confirm modal ----------------
+
+    function fillSummary(id, category) {
         const el = document.getElementById(id);
-        el.innerHTML = items.length ? items.map(i => `<li>${i}</li>`).join("") : "<li>None</li>";
+        const items = Array.from(selected[category].values());
+        el.innerHTML = items.length
+            ? items.map(i => `<li>${i.name} <span class="s-type">${i.type}</span></li>`).join("")
+            : "<li>None</li>";
     }
 
     function openModal() {
-        fill("cList", getSelected("conditions"));
-        fill("aList", getSelected("allergies"));
-        fill("mList", getSelected("meds"));
-
+        fillSummary("cList", "conditions");
+        fillSummary("aList", "allergies");
+        fillSummary("mList", "meds");
         document.getElementById("modal").style.display = "flex";
     }
 
@@ -241,13 +765,72 @@
         document.getElementById("modal").style.display = "none";
     }
 
+    const STORAGE_KEY = "medicalHistoryData";
+
     function save() {
         closeModal();
-        alert("Saved (prototype only — no backend)");
+
+        // No backend yet, so persist to localStorage. The dashboard reads
+        // this same key on load, so the Medical Summary panel there updates
+        // automatically as soon as this is saved.
+        // In production this would be a POST of the same shape to an API
+        // endpoint instead of (or in addition to) localStorage.
+        const payload = {
+            conditions: Array.from(selected.conditions.values()),
+            allergies: Array.from(selected.allergies.values()),
+            meds: Array.from(selected.meds.values())
+        };
+
+        try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+        } catch (err) {
+            console.error("Could not save medical history:", err);
+        }
+
+        showToast("Medical history saved");
     }
 
-    window.onclick = function (e) {
+    function showToast(message) {
+        const stack = document.getElementById("toastStack");
+        const toast = document.createElement("div");
+        toast.className = "toast-msg";
+        toast.textContent = message;
+        stack.appendChild(toast);
+        requestAnimationFrame(() => toast.classList.add("show"));
+        setTimeout(() => {
+            toast.classList.remove("show");
+            setTimeout(() => toast.remove(), 300);
+        }, 2500);
+    }
+
+    window.addEventListener("click", (e) => {
         if (e.target.id === "modal") closeModal();
-    };
+    });
+
+    // ---------------- Init ----------------
+    // Restore any previously saved selections, so reloading this page
+    // (or coming back later) doesn't lose what was picked.
+
+    function loadSavedSelections() {
+        let saved = null;
+        try {
+            saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+        } catch (err) {
+            saved = null;
+        }
+        if (!saved) return;
+
+        ["conditions", "allergies", "meds"].forEach(category => {
+            (saved[category] || []).forEach(item => {
+                if (item && item.name) selected[category].set(item.name, item);
+            });
+        });
+    }
+
+    loadSavedSelections();
+
+    renderChips("conditions");
+    renderChips("allergies");
+    renderChips("meds");
 
 </script>
