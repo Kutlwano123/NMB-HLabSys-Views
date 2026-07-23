@@ -288,17 +288,17 @@
                 <i class="bi bi-people"></i><span class="link-text">Users</span>
             </a>
 
-            <div class="sidebar-label">Lab</div>
+            
 
-            <a href="~/Admin/TestCategories" class="sidebar-link @(ViewData["ActivePage"]?.ToString()=="TestCategories"?"active":"")">
+           
+
+            
+
+            <div class="sidebar-label">Medical Master Data</div>
+
+            <a href="~/Admin/TestCategories" class="sidebar-link @(ViewData["ActivePage"]?.ToString() == "TestCategories" ? "active" : "")">
                 <i class="bi bi-tags"></i><span class="link-text">Categories</span>
             </a>
-
-            <a href="~/Admin/TestTypes" class="sidebar-link @(ViewData["ActivePage"]?.ToString()=="TestTypes"?"active":"")">
-                <i class="bi bi-flask"></i><span class="link-text">Test Types</span>
-            </a>
-
-            <div class="sidebar-label">Medical</div>
 
             <a href="~/Admin/Medications" class="sidebar-link @(ViewData["ActivePage"]?.ToString()=="Medications"?"active":"")">
                 <i class="bi bi-capsule"></i><span class="link-text">Medications</span>

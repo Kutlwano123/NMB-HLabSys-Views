@@ -35,8 +35,38 @@
             background: var(--surface);
             border: 1px solid var(--border);
             border-radius: 12px;
-            padding: 20px;
-            max-width: 650px;
+            padding: 24px;
+            max-width: 780px;
+        }
+
+        .form-section {
+            margin-bottom: 28px;
+        }
+
+            .form-section:last-of-type {
+                margin-bottom: 0;
+            }
+
+            .form-section h4 {
+                font-size: 13px;
+                text-transform: uppercase;
+                letter-spacing: .04em;
+                color: var(--text-light);
+                margin: 0 0 14px 0;
+                padding-bottom: 8px;
+                border-bottom: 1px solid var(--border);
+            }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        @@media (max-width: 640px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
         }
 
         .field {
@@ -50,6 +80,10 @@
                 margin-bottom: 6px;
             }
 
+            .field label .req {
+                color: #c41e3a;
+            }
+
             .field input,
             .field select {
                 width: 100%;
@@ -57,7 +91,58 @@
                 border: 1px solid var(--border);
                 border-radius: 8px;
                 font-size: 13px;
+                box-sizing: border-box;
             }
+
+            .field input[readonly] {
+                background: #f4f4f4;
+                color: var(--text-light);
+                cursor: not-allowed;
+            }
+
+            .field .hint {
+                font-size: 11.5px;
+                color: var(--text-light);
+                margin-top: 5px;
+            }
+
+            .field .hint.error {
+                display: none;
+                color: #a52a2a;
+            }
+
+        .pw-strength-bars {
+            display: flex;
+            gap: 4px;
+            margin-top: 6px;
+        }
+
+            .pw-strength-bars span {
+                flex: 1;
+                height: 4px;
+                background: var(--border);
+                border-radius: 2px;
+                transition: background .2s;
+            }
+
+        /* Role-specific blocks: hidden unless active for the selected role */
+        .role-fields {
+            display: none;
+        }
+
+            .role-fields.active {
+                display: block;
+            }
+
+        .role-note {
+            font-size: 12px;
+            color: var(--text-light);
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 8px 12px;
+            margin-bottom: 16px;
+        }
 
         /* =========================
                    MODALS
@@ -70,14 +155,84 @@
             justify-content: center;
             align-items: center;
             z-index: 9999;
+            padding: 20px;
         }
+
+            .modal-bg.open {
+                display: flex;
+            }
 
         .modal {
             background: white;
-            padding: 20px;
+            padding: 24px;
             border-radius: 12px;
-            width: 340px;
+            width: 100%;
+            max-width: 420px;
             text-align: center;
+        }
+
+            .modal.wide {
+                max-width: 520px;
+                text-align: left;
+            }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin: 16px 0;
+        }
+
+        .summary-box {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 10px 12px;
+        }
+
+            .summary-box.full {
+                grid-column: 1 / -1;
+            }
+
+        .summary-label {
+            font-size: 10.5px;
+            color: var(--text-light);
+            margin-bottom: 3px;
+            text-transform: uppercase;
+            letter-spacing: .03em;
+        }
+
+        .summary-value {
+            font-size: 13px;
+            font-weight: 600;
+            word-break: break-word;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 6px;
+        }
+
+            .modal-actions button {
+                flex: 1;
+                border: none;
+                border-radius: 8px;
+                padding: 10px 14px;
+                font-size: 13px;
+                font-weight: 600;
+                cursor: pointer;
+            }
+
+        .btn-cancel {
+            background: #ececec;
+            border: 1px solid var(--border) !important;
+        }
+
+        .btn-confirm {
+            background: var(--accent);
+            color: #fff;
         }
 
     </style>
@@ -106,37 +261,227 @@ FORM (STATIC PROTOTYPE)
 ========================= -->
 <div class="panel">
 
-    <div class="field">
-        <label>Username</label>
-        <input type="text" placeholder="e.g. john.doe" />
-    </div>
+    <form id="createUserForm">
 
-    <div class="field">
-        <label>Email</label>
-        <input type="email" placeholder="e.g. john@email.com" />
-    </div>
+        <!-- ACCOUNT DETAILS -->
+        <div class="form-section">
+            <h4>Account Details</h4>
 
-    <div class="field">
-        <label>Password</label>
-        <input type="password" placeholder="••••••••" />
-    </div>
+            <div class="form-row">
+                <div class="field">
+                    <label for="username">Username <span class="req">*</span></label>
+                    <input id="username" type="text" placeholder="e.g. john.doe" required />
+                </div>
+                <div class="field">
+                    <label for="email">Email <span class="req">*</span></label>
+                    <input id="email" type="email" placeholder="e.g. john@email.com" required />
+                </div>
+            </div>
 
-    <div class="field">
-        <label>Role</label>
-        <select>
-            <option>Admin</option>
-            <option>Doctor</option>
-            <option>Patient</option>
-            <option>Lab Technician</option>
-            <option>Lab Manager</option>
-        </select>
-    </div>
+            <div class="form-row">
+                <div class="field">
+                    <label for="password">Password <span class="req">*</span></label>
+                    <input id="password" type="password" placeholder="••••••••" required />
+                    <div class="pw-strength-bars" id="pwBars" aria-hidden="true">
+                        <span></span><span></span><span></span><span></span>
+                    </div>
+                    <div class="hint">At least 8 characters, with uppercase, a number, and a special character.</div>
+                </div>
+                <div class="field">
+                    <label for="confirmPassword">Confirm Password <span class="req">*</span></label>
+                    <input id="confirmPassword" type="password" placeholder="••••••••" required />
+                    <div class="hint error" id="pwMatchHint">Passwords don't match.</div>
+                </div>
+            </div>
 
-    <button onclick="openConfirm()"
-            style="background:var(--accent);color:#fff;border:none;padding:10px 16px;
-        border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;">
-        <i class="bi bi-check-circle"></i> Create User
-    </button>
+            <div class="field">
+                <label for="role">Role <span class="req">*</span></label>
+                <select id="role" required>
+                    <option value="" disabled selected>Select a role…</option>
+                    <option value="Admin">Admin</option>
+                    <option value="Doctor">Doctor</option>
+                    <option value="Patient">Patient</option>
+                    <option value="LabTechnician">Lab Technician</option>
+                    <option value="LabManager">Lab Manager</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- PERSONAL DETAILS -->
+        <div class="form-section">
+            <h4>Personal Details</h4>
+
+            <div class="form-row">
+                <div class="field">
+                    <label for="firstName">First Name <span class="req">*</span></label>
+                    <input id="firstName" type="text" placeholder="First Name" required />
+                </div>
+                <div class="field">
+                    <label for="surname">Surname <span class="req">*</span></label>
+                    <input id="surname" type="text" placeholder="Surname" required />
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="field">
+                    <label for="idNumber">SA ID Number <span class="req">*</span></label>
+                    <input id="idNumber" type="text" maxlength="13" inputmode="numeric" pattern="\d{13}" placeholder="13-digit SA ID number" required />
+                    <div class="hint error" id="idErrorHint">That doesn't look like a valid SA ID number — check the first 6 digits (YYMMDD).</div>
+                </div>
+                <div class="field">
+                    <label for="dateOfBirth">Date of Birth</label>
+                    <input id="dateOfBirth" type="text" readonly title="Calculated automatically from ID number" />
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="field">
+                    <label for="phone">Phone Number <span class="req">*</span></label>
+                    <input id="phone" type="tel" placeholder="+27 …" required />
+                </div>
+                <div class="field">
+                    <label for="address">Address <span class="req">*</span></label>
+                    <input id="address" type="text" placeholder="Street, City" required />
+                </div>
+            </div>
+        </div>
+
+        <!-- ROLE-SPECIFIC DETAILS -->
+        <div class="form-section">
+            <h4>Role-Specific Details</h4>
+
+            <div id="noRoleNote" class="role-note">Select a role above to see the additional details required for it.</div>
+
+            <!-- Admin -->
+            <div class="role-fields" data-role="Admin">
+                <div class="form-row">
+                    <div class="field">
+                        <label for="admin_employeeNumber">Employee Number <span class="req">*</span></label>
+                        <input id="admin_employeeNumber" type="text" placeholder="e.g. EMP-0123" />
+                    </div>
+                    <div class="field">
+                        <label for="admin_accessLevel">Access Level <span class="req">*</span></label>
+                        <select id="admin_accessLevel">
+                            <option value="">Select…</option>
+                            <option value="Full">Full Access</option>
+                            <option value="Limited">Limited Access</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Doctor -->
+            <div class="role-fields" data-role="Doctor">
+                <div class="form-row">
+                    <div class="field">
+                        <label for="doctor_hpcsaNumber">HPCSA Number <span class="req">*</span></label>
+                        <input id="doctor_hpcsaNumber" type="text" placeholder="e.g. MP1234567" />
+                    </div>
+                    <div class="field">
+                        <label for="doctor_specialization">Specialization <span class="req">*</span></label>
+                        <input id="doctor_specialization" type="text" placeholder="e.g. Pathology" />
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="field">
+                        <label for="doctor_qualification">Qualification</label>
+                        <input id="doctor_qualification" type="text" placeholder="e.g. MBChB" />
+                    </div>
+                    <div class="field">
+                        <label for="doctor_department">Department</label>
+                        <input id="doctor_department" type="text" placeholder="e.g. Internal Medicine" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- Patient -->
+            <div class="role-fields" data-role="Patient">
+                <div class="form-row">
+                    <div class="field">
+                        <label for="patient_medicalAidProvider">Medical Aid Provider</label>
+                        <input id="patient_medicalAidProvider" type="text" placeholder="e.g. Discovery Health" />
+                    </div>
+                    <div class="field">
+                        <label for="patient_medicalAidNumber">Medical Aid Number</label>
+                        <input id="patient_medicalAidNumber" type="text" placeholder="e.g. 123456789" />
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="field">
+                        <label for="patient_emergencyName">Emergency Contact Name <span class="req">*</span></label>
+                        <input id="patient_emergencyName" type="text" placeholder="Full name" />
+                    </div>
+                    <div class="field">
+                        <label for="patient_emergencyPhone">Emergency Contact Phone <span class="req">*</span></label>
+                        <input id="patient_emergencyPhone" type="tel" placeholder="+27 …" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lab Technician -->
+            <div class="role-fields" data-role="LabTechnician">
+                <div class="form-row">
+                    <div class="field">
+                        <label for="labtech_employeeNumber">Employee Number <span class="req">*</span></label>
+                        <input id="labtech_employeeNumber" type="text" placeholder="e.g. EMP-0456" />
+                    </div>
+                    <div class="field">
+                        <label for="labtech_department">Lab Department <span class="req">*</span></label>
+                        <select id="labtech_department">
+                            <option value="">Select…</option>
+                            <option value="Hematology">Hematology</option>
+                            <option value="Chemistry">Chemistry</option>
+                            <option value="Microbiology">Microbiology</option>
+                            <option value="Histology">Histology</option>
+                            <option value="Blood Bank">Blood Bank</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="field">
+                    <label for="labtech_shift">Shift</label>
+                    <select id="labtech_shift">
+                        <option value="">Select…</option>
+                        <option value="Day">Day</option>
+                        <option value="Night">Night</option>
+                        <option value="Rotating">Rotating</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Lab Manager -->
+            <div class="role-fields" data-role="LabManager">
+                <div class="form-row">
+                    <div class="field">
+                        <label for="labmgr_employeeNumber">Employee Number <span class="req">*</span></label>
+                        <input id="labmgr_employeeNumber" type="text" placeholder="e.g. EMP-0789" />
+                    </div>
+                    <div class="field">
+                        <label for="labmgr_department">Managed Department <span class="req">*</span></label>
+                        <select id="labmgr_department">
+                            <option value="">Select…</option>
+                            <option value="Hematology">Hematology</option>
+                            <option value="Chemistry">Chemistry</option>
+                            <option value="Microbiology">Microbiology</option>
+                            <option value="Histology">Histology</option>
+                            <option value="Blood Bank">Blood Bank</option>
+                            <option value="All Departments">All Departments</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="field">
+                    <label for="labmgr_yearsExperience">Years of Experience</label>
+                    <input id="labmgr_yearsExperience" type="number" min="0" placeholder="e.g. 8" />
+                </div>
+            </div>
+        </div>
+
+        <button type="button" onclick="openConfirm()"
+                style="background:var(--accent);color:#fff;border:none;padding:10px 16px;
+            border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;">
+            <i class="bi bi-check-circle"></i> Create User
+        </button>
+
+    </form>
 
 </div>
 
@@ -145,24 +490,26 @@ CONFIRM MODAL
 ========================= -->
 <div id="confirmModal" class="modal-bg">
 
-    <div class="modal">
+    <div class="modal wide">
 
-        <h4>Confirm Action</h4>
+        <h4 style="text-align:center;">Confirm New User</h4>
 
-        <p style="font-size:13px;color:var(--text-light);">
-            Create this user in the system?
+        <p style="font-size:13px;color:var(--text-light);text-align:center;">
+            Review the details below before creating this user.
         </p>
 
-        <div style="display:flex;gap:10px;justify-content:center;margin-top:14px;">
+        <div class="summary-grid" id="summaryGrid">
+            <!-- populated by JS -->
+        </div>
 
-            <button onclick="closeConfirm()"
-                    style="padding:8px 14px;border:1px solid var(--border);border-radius:8px;background:white;">
+        <div class="modal-actions">
+
+            <button class="btn-cancel" type="button" onclick="closeConfirm()">
                 Cancel
             </button>
 
-            <button onclick="showSuccess()"
-                    style="padding:8px 14px;background:var(--accent);color:white;border:none;border-radius:8px;">
-                Confirm
+            <button class="btn-confirm" type="button" onclick="showSuccess()">
+                Confirm &amp; Create
             </button>
 
         </div>
@@ -202,22 +549,220 @@ SUCCESS MODAL
 SCRIPT
 ========================= -->
 <script>
+    (function () {
 
-    function openConfirm() {
-        document.getElementById("confirmModal").style.display = "flex";
-    }
+        // ---------- Role → which fields to show ----------
+        var roleSelect = document.getElementById('role');
+        var roleBlocks = document.querySelectorAll('.role-fields');
+        var noRoleNote = document.getElementById('noRoleNote');
 
-    function closeConfirm() {
-        document.getElementById("confirmModal").style.display = "none";
-    }
+        var roleLabels = {
+            Admin: 'Admin',
+            Doctor: 'Doctor',
+            Patient: 'Patient',
+            LabTechnician: 'Lab Technician',
+            LabManager: 'Lab Manager'
+        };
 
-    function showSuccess() {
-        closeConfirm();
-        document.getElementById("successModal").style.display = "flex";
-    }
+        function updateRoleFields() {
+            var role = roleSelect.value;
+            roleBlocks.forEach(function (block) {
+                block.classList.toggle('active', block.dataset.role === role);
+            });
+            noRoleNote.style.display = role ? 'none' : 'block';
+        }
 
-    function closeSuccess() {
-        document.getElementById("successModal").style.display = "none";
-    }
+        roleSelect.addEventListener('change', updateRoleFields);
+        updateRoleFields();
 
+        // ---------- SA ID number → auto date of birth ----------
+        var idInput = document.getElementById('idNumber');
+        var dobInput = document.getElementById('dateOfBirth');
+        var idErrorHint = document.getElementById('idErrorHint');
+
+        function pad(n) {
+            return n < 10 ? '0' + n : '' + n;
+        }
+
+        // Reads the first 6 digits (YYMMDD) of an SA ID number and returns
+        // an { year, month, day } object, or null if they don't form a real date.
+        function parseDobFromId(id) {
+            if (!/^\d{6}/.test(id)) return null;
+
+            var yy = parseInt(id.substring(0, 2), 10);
+            var mm = parseInt(id.substring(2, 4), 10);
+            var dd = parseInt(id.substring(4, 6), 10);
+
+            if (mm < 1 || mm > 12) return null;
+
+            var currentYear = new Date().getFullYear();
+            var currentYY = currentYear % 100;
+            var century = (yy <= currentYY) ? 2000 : 1900;
+            var fullYear = century + yy;
+
+            var date = new Date(fullYear, mm - 1, dd);
+            var isRealDate = date.getFullYear() === fullYear &&
+                date.getMonth() === mm - 1 &&
+                date.getDate() === dd;
+
+            if (!isRealDate) return null;
+
+            return { year: fullYear, month: mm, day: dd };
+        }
+
+        function updateDobFromId() {
+            var digitsOnly = idInput.value.replace(/\D/g, '');
+            if (digitsOnly !== idInput.value) {
+                idInput.value = digitsOnly;
+            }
+
+            if (digitsOnly.length < 6) {
+                dobInput.value = '';
+                idErrorHint.style.display = 'none';
+                idInput.setCustomValidity('');
+                return;
+            }
+
+            var dob = parseDobFromId(digitsOnly);
+
+            if (!dob) {
+                dobInput.value = '';
+                idErrorHint.style.display = 'block';
+                idInput.setCustomValidity('Invalid SA ID number');
+                return;
+            }
+
+            idErrorHint.style.display = 'none';
+            idInput.setCustomValidity('');
+            dobInput.value = dob.year + '-' + pad(dob.month) + '-' + pad(dob.day);
+        }
+
+        if (idInput && dobInput) {
+            idInput.addEventListener('input', updateDobFromId);
+        }
+
+        // ---------- Password strength meter ----------
+        var pwInput = document.getElementById('password');
+        var bars = document.querySelectorAll('#pwBars span');
+        if (pwInput && bars.length) {
+            pwInput.addEventListener('input', function () {
+                var pw = pwInput.value;
+                var score = [pw.length >= 8, /[A-Z]/.test(pw), /\d/.test(pw), /[^a-zA-Z\d]/.test(pw)].filter(Boolean).length;
+                var colors = ['#e0e0e0', '#c41e3a', '#8a6a20', '#2d5a4a', '#2d5a4a'];
+                bars.forEach(function (b, i) {
+                    b.style.background = i < score ? colors[score] : '#e0e0e0';
+                });
+            });
+        }
+
+        // ---------- Confirm-password live check ----------
+        var pwNew = document.getElementById('password');
+        var pwConfirm = document.getElementById('confirmPassword');
+        var pwMatchHint = document.getElementById('pwMatchHint');
+
+        function checkMatch() {
+            if (pwConfirm.value && pwNew.value !== pwConfirm.value) {
+                pwMatchHint.style.display = 'block';
+                pwConfirm.setCustomValidity('Passwords do not match');
+            } else {
+                pwMatchHint.style.display = 'none';
+                pwConfirm.setCustomValidity('');
+            }
+        }
+
+        if (pwNew && pwConfirm) {
+            pwNew.addEventListener('input', checkMatch);
+            pwConfirm.addEventListener('input', checkMatch);
+        }
+
+        // ---------- Role-specific field maps (used to build the summary) ----------
+        var roleFieldMap = {
+            Admin: [
+                ['Employee Number', 'admin_employeeNumber'],
+                ['Access Level', 'admin_accessLevel']
+            ],
+            Doctor: [
+                ['HPCSA Number', 'doctor_hpcsaNumber'],
+                ['Specialization', 'doctor_specialization'],
+                ['Qualification', 'doctor_qualification'],
+                ['Department', 'doctor_department']
+            ],
+            Patient: [
+                ['Medical Aid Provider', 'patient_medicalAidProvider'],
+                ['Medical Aid Number', 'patient_medicalAidNumber'],
+                ['Emergency Contact', 'patient_emergencyName'],
+                ['Emergency Phone', 'patient_emergencyPhone']
+            ],
+            LabTechnician: [
+                ['Employee Number', 'labtech_employeeNumber'],
+                ['Lab Department', 'labtech_department'],
+                ['Shift', 'labtech_shift']
+            ],
+            LabManager: [
+                ['Employee Number', 'labmgr_employeeNumber'],
+                ['Managed Department', 'labmgr_department'],
+                ['Years of Experience', 'labmgr_yearsExperience']
+            ]
+        };
+
+        function fieldValue(id) {
+            var el = document.getElementById(id);
+            if (!el) return '';
+            if (el.tagName === 'SELECT') {
+                return el.options[el.selectedIndex] ? el.options[el.selectedIndex].text : '';
+            }
+            return el.value;
+        }
+
+        function summaryBox(label, value, full) {
+            var box = document.createElement('div');
+            box.className = 'summary-box' + (full ? ' full' : '');
+            var l = document.createElement('div');
+            l.className = 'summary-label';
+            l.textContent = label;
+            var v = document.createElement('div');
+            v.className = 'summary-value';
+            v.textContent = value || '—';
+            box.appendChild(l);
+            box.appendChild(v);
+            return box;
+        }
+
+        window.openConfirm = function () {
+            var form = document.getElementById('createUserForm');
+            if (!form.reportValidity()) return;
+
+            var role = roleSelect.value;
+            var grid = document.getElementById('summaryGrid');
+            grid.innerHTML = '';
+
+            grid.appendChild(summaryBox('Username', fieldValue('username')));
+            grid.appendChild(summaryBox('Role', roleLabels[role] || role));
+            grid.appendChild(summaryBox('Name', fieldValue('firstName') + ' ' + fieldValue('surname')));
+            grid.appendChild(summaryBox('Email', fieldValue('email')));
+            grid.appendChild(summaryBox('Phone', fieldValue('phone')));
+            grid.appendChild(summaryBox('Date of Birth', fieldValue('dateOfBirth')));
+            grid.appendChild(summaryBox('Address', fieldValue('address'), true));
+
+            (roleFieldMap[role] || []).forEach(function (pair) {
+                grid.appendChild(summaryBox(pair[0], fieldValue(pair[1])));
+            });
+
+            document.getElementById('confirmModal').classList.add('open');
+        };
+
+        window.closeConfirm = function () {
+            document.getElementById('confirmModal').classList.remove('open');
+        };
+
+        window.showSuccess = function () {
+            closeConfirm();
+            document.getElementById('successModal').classList.add('open');
+        };
+
+        window.closeSuccess = function () {
+            document.getElementById('successModal').classList.remove('open');
+        };
+
+    })();
 </script>

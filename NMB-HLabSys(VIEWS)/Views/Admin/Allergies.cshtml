@@ -7,93 +7,238 @@
 @section Styles {
     <style>
 
+        /* ================= HEADER ================= */
         .page-header {
             display: flex;
             justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 22px;
+        }
+
+            .page-header h2 {
+                margin: 0;
+                font-size: 22px;
+            }
+
+            .page-header p {
+                font-size: 12px;
+                color: var(--text-light);
+                margin-top: 4px;
+                max-width: 520px;
+            }
+
+        .btn-primary-sm {
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            padding: 9px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        /* ================= TOOLBAR ================= */
+        .toolbar {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
             align-items: center;
-            margin-bottom: 20px;
+            justify-content: space-between;
+            margin-bottom: 18px;
         }
 
-        .page-header h2 {
-            margin: 0;
-            font-size: 22px;
-        }
-
-        .page-header p {
-            font-size: 12px;
-            color: var(--text-light);
-            margin-top: 4px;
-        }
-
-        .panel {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            overflow: hidden;
-        }
-
-        .search-bar {
+        .toolbar-left {
             display: flex;
             gap: 10px;
-            padding: 16px;
-            border-bottom: 1px solid var(--border);
             flex-wrap: wrap;
+            align-items: center;
+            flex: 1;
         }
 
-        .search-bar input {
+        .search-box {
+            position: relative;
             flex: 1;
             min-width: 220px;
-            padding: 10px 12px;
+            max-width: 320px;
+        }
+
+            .search-box i {
+                position: absolute;
+                left: 12px;
+                top: 50%;
+                transform: translateY(-50%);
+                color: var(--text-light);
+                font-size: 13px;
+            }
+
+            .search-box input {
+                width: 100%;
+                padding: 9px 12px 9px 34px;
+                border: 1px solid var(--border);
+                border-radius: 8px;
+                font-size: 13px;
+                box-sizing: border-box;
+            }
+
+        .filter-select {
+            padding: 9px 12px;
             border: 1px solid var(--border);
-            border-radius: 10px;
+            border-radius: 8px;
+            font-size: 13px;
+            min-width: 160px;
+            background: var(--surface);
+        }
+
+        .archived-toggle {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12.5px;
+            color: var(--text-light);
+            white-space: nowrap;
+        }
+
+            .archived-toggle input {
+                width: auto;
+            }
+
+        /* ================= BADGES ================= */
+        .badge-cat {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 9px;
+            border-radius: 999px;
+        }
+
+        .cat-Food {
+            background: #fff2e0;
+            color: #a15c07;
+        }
+
+        .cat-Drug {
+            background: #e8f0fe;
+            color: #1a56b0;
+        }
+
+        .cat-Environmental {
+            background: #e6f7ee;
+            color: #1f8a4c;
+        }
+
+        .badge-severity {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 9px;
+            border-radius: 999px;
+        }
+
+        .sev-Mild {
+            background: #f0f0f0;
+            color: #555;
+        }
+
+        .sev-Moderate {
+            background: #fff2e0;
+            color: #a15c07;
+        }
+
+        .sev-Severe {
+            background: #fdecea;
+            color: #c0392b;
+        }
+
+        .status-badge {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 9px;
+            border-radius: 999px;
+        }
+
+        .status-Active {
+            background: #e6f7ee;
+            color: #1f8a4c;
+        }
+
+        .status-Archived {
+            background: #f0f0f0;
+            color: #777;
+        }
+
+        /* ================= TABLE ================= */
+        .table td {
+            vertical-align: middle;
+        }
+
+        .row-archived td {
+            opacity: .55;
+        }
+
+        .allergy-name {
+            font-weight: 600;
             font-size: 13px;
         }
 
-        .table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .table th, .table td {
-            padding: 12px;
-            font-size: 13px;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .table th {
-            text-align: left;
+        .notes-cell {
             font-size: 12px;
             color: var(--text-light);
+            max-width: 240px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
 
-        .badge {
-            display: inline-block;
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 11px;
-            background: var(--accent-pale);
-            color: var(--accent);
-        }
-
-        .btn {
-            font-size: 12px;
-            padding: 6px 10px;
+        .action-btn {
             border-radius: 6px;
-            border: none;
+            padding: 6px 10px;
+            font-size: 12px;
             cursor: pointer;
+            border: none;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
         }
 
-        .btn-edit {
-            background: #eef2f7;
-            color: #3b4a5a;
+        .action-edit {
+            background: #e8eaee;
+            color: #3a4a5a;
         }
 
-        .btn-delete {
+        .action-archive {
             background: var(--accent-pale);
             color: var(--accent);
+            border: 1px solid rgba(122,48,48,0.2);
         }
 
-        .modal {
+        .action-restore {
+            background: #e6f7ee;
+            color: #1f8a4c;
+            border: 1px solid rgba(31,138,76,0.2);
+        }
+
+        .empty-state {
+            padding: 40px 20px;
+            text-align: center;
+            color: var(--text-light);
+            font-size: 13px;
+        }
+
+            .empty-state i {
+                font-size: 26px;
+                display: block;
+                margin-bottom: 8px;
+                opacity: .5;
+            }
+
+        /* ================= MODAL SHELL ================= */
+        .cat-modal-overlay {
             display: none;
             position: fixed;
             inset: 0;
@@ -101,224 +246,626 @@
             justify-content: center;
             align-items: center;
             z-index: 9999;
+            padding: 20px;
         }
 
-        .modal-box {
-            background: var(--surface);
-            padding: 20px;
-            border-radius: 12px;
-            width: 340px;
+            .cat-modal-overlay.open {
+                display: flex;
+            }
+
+        .cat-modal-box {
+            width: 100%;
+            max-width: 440px;
+            background: white;
+            border-radius: 14px;
+            padding: 24px;
+            text-align: left;
+        }
+
+            .cat-modal-box h4 {
+                margin: 0 0 4px 0;
+                font-size: 17px;
+            }
+
+            .cat-modal-box .cat-modal-sub {
+                font-size: 12.5px;
+                color: var(--text-light);
+                margin-bottom: 18px;
+            }
+
+        .form-row-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        @@media (max-width: 480px) {
+            .form-row-2 {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .cat-form-group {
+            margin-bottom: 16px;
+        }
+
+            .cat-form-group label {
+                display: block;
+                margin-bottom: 7px;
+                font-size: 13px;
+                font-weight: 600;
+                color: var(--text-dark);
+            }
+
+            .cat-form-group label .req {
+                color: #c41e3a;
+            }
+
+            .cat-form-group input,
+            .cat-form-group select,
+            .cat-form-group textarea {
+                width: 100%;
+                padding: 11px 14px;
+                border: 1px solid var(--border);
+                border-radius: 10px;
+                font-size: 13px;
+                outline: none;
+                box-sizing: border-box;
+                transition: .2s ease;
+                font-family: inherit;
+            }
+
+                .cat-form-group textarea {
+                    resize: vertical;
+                    min-height: 70px;
+                }
+
+                .cat-form-group input:focus,
+                .cat-form-group select:focus,
+                .cat-form-group textarea:focus {
+                    border-color: var(--accent);
+                    box-shadow: 0 0 0 3px rgba(122,48,48,0.08);
+                }
+
+        .cat-modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 22px;
+        }
+
+        .cat-modal-btn {
+            border: none;
+            padding: 10px 18px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .cat-modal-cancel {
+            background: #ececec;
+            color: #333;
+        }
+
+        .cat-modal-confirm {
+            background: var(--accent);
+            color: white;
+        }
+
+        .cat-modal-box-sm {
+            width: 100%;
+            max-width: 340px;
+            background: white;
+            border-radius: 14px;
+            padding: 22px;
             text-align: center;
         }
 
-        .modal-actions {
+            .cat-modal-box-sm .cat-icon {
+                width: 52px;
+                height: 52px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin: 0 auto 14px;
+                font-size: 22px;
+            }
+
+            .cat-modal-box-sm h4 {
+                margin: 0 0 8px 0;
+            }
+
+            .cat-modal-box-sm p {
+                font-size: 13px;
+                color: var(--text-light);
+                margin-bottom: 18px;
+            }
+
+        .cat-modal-actions-center {
             display: flex;
-            gap: 10px;
             justify-content: center;
-            margin-top: 14px;
+            gap: 10px;
+        }
+
+            .cat-modal-actions-center .cat-modal-btn {
+                flex: 1;
+            }
+
+        .cat-modal-archive {
+            background: #c0392b;
+            color: white;
+        }
+
+        .cat-modal-restore {
+            background: #1f8a4c;
+            color: white;
+        }
+
+        .cat-icon-archive {
+            background: #fdecea;
+            color: #c0392b;
+        }
+
+        .cat-icon-restore {
+            background: #e6f7ee;
+            color: #1f8a4c;
+        }
+
+        #toast {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #2ecc71;
+            color: white;
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            z-index: 99999;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
         }
 
     </style>
 }
 
-<!-- HEADER -->
+<!-- ================= HEADER ================= -->
 <div class="page-header">
 
     <div>
         <h2>Allergies</h2>
-        <p>Manage system allergy reference data</p>
+        <p>Reference list of allergies used in patient records, grouped by category with severity level.</p>
     </div>
 
-    <button onclick="openAddModal()"
-            style="background:var(--accent);color:#fff;padding:8px 14px;border-radius:8px;border:none;font-size:13px;">
-        <i class="bi bi-plus-circle"></i> Add Allergy
+    <button type="button" class="btn-primary-sm" onclick="openAddModal()">
+        <i class="bi bi-plus-circle"></i>
+        Add Allergy
     </button>
 
 </div>
 
-<!-- SEARCH -->
-<div class="panel" style="margin-bottom:16px;">
-    <div class="search-bar">
+<!-- ================= TOOLBAR ================= -->
+<div class="toolbar">
 
-        <input type="text" placeholder="Search allergies..." />
+    <div class="toolbar-left">
+        <div class="search-box">
+            <i class="bi bi-search"></i>
+            <input type="text" id="searchInput" placeholder="Search allergies…" oninput="renderTable()" />
+        </div>
 
-        <button class="btn btn-edit">
-            <i class="bi bi-search"></i> Search
-        </button>
+        <select id="categoryFilter" class="filter-select" onchange="renderTable()">
+            <option value="">All Categories</option>
+            <option value="Food">Food</option>
+            <option value="Drug">Drug</option>
+            <option value="Environmental">Environmental</option>
+        </select>
 
+        <select id="severityFilter" class="filter-select" onchange="renderTable()">
+            <option value="">All Severities</option>
+            <option value="Mild">Mild</option>
+            <option value="Moderate">Moderate</option>
+            <option value="Severe">Severe</option>
+        </select>
     </div>
+
+    <label class="archived-toggle">
+        <input type="checkbox" id="showArchived" onchange="renderTable()" />
+        Show archived
+    </label>
+
 </div>
 
-<!-- TABLE -->
-<div class="panel">
+<!-- ================= TABLE ================= -->
+<div class="card" style="padding:0;overflow:hidden;">
 
-    <table class="table">
+    <table class="table" style="margin:0;width:100%;">
 
         <thead>
             <tr>
                 <th>#</th>
                 <th>Allergy</th>
+                <th>Category</th>
+                <th>Severity</th>
+                <th>Common Reaction</th>
                 <th>Status</th>
                 <th>Actions</th>
             </tr>
         </thead>
 
-        <tbody>
-
-            <tr id="row-1">
-                <td>1</td>
-                <td>Penicillin</td>
-                <td><span class="badge">Active</span></td>
-                <td>
-
-                    <a href="~/Admin/EditAllergy/1"
-                       class="btn btn-edit">
-                        Edit
-                    </a>
-
-                    <button class="btn btn-delete"
-                            onclick="openDeleteModal(1)">
-                        Delete
-                    </button>
-
-                </td>
-            </tr>
-
-            <tr id="row-2">
-                <td>2</td>
-                <td>Latex</td>
-                <td><span class="badge">Active</span></td>
-                <td>
-
-                    <a href="~/Admin/EditAllergy/2"
-                       class="btn btn-edit">
-                        Edit
-                    </a>
-
-                    <button class="btn btn-delete"
-                            onclick="openDeleteModal(2)">
-                        Delete
-                    </button>
-
-                </td>
-            </tr>
-
-            <tr id="row-3">
-                <td>3</td>
-                <td>Peanuts</td>
-                <td><span class="badge">Active</span></td>
-                <td>
-
-                    <a href="~/Admin/EditAllergy/3"
-                       class="btn btn-edit">
-                        Edit
-                    </a>
-
-                    <button class="btn btn-delete"
-                            onclick="openDeleteModal(3)">
-                        Delete
-                    </button>
-
-                </td>
-            </tr>
-
+        <tbody id="allergyTableBody">
+            <!-- populated by JS -->
         </tbody>
 
     </table>
 
+    <div class="empty-state" id="emptyState" style="display:none;">
+        <i class="bi bi-exclamation-triangle"></i>
+        No allergies found.
+    </div>
+
 </div>
 
-<!-- ADD MODAL -->
-<div id="addModal" class="modal">
+<!-- ================= ADD MODAL ================= -->
+<div class="cat-modal-overlay" id="addModal">
 
-    <div class="modal-box">
+    <div class="cat-modal-box">
 
         <h4>Add Allergy</h4>
+        <div class="cat-modal-sub">Add a new allergy to the system reference list.</div>
 
-        <input type="text"
-               placeholder="Allergy name"
-               style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;margin-top:10px;" />
+        <div class="cat-form-group">
+            <label for="addName">Allergy Name <span class="req">*</span></label>
+            <input type="text" id="addName" placeholder="e.g. Penicillin" />
+        </div>
 
-        <p style="font-size:12px;color:var(--text-light);margin-top:10px;">
-            Confirm adding this allergy?
-        </p>
+        <div class="form-row-2">
+            <div class="cat-form-group">
+                <label for="addCategory">Category <span class="req">*</span></label>
+                <select id="addCategory">
+                    <option value="Food">Food</option>
+                    <option value="Drug">Drug</option>
+                    <option value="Environmental">Environmental</option>
+                </select>
+            </div>
+            <div class="cat-form-group">
+                <label for="addSeverity">Severity <span class="req">*</span></label>
+                <select id="addSeverity">
+                    <option value="Mild">Mild</option>
+                    <option value="Moderate">Moderate</option>
+                    <option value="Severe">Severe</option>
+                </select>
+            </div>
+        </div>
 
-        <div class="modal-actions">
+        <div class="cat-form-group">
+            <label for="addReaction">Common Reaction / Notes</label>
+            <textarea id="addReaction" placeholder="e.g. Rash, hives, difficulty breathing"></textarea>
+        </div>
 
-            <button onclick="closeAddModal()" class="btn btn-edit">
-                Cancel
+        <div class="cat-modal-actions">
+            <button class="cat-modal-btn cat-modal-cancel" type="button" onclick="closeAddModal()">Cancel</button>
+            <button class="cat-modal-btn cat-modal-confirm" type="button" onclick="submitAdd()">
+                <i class="bi bi-plus-circle"></i>
+                Add Allergy
             </button>
-
-            <button class="btn btn-delete"
-                    onclick="confirmAdd()">
-                Confirm
-            </button>
-
         </div>
 
     </div>
 
 </div>
 
-<!-- DELETE MODAL -->
-<div id="deleteModal" class="modal">
+<!-- ================= EDIT MODAL ================= -->
+<div class="cat-modal-overlay" id="editModal">
 
-    <div class="modal-box">
+    <div class="cat-modal-box">
 
-        <h4>Delete Allergy?</h4>
+        <h4>Edit Allergy</h4>
+        <div class="cat-modal-sub">Modify details for <strong id="editNameLabel"></strong></div>
 
-        <p style="font-size:12px;color:var(--text-light);">
-            This action cannot be undone.
-        </p>
+        <div class="cat-form-group">
+            <label for="editName">Allergy Name <span class="req">*</span></label>
+            <input type="text" id="editName" />
+        </div>
 
-        <div class="modal-actions">
+        <div class="form-row-2">
+            <div class="cat-form-group">
+                <label for="editCategory">Category <span class="req">*</span></label>
+                <select id="editCategory">
+                    <option value="Food">Food</option>
+                    <option value="Drug">Drug</option>
+                    <option value="Environmental">Environmental</option>
+                </select>
+            </div>
+            <div class="cat-form-group">
+                <label for="editSeverity">Severity <span class="req">*</span></label>
+                <select id="editSeverity">
+                    <option value="Mild">Mild</option>
+                    <option value="Moderate">Moderate</option>
+                    <option value="Severe">Severe</option>
+                </select>
+            </div>
+        </div>
 
-            <button onclick="closeDeleteModal()" class="btn btn-edit">
-                Cancel
+        <div class="cat-form-group">
+            <label for="editReaction">Common Reaction / Notes</label>
+            <textarea id="editReaction"></textarea>
+        </div>
+
+        <div class="cat-modal-actions">
+            <button class="cat-modal-btn cat-modal-cancel" type="button" onclick="closeEditModal()">Cancel</button>
+            <button class="cat-modal-btn cat-modal-confirm" type="button" onclick="submitEdit()">
+                <i class="bi bi-check-circle"></i>
+                Save Changes
             </button>
-
-            <button class="btn btn-delete"
-                    onclick="confirmDelete()">
-                Delete
-            </button>
-
         </div>
 
     </div>
 
 </div>
 
-<!-- SCRIPT -->
+<!-- ================= ARCHIVE / RESTORE MODAL ================= -->
+<div class="cat-modal-overlay" id="archiveModal">
+
+    <div class="cat-modal-box-sm">
+
+        <div class="cat-icon" id="archiveIcon">
+            <i class="bi bi-archive"></i>
+        </div>
+
+        <h4 id="archiveTitle">Archive Allergy</h4>
+
+        <p id="archiveText">
+            Archived allergies are hidden from selection lists but existing
+            patient records that reference them are unaffected.
+        </p>
+
+        <div class="cat-modal-actions-center">
+            <button class="cat-modal-btn cat-modal-cancel" type="button" onclick="closeArchiveModal()">Cancel</button>
+            <button class="cat-modal-btn" type="button" id="archiveConfirmBtn" onclick="confirmArchive()">Archive</button>
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ================= TOAST ================= -->
+<div id="toast">Action completed successfully</div>
+
+<!-- ================= SCRIPT ================= -->
 <script>
+    (function () {
 
-    let selectedId = null;
+        // ---------- Seed data (prototype only — replace with data from the server) ----------
+        var allergies = [
+            { id: 1, name: 'Penicillin', category: 'Drug', severity: 'Severe', reaction: 'Anaphylaxis, hives, swelling.', status: 'Active' },
+            { id: 2, name: 'Latex', category: 'Environmental', severity: 'Moderate', reaction: 'Skin irritation, contact dermatitis.', status: 'Active' },
+            { id: 3, name: 'Peanuts', category: 'Food', severity: 'Severe', reaction: 'Anaphylaxis, swelling of airways.', status: 'Active' },
+            { id: 4, name: 'Pollen', category: 'Environmental', severity: 'Mild', reaction: 'Sneezing, watery eyes.', status: 'Active' },
+            { id: 5, name: 'Shellfish', category: 'Food', severity: 'Moderate', reaction: 'Hives, nausea.', status: 'Archived' }
+        ];
 
-    function openAddModal() {
-        document.getElementById("addModal").style.display = "flex";
-    }
+        var nextId = allergies.length + 1;
+        var editTargetId = null;
+        var archiveTargetId = null;
+        var archiveTargetAction = null;
 
-    function closeAddModal() {
-        document.getElementById("addModal").style.display = "none";
-    }
+        // ---------- Table rendering ----------
+        window.renderTable = function () {
+            var tbody = document.getElementById('allergyTableBody');
+            var emptyState = document.getElementById('emptyState');
+            var search = document.getElementById('searchInput').value.trim().toLowerCase();
+            var category = document.getElementById('categoryFilter').value;
+            var severity = document.getElementById('severityFilter').value;
+            var showArchived = document.getElementById('showArchived').checked;
 
-    function confirmAdd() {
-        closeAddModal();
-        alert("Allergy added (prototype)");
-    }
+            var rows = allergies.filter(function (a) {
+                if (!showArchived && a.status === 'Archived') return false;
+                if (category && a.category !== category) return false;
+                if (severity && a.severity !== severity) return false;
+                if (search && a.name.toLowerCase().indexOf(search) === -1) return false;
+                return true;
+            });
 
-    function openDeleteModal(id) {
-        selectedId = id;
-        document.getElementById("deleteModal").style.display = "flex";
-    }
+            tbody.innerHTML = '';
+            emptyState.style.display = rows.length === 0 ? 'block' : 'none';
 
-    function closeDeleteModal() {
-        document.getElementById("deleteModal").style.display = "none";
-    }
+            rows.forEach(function (a, index) {
+                var tr = document.createElement('tr');
+                tr.id = 'row-' + a.id;
+                if (a.status === 'Archived') tr.classList.add('row-archived');
 
-    function confirmDelete() {
-        document.getElementById("row-" + selectedId)?.remove();
-        closeDeleteModal();
-        alert("Allergy deleted (prototype)");
-    }
+                tr.innerHTML =
+                    '<td>' + (index + 1) + '</td>' +
+                    '<td class="allergy-name">' + escapeHtml(a.name) + '</td>' +
+                    '<td><span class="badge-cat cat-' + a.category + '">' + escapeHtml(a.category) + '</span></td>' +
+                    '<td><span class="badge-severity sev-' + a.severity + '">' + escapeHtml(a.severity) + '</span></td>' +
+                    '<td class="notes-cell" title="' + escapeHtml(a.reaction || '') + '">' + escapeHtml(a.reaction || '—') + '</td>' +
+                    '<td><span class="status-badge status-' + a.status + '">' + a.status + '</span></td>' +
+                    '<td></td>';
 
+                var actionsCell = tr.querySelector('td:last-child');
+                actionsCell.style.display = 'flex';
+                actionsCell.style.gap = '8px';
+
+                var editBtn = document.createElement('button');
+                editBtn.type = 'button';
+                editBtn.className = 'action-btn action-edit';
+                editBtn.innerHTML = '<i class="bi bi-pencil"></i> Edit';
+                editBtn.onclick = function () { openEditModal(a.id); };
+                actionsCell.appendChild(editBtn);
+
+                if (a.status === 'Active') {
+                    var archiveBtn = document.createElement('button');
+                    archiveBtn.type = 'button';
+                    archiveBtn.className = 'action-btn action-archive';
+                    archiveBtn.innerHTML = '<i class="bi bi-archive"></i> Archive';
+                    archiveBtn.onclick = function () { openArchiveModal(a.id, false); };
+                    actionsCell.appendChild(archiveBtn);
+                } else {
+                    var restoreBtn = document.createElement('button');
+                    restoreBtn.type = 'button';
+                    restoreBtn.className = 'action-btn action-restore';
+                    restoreBtn.innerHTML = '<i class="bi bi-arrow-counterclockwise"></i> Restore';
+                    restoreBtn.onclick = function () { openArchiveModal(a.id, true); };
+                    actionsCell.appendChild(restoreBtn);
+                }
+
+                tbody.appendChild(tr);
+            });
+        };
+
+        function escapeHtml(str) {
+            var div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        // ---------- Add ----------
+        window.openAddModal = function () {
+            document.getElementById('addName').value = '';
+            document.getElementById('addCategory').value = 'Food';
+            document.getElementById('addSeverity').value = 'Mild';
+            document.getElementById('addReaction').value = '';
+            document.getElementById('addModal').classList.add('open');
+        };
+
+        window.closeAddModal = function () {
+            document.getElementById('addModal').classList.remove('open');
+        };
+
+        window.submitAdd = function () {
+            var name = document.getElementById('addName').value.trim();
+            if (!name) {
+                showToast('Please provide an allergy name');
+                return;
+            }
+
+            // TODO: replace with a real POST to your Allergies controller.
+
+            allergies.push({
+                id: nextId++,
+                name: name,
+                category: document.getElementById('addCategory').value,
+                severity: document.getElementById('addSeverity').value,
+                reaction: document.getElementById('addReaction').value.trim(),
+                status: 'Active'
+            });
+
+            closeAddModal();
+            showToast('Allergy added successfully');
+            renderTable();
+        };
+
+        // ---------- Edit ----------
+        window.openEditModal = function (id) {
+            var a = allergies.find(function (x) { return x.id === id; });
+            if (!a) return;
+
+            editTargetId = id;
+            document.getElementById('editNameLabel').textContent = a.name;
+            document.getElementById('editName').value = a.name;
+            document.getElementById('editCategory').value = a.category;
+            document.getElementById('editSeverity').value = a.severity;
+            document.getElementById('editReaction').value = a.reaction || '';
+            document.getElementById('editModal').classList.add('open');
+        };
+
+        window.closeEditModal = function () {
+            document.getElementById('editModal').classList.remove('open');
+            editTargetId = null;
+        };
+
+        window.submitEdit = function () {
+            var name = document.getElementById('editName').value.trim();
+            if (!name) {
+                showToast('Please provide an allergy name');
+                return;
+            }
+
+            // TODO: replace with a real PUT/POST to your Allergies controller.
+
+            var a = allergies.find(function (x) { return x.id === editTargetId; });
+            if (a) {
+                a.name = name;
+                a.category = document.getElementById('editCategory').value;
+                a.severity = document.getElementById('editSeverity').value;
+                a.reaction = document.getElementById('editReaction').value.trim();
+            }
+
+            closeEditModal();
+            showToast('Allergy updated successfully');
+            renderTable();
+        };
+
+        // ---------- Archive / Restore ----------
+        window.openArchiveModal = function (id, isCurrentlyArchived) {
+            var a = allergies.find(function (x) { return x.id === id; });
+            if (!a) return;
+
+            archiveTargetId = id;
+            archiveTargetAction = isCurrentlyArchived ? 'Restore' : 'Archive';
+
+            var icon = document.getElementById('archiveIcon');
+            var title = document.getElementById('archiveTitle');
+            var text = document.getElementById('archiveText');
+            var btn = document.getElementById('archiveConfirmBtn');
+
+            if (archiveTargetAction === 'Archive') {
+                icon.className = 'cat-icon cat-icon-archive';
+                icon.innerHTML = '<i class="bi bi-archive"></i>';
+                title.textContent = 'Archive "' + a.name + '"?';
+                text.textContent = 'Archived allergies are hidden from selection lists but existing patient records that reference them are unaffected.';
+                btn.textContent = 'Archive';
+                btn.className = 'cat-modal-btn cat-modal-archive';
+            } else {
+                icon.className = 'cat-icon cat-icon-restore';
+                icon.innerHTML = '<i class="bi bi-arrow-counterclockwise"></i>';
+                title.textContent = 'Restore "' + a.name + '"?';
+                text.textContent = 'This allergy will become available again in selection lists across the system.';
+                btn.textContent = 'Restore';
+                btn.className = 'cat-modal-btn cat-modal-restore';
+            }
+
+            document.getElementById('archiveModal').classList.add('open');
+        };
+
+        window.closeArchiveModal = function () {
+            document.getElementById('archiveModal').classList.remove('open');
+            archiveTargetId = null;
+            archiveTargetAction = null;
+        };
+
+        window.confirmArchive = function () {
+            var a = allergies.find(function (x) { return x.id === archiveTargetId; });
+            if (a) a.status = archiveTargetAction === 'Archive' ? 'Archived' : 'Active';
+
+            // TODO: replace with a real POST to your Allergies controller.
+
+            var action = archiveTargetAction;
+            closeArchiveModal();
+            showToast('Allergy ' + (action === 'Archive' ? 'archived' : 'restored') + ' successfully');
+            renderTable();
+        };
+
+        // ---------- Toast ----------
+        var toastTimer = null;
+        window.showToast = function (message) {
+            var toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.style.display = 'block';
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(function () { toast.style.display = 'none'; }, 2200);
+        };
+
+        // ---------- Close modals on outside click ----------
+        window.addEventListener('click', function (e) {
+            if (e.target.id === 'addModal') closeAddModal();
+            if (e.target.id === 'editModal') closeEditModal();
+            if (e.target.id === 'archiveModal') closeArchiveModal();
+        });
+
+        renderTable();
+
+    })();
 </script>

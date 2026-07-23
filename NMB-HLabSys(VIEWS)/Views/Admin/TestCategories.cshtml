@@ -1,54 +1,503 @@
 ﻿@{
-    ViewData["Title"] = "Test Categories";
-    ViewData["ActivePage"] = "TestCategories";
+    ViewData["Title"] = "Manage Categories";
+    ViewData["ActivePage"] = "Categories";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+@section Styles {
+    <style>
+
+        /* =========================
+                   HEADER
+                ========================= */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 22px;
+        }
+
+            .page-header h2 {
+                margin: 0;
+                font-size: 22px;
+            }
+
+            .page-header p {
+                font-size: 12px;
+                color: var(--text-light);
+                margin-top: 4px;
+                max-width: 520px;
+            }
+
+        /* =========================
+                   TOOLBAR
+                ========================= */
+        .toolbar {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 18px;
+        }
+
+        .search-box {
+            position: relative;
+            flex: 1;
+            min-width: 220px;
+            max-width: 340px;
+        }
+
+            .search-box i {
+                position: absolute;
+                left: 12px;
+                top: 50%;
+                transform: translateY(-50%);
+                color: var(--text-light);
+                font-size: 13px;
+            }
+
+            .search-box input {
+                width: 100%;
+                padding: 9px 12px 9px 34px;
+                border: 1px solid var(--border);
+                border-radius: 8px;
+                font-size: 13px;
+                box-sizing: border-box;
+            }
+
+        .toolbar-right {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .archived-toggle {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12.5px;
+            color: var(--text-light);
+        }
+
+            .archived-toggle input {
+                width: auto;
+            }
+
+        .btn-primary-sm {
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            padding: 9px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        /* =========================
+                   TABS
+                ========================= */
+        .tabs {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 10px 16px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-light);
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -1px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+            .tab-btn.active {
+                color: var(--accent);
+                border-bottom-color: var(--accent);
+            }
+
+            .tab-btn .count {
+                background: var(--bg);
+                border: 1px solid var(--border);
+                border-radius: 999px;
+                font-size: 11px;
+                padding: 1px 7px;
+                font-weight: 700;
+                color: var(--text-light);
+            }
+
+            .tab-btn.active .count {
+                background: var(--accent-pale);
+                color: var(--accent);
+                border-color: transparent;
+            }
+
+        /* =========================
+                   BADGES
+                ========================= */
+        .type-badge {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 9px;
+            border-radius: 999px;
+            letter-spacing: .01em;
+        }
+
+        .type-MedicalCondition {
+            background: #e8f0fe;
+            color: #1a56b0;
+        }
+
+        .type-Allergy {
+            background: #fff2e0;
+            color: #a15c07;
+        }
+
+        .type-Medication {
+            background: #f1e8fe;
+            color: #6a2fb0;
+        }
+
+        .status-badge {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 9px;
+            border-radius: 999px;
+        }
+
+        .status-Active {
+            background: #e6f7ee;
+            color: #1f8a4c;
+        }
+
+        .status-Archived {
+            background: #f0f0f0;
+            color: #777;
+        }
+
+        .code-pill {
+            font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+            font-size: 12px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 2px 7px;
+        }
+
+        /* =========================
+                   TABLE
+                ========================= */
+        .table td {
+            vertical-align: middle;
+        }
+
+        .row-archived td {
+            opacity: .55;
+        }
+
+        .action-btn {
+            border-radius: 6px;
+            padding: 6px 10px;
+            font-size: 12px;
+            cursor: pointer;
+            border: none;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .action-edit {
+            background: #e8eaee;
+            color: #3a4a5a;
+        }
+
+        .action-archive {
+            background: var(--accent-pale);
+            color: var(--accent);
+            border: 1px solid rgba(122,48,48,0.2);
+        }
+
+        .action-restore {
+            background: #e6f7ee;
+            color: #1f8a4c;
+            border: 1px solid rgba(31,138,76,0.2);
+        }
+
+        .empty-state {
+            padding: 40px 20px;
+            text-align: center;
+            color: var(--text-light);
+            font-size: 13px;
+        }
+
+            .empty-state i {
+                font-size: 26px;
+                display: block;
+                margin-bottom: 8px;
+                opacity: .5;
+            }
+
+        /* =========================
+                   MODAL — shared shell
+                ========================= */
+        .cat-modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            padding: 20px;
+        }
+
+            .cat-modal-overlay.open {
+                display: flex;
+            }
+
+        .cat-modal-box {
+            width: 100%;
+            max-width: 420px;
+            background: white;
+            border-radius: 14px;
+            padding: 24px;
+            text-align: left;
+        }
+
+            .cat-modal-box h4 {
+                margin: 0 0 4px 0;
+                font-size: 17px;
+            }
+
+            .cat-modal-box .cat-modal-sub {
+                font-size: 12.5px;
+                color: var(--text-light);
+                margin-bottom: 18px;
+            }
+
+        .cat-form-group {
+            margin-bottom: 16px;
+        }
+
+            .cat-form-group label {
+                display: block;
+                margin-bottom: 7px;
+                font-size: 13px;
+                font-weight: 600;
+                color: var(--text-dark);
+            }
+
+            .cat-form-group label .req {
+                color: #c41e3a;
+            }
+
+            .cat-form-group input,
+            .cat-form-group select {
+                width: 100%;
+                padding: 11px 14px;
+                border: 1px solid var(--border);
+                border-radius: 10px;
+                font-size: 13px;
+                outline: none;
+                box-sizing: border-box;
+                transition: .2s ease;
+            }
+
+                .cat-form-group input:focus,
+                .cat-form-group select:focus {
+                    border-color: var(--accent);
+                    box-shadow: 0 0 0 3px rgba(122,48,48,0.08);
+                }
+
+            .cat-form-group .hint {
+                font-size: 11.5px;
+                color: var(--text-light);
+                margin-top: 6px;
+            }
+
+            .cat-form-group .hint.error {
+                display: none;
+                color: #a52a2a;
+            }
+
+        .cat-modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 22px;
+        }
+
+        .cat-modal-btn {
+            border: none;
+            padding: 10px 18px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .cat-modal-cancel {
+            background: #ececec;
+            color: #333;
+        }
+
+        .cat-modal-confirm {
+            background: var(--accent);
+            color: white;
+        }
+
+        /* archive/restore variant (small, centered) */
+        .cat-modal-box-sm {
+            width: 100%;
+            max-width: 340px;
+            background: white;
+            border-radius: 14px;
+            padding: 22px;
+            text-align: center;
+        }
+
+            .cat-modal-box-sm .cat-icon {
+                width: 52px;
+                height: 52px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin: 0 auto 14px;
+                font-size: 22px;
+            }
+
+            .cat-modal-box-sm h4 {
+                margin: 0 0 8px 0;
+            }
+
+            .cat-modal-box-sm p {
+                font-size: 13px;
+                color: var(--text-light);
+                margin-bottom: 18px;
+            }
+
+        .cat-modal-actions-center {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+            .cat-modal-actions-center .cat-modal-btn {
+                flex: 1;
+            }
+
+        .cat-modal-archive {
+            background: #c0392b;
+            color: white;
+        }
+
+        .cat-modal-restore {
+            background: #1f8a4c;
+            color: white;
+        }
+
+        .cat-icon-archive {
+            background: #fdecea;
+            color: #c0392b;
+        }
+
+        .cat-icon-restore {
+            background: #e6f7ee;
+            color: #1f8a4c;
+        }
+
+        /* =========================
+                   TOAST
+                ========================= */
+        #toast {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #2ecc71;
+            color: white;
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            z-index: 99999;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+
+    </style>
 }
 
 <!-- =========================
 HEADER
 ========================= -->
-<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;flex-wrap:wrap;gap:12px;">
+<div class="page-header">
 
     <div>
-        <h2 style="margin:0;">Test Categories</h2>
-
-        <p style="color:var(--text-light);font-size:13px;margin-top:4px;">
-            Manage haematology test categories
+        <h2>Manage Categories</h2>
+        <p>
+            Categories used to group medical conditions, allergies, and medications
+            throughout the system.
         </p>
     </div>
+
+    <button type="button" class="btn-primary-sm" onclick="openAddCategoryModal()">
+        <i class="bi bi-plus-circle"></i>
+        Add Category
+    </button>
 
 </div>
 
 <!-- =========================
-ADD CATEGORY FORM
+TABS
 ========================= -->
-<div class="card" style="padding:18px;margin-bottom:20px;">
+<div class="tabs" id="tabs">
+    <button type="button" class="tab-btn active" data-tab="All" onclick="setTab('All')">
+        All <span class="count" id="count-All">0</span>
+    </button>
+    <button type="button" class="tab-btn" data-tab="MedicalCondition" onclick="setTab('MedicalCondition')">
+        Medical Conditions <span class="count" id="count-MedicalCondition">0</span>
+    </button>
+    <button type="button" class="tab-btn" data-tab="Allergy" onclick="setTab('Allergy')">
+        Allergies <span class="count" id="count-Allergy">0</span>
+    </button>
+    <button type="button" class="tab-btn" data-tab="Medication" onclick="setTab('Medication')">
+        Medications <span class="count" id="count-Medication">0</span>
+    </button>
+</div>
 
-    <form id="createCategoryForm">
+<!-- =========================
+TOOLBAR
+========================= -->
+<div class="toolbar">
 
-        <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;">
+    <div class="search-box">
+        <i class="bi bi-search"></i>
+        <input type="text" id="searchInput" placeholder="Search by name or code…" oninput="renderTable()" />
+    </div>
 
-            <input type="text"
-                   id="categoryName"
-                   placeholder="e.g. Blood Tests"
-                   style="flex:1;min-width:220px;padding:10px 14px;border:1px solid var(--border);border-radius:10px;" />
-
-            <button type="button"
-                    onclick="openAddModal()"
-                    style="background:var(--accent);
-                           color:white;
-                           border:none;
-                           padding:10px 18px;
-                           border-radius:10px;
-                           font-size:13px;
-                           font-weight:600;">
-                <i class="bi bi-plus-circle"></i>
-                Add Category
-            </button>
-
-        </div>
-
-    </form>
+    <div class="toolbar-right">
+        <label class="archived-toggle">
+            <input type="checkbox" id="showArchived" onchange="renderTable()" />
+            Show archived
+        </label>
+    </div>
 
 </div>
 
@@ -57,202 +506,69 @@ TABLE
 ========================= -->
 <div class="card" style="padding:0;overflow:hidden;">
 
-    <table class="table" style="margin:0;">
+    <table class="table" style="margin:0;width:100%;">
 
         <thead>
             <tr>
                 <th>#</th>
+                <th>Code</th>
                 <th>Category Name</th>
+                <th>Applies To</th>
+                <th>Status</th>
                 <th>Actions</th>
             </tr>
         </thead>
 
-        <tbody>
-
-            <!-- CATEGORY 1 -->
-            <tr id="row-1">
-
-                <td>1</td>
-
-                <td style="font-weight:600;font-size:13px;">
-                    Blood Tests
-                </td>
-
-                <td style="display:flex;gap:8px;">
-
-                    <a href="~/Admin/EditTestCategory/1"
-                       style="background:#e8eaee;
-                              color:#3a4a5a;
-                              border-radius:6px;
-                              padding:6px 10px;
-                              font-size:12px;
-                              text-decoration:none;">
-
-                        <i class="bi bi-pencil"></i>
-                        Edit
-
-                    </a>
-
-                    <button type="button"
-                            onclick="openDeleteModal(1)"
-                            style="background:var(--accent-pale);
-                                   color:var(--accent);
-                                   border:1px solid rgba(122,48,48,0.2);
-                                   border-radius:6px;
-                                   padding:6px 12px;
-                                   font-size:12px;
-                                   cursor:pointer;">
-
-                        <i class="bi bi-trash"></i>
-                        Delete
-
-                    </button>
-
-                </td>
-
-            </tr>
-
-            <!-- CATEGORY 2 -->
-            <tr id="row-2">
-
-                <td>2</td>
-
-                <td style="font-weight:600;font-size:13px;">
-                    Urine Analysis
-                </td>
-
-                <td style="display:flex;gap:8px;">
-
-                    <a href="~/Admin/EditTestCategory/2"
-                       style="background:#e8eaee;
-                              color:#3a4a5a;
-                              border-radius:6px;
-                              padding:6px 10px;
-                              font-size:12px;
-                              text-decoration:none;">
-
-                        <i class="bi bi-pencil"></i>
-                        Edit
-
-                    </a>
-
-                    <button type="button"
-                            onclick="openDeleteModal(2)"
-                            style="background:var(--accent-pale);
-                                   color:var(--accent);
-                                   border:1px solid rgba(122,48,48,0.2);
-                                   border-radius:6px;
-                                   padding:6px 12px;
-                                   font-size:12px;
-                                   cursor:pointer;">
-
-                        <i class="bi bi-trash"></i>
-                        Delete
-
-                    </button>
-
-                </td>
-
-            </tr>
-
-            <!-- CATEGORY 3 -->
-            <tr id="row-3">
-
-                <td>3</td>
-
-                <td style="font-weight:600;font-size:13px;">
-                    Microbiology
-                </td>
-
-                <td style="display:flex;gap:8px;">
-
-                    <a href="~/Admin/EditTestCategory/3"
-                       style="background:#e8eaee;
-                              color:#3a4a5a;
-                              border-radius:6px;
-                              padding:6px 10px;
-                              font-size:12px;
-                              text-decoration:none;">
-
-                        <i class="bi bi-pencil"></i>
-                        Edit
-
-                    </a>
-
-                    <button type="button"
-                            onclick="openDeleteModal(3)"
-                            style="background:var(--accent-pale);
-                                   color:var(--accent);
-                                   border:1px solid rgba(122,48,48,0.2);
-                                   border-radius:6px;
-                                   padding:6px 12px;
-                                   font-size:12px;
-                                   cursor:pointer;">
-
-                        <i class="bi bi-trash"></i>
-                        Delete
-
-                    </button>
-
-                </td>
-
-            </tr>
-
+        <tbody id="categoryTableBody">
+            <!-- populated by JS -->
         </tbody>
 
     </table>
 
+    <div class="empty-state" id="emptyState" style="display:none;">
+        <i class="bi bi-inboxes"></i>
+        No categories found.
+    </div>
+
 </div>
 
 <!-- =========================
-DELETE MODAL
+ADD CATEGORY MODAL
 ========================= -->
-<div id="deleteModal"
-     style="display:none;
-            position:fixed;
-            inset:0;
-            background:rgba(0,0,0,0.5);
-            justify-content:center;
-            align-items:center;
-            z-index:9999;">
+<div class="cat-modal-overlay" id="addCategoryModal">
 
-    <div style="background:white;
-                padding:20px;
-                border-radius:12px;
-                width:340px;
-                text-align:center;">
+    <div class="cat-modal-box">
 
-        <h4 style="margin-bottom:10px;">
-            Confirm Delete
-        </h4>
+        <h4>Add Category</h4>
+        <div class="cat-modal-sub">Create a new category for medical conditions, allergies, or medications.</div>
 
-        <p style="font-size:13px;color:gray;">
-            Are you sure you want to delete this category?
-        </p>
+        <div class="cat-form-group">
+            <label for="addCatAppliesTo">Applies To <span class="req">*</span></label>
+            <select id="addCatAppliesTo">
+                <option value="MedicalCondition">Medical Condition</option>
+                <option value="Allergy">Allergy</option>
+                <option value="Medication">Medication</option>
+            </select>
+        </div>
 
-        <div style="display:flex;gap:10px;justify-content:center;margin-top:15px;">
+        <div class="cat-form-group">
+            <label for="addCatName">Category Name <span class="req">*</span></label>
+            <input type="text" id="addCatName" placeholder="e.g. Cardiovascular" />
+        </div>
 
-            <button onclick="closeDeleteModal()"
-                    style="padding:8px 14px;
-                           border:1px solid #ccc;
-                           border-radius:8px;
-                           background:white;">
+        <div class="cat-form-group">
+            <label for="addCatCode">Category Code <span class="req">*</span></label>
+            <input type="text" id="addCatCode" placeholder="e.g. CVD" maxlength="10" style="text-transform:uppercase;" />
+            <div class="hint">Short unique code used for references and imports (auto-uppercased).</div>
+            <div class="hint error" id="addCatCodeError">That code is already in use — please choose another.</div>
+        </div>
 
-                Cancel
-
+        <div class="cat-modal-actions">
+            <button class="cat-modal-btn cat-modal-cancel" type="button" onclick="closeAddCategoryModal()">Cancel</button>
+            <button class="cat-modal-btn cat-modal-confirm" type="button" onclick="submitAddCategory()">
+                <i class="bi bi-plus-circle"></i>
+                Add Category
             </button>
-
-            <button onclick="confirmDelete()"
-                    style="padding:8px 14px;
-                           background:#c0392b;
-                           color:white;
-                           border:none;
-                           border-radius:8px;">
-
-                Delete
-
-            </button>
-
         </div>
 
     </div>
@@ -260,54 +576,71 @@ DELETE MODAL
 </div>
 
 <!-- =========================
-ADD MODAL
+EDIT CATEGORY MODAL
 ========================= -->
-<div id="addModal"
-     style="display:none;
-            position:fixed;
-            inset:0;
-            background:rgba(0,0,0,0.5);
-            justify-content:center;
-            align-items:center;
-            z-index:9999;">
+<div class="cat-modal-overlay" id="editCategoryModal">
 
-    <div style="background:white;
-                padding:20px;
-                border-radius:12px;
-                width:340px;
-                text-align:center;">
+    <div class="cat-modal-box">
 
-        <h4 style="margin-bottom:10px;">
-            Confirm Add
-        </h4>
+        <h4>Edit Category</h4>
+        <div class="cat-modal-sub">Modify details for category <strong id="editCatIdLabel">#</strong></div>
 
-        <p style="font-size:13px;color:gray;">
-            Add this new category?
+        <div class="cat-form-group">
+            <label for="editCatAppliesTo">Applies To <span class="req">*</span></label>
+            <select id="editCatAppliesTo">
+                <option value="MedicalCondition">Medical Condition</option>
+                <option value="Allergy">Allergy</option>
+                <option value="Medication">Medication</option>
+            </select>
+            <div class="hint">Only change this if the category isn't already in use — it may affect existing records.</div>
+        </div>
+
+        <div class="cat-form-group">
+            <label for="editCatName">Category Name <span class="req">*</span></label>
+            <input type="text" id="editCatName" />
+        </div>
+
+        <div class="cat-form-group">
+            <label for="editCatCode">Category Code <span class="req">*</span></label>
+            <input type="text" id="editCatCode" maxlength="10" style="text-transform:uppercase;" />
+            <div class="hint">Short unique code used for references and imports (auto-uppercased).</div>
+            <div class="hint error" id="editCatCodeError">That code is already in use — please choose another.</div>
+        </div>
+
+        <div class="cat-modal-actions">
+            <button class="cat-modal-btn cat-modal-cancel" type="button" onclick="closeEditCategoryModal()">Cancel</button>
+            <button class="cat-modal-btn cat-modal-confirm" type="button" onclick="submitEditCategory()">
+                <i class="bi bi-check-circle"></i>
+                Save Changes
+            </button>
+        </div>
+
+    </div>
+
+</div>
+
+<!-- =========================
+ARCHIVE / RESTORE MODAL
+========================= -->
+<div class="cat-modal-overlay" id="archiveCategoryModal">
+
+    <div class="cat-modal-box-sm">
+
+        <div class="cat-icon" id="archiveCatIcon">
+            <i class="bi bi-archive"></i>
+        </div>
+
+        <h4 id="archiveCatTitle">Archive Category</h4>
+
+        <p id="archiveCatText">
+            Archived categories are hidden from selection lists but existing
+            records that use them are unaffected. You can restore this
+            category at any time.
         </p>
 
-        <div style="display:flex;gap:10px;justify-content:center;margin-top:15px;">
-
-            <button onclick="closeAddModal()"
-                    style="padding:8px 14px;
-                           border:1px solid #ccc;
-                           border-radius:8px;
-                           background:white;">
-
-                Cancel
-
-            </button>
-
-            <button onclick="submitCategory()"
-                    style="padding:8px 14px;
-                           background:var(--accent);
-                           color:white;
-                           border:none;
-                           border-radius:8px;">
-
-                Add
-
-            </button>
-
+        <div class="cat-modal-actions-center">
+            <button class="cat-modal-btn cat-modal-cancel" type="button" onclick="closeArchiveCategoryModal()">Cancel</button>
+            <button class="cat-modal-btn" type="button" id="archiveCatConfirmBtn" onclick="confirmArchiveCategory()">Archive</button>
         </div>
 
     </div>
@@ -317,99 +650,289 @@ ADD MODAL
 <!-- =========================
 TOAST
 ========================= -->
-<div id="toast"
-     style="display:none;
-            position:fixed;
-            bottom:20px;
-            right:20px;
-            background:#2ecc71;
-            color:white;
-            padding:10px 14px;
-            border-radius:8px;
-            font-size:13px;
-            z-index:9999;">
-
-    Action completed successfully
-
-</div>
+<div id="toast">Action completed successfully</div>
 
 <!-- =========================
 SCRIPT
 ========================= -->
 <script>
+    (function () {
 
-    let selectedCategoryId = null;
+        // ---------- Seed data (prototype only — replace with data from the server) ----------
+        var categories = [
+            { id: 1, type: 'MedicalCondition', code: 'CVD', name: 'Cardiovascular', status: 'Active' },
+            { id: 2, type: 'MedicalCondition', code: 'RESP', name: 'Respiratory', status: 'Active' },
+            { id: 3, type: 'MedicalCondition', code: 'ENDO', name: 'Endocrine', status: 'Active' },
+            { id: 4, type: 'MedicalCondition', code: 'ONC', name: 'Oncology', status: 'Archived' },
+            { id: 5, type: 'Allergy', code: 'FOOD', name: 'Food', status: 'Active' },
+            { id: 6, type: 'Allergy', code: 'DRUG', name: 'Drug', status: 'Active' },
+            { id: 7, type: 'Allergy', code: 'ENV', name: 'Environmental', status: 'Active' },
+            { id: 8, type: 'Medication', code: 'ANTB', name: 'Antibiotics', status: 'Active' },
+            { id: 9, type: 'Medication', code: 'ANLG', name: 'Analgesics', status: 'Active' },
+            { id: 10, type: 'Medication', code: 'ANTH', name: 'Antihypertensives', status: 'Active' }
+        ];
 
-    // DELETE
+        var nextId = categories.length + 1;
+        var currentTab = 'All';
 
-    function openDeleteModal(id) {
+        var typeLabels = {
+            MedicalCondition: 'Medical Condition',
+            Allergy: 'Allergy',
+            Medication: 'Medication'
+        };
 
-        selectedCategoryId = id;
+        // ---------- Tabs ----------
+        window.setTab = function (tab) {
+            currentTab = tab;
+            document.querySelectorAll('.tab-btn').forEach(function (btn) {
+                btn.classList.toggle('active', btn.dataset.tab === tab);
+            });
+            renderTable();
+        };
 
-        document.getElementById("deleteModal").style.display = "flex";
-    }
-
-    function closeDeleteModal() {
-
-        document.getElementById("deleteModal").style.display = "none";
-
-        selectedCategoryId = null;
-    }
-
-    function confirmDelete() {
-
-        document.getElementById("row-" + selectedCategoryId)?.remove();
-
-        closeDeleteModal();
-
-        showToast("Category deleted successfully");
-    }
-
-    // ADD
-
-    function openAddModal() {
-
-        const input = document.getElementById("categoryName");
-
-        if (input.value.trim() === "") {
-
-            showToast("Please enter a category name");
-
-            return;
+        function updateCounts() {
+            var counts = { All: 0, MedicalCondition: 0, Allergy: 0, Medication: 0 };
+            categories.forEach(function (c) {
+                counts.All++;
+                counts[c.type]++;
+            });
+            Object.keys(counts).forEach(function (key) {
+                var el = document.getElementById('count-' + key);
+                if (el) el.textContent = counts[key];
+            });
         }
 
-        document.getElementById("addModal").style.display = "flex";
-    }
+        // ---------- Table rendering ----------
+        window.renderTable = function () {
+            var tbody = document.getElementById('categoryTableBody');
+            var emptyState = document.getElementById('emptyState');
+            var search = document.getElementById('searchInput').value.trim().toLowerCase();
+            var showArchived = document.getElementById('showArchived').checked;
 
-    function closeAddModal() {
+            var rows = categories.filter(function (c) {
+                if (currentTab !== 'All' && c.type !== currentTab) return false;
+                if (!showArchived && c.status === 'Archived') return false;
+                if (search && c.name.toLowerCase().indexOf(search) === -1 && c.code.toLowerCase().indexOf(search) === -1) return false;
+                return true;
+            });
 
-        document.getElementById("addModal").style.display = "none";
-    }
+            tbody.innerHTML = '';
 
-    function submitCategory() {
+            emptyState.style.display = rows.length === 0 ? 'block' : 'none';
 
-        closeAddModal();
+            rows.forEach(function (c, index) {
+                var tr = document.createElement('tr');
+                tr.id = 'row-' + c.id;
+                if (c.status === 'Archived') tr.classList.add('row-archived');
 
-        document.getElementById("categoryName").value = "";
+                tr.innerHTML =
+                    '<td>' + (index + 1) + '</td>' +
+                    '<td><span class="code-pill">' + escapeHtml(c.code) + '</span></td>' +
+                    '<td style="font-weight:600;font-size:13px;">' + escapeHtml(c.name) + '</td>' +
+                    '<td><span class="type-badge type-' + c.type + '">' + typeLabels[c.type] + '</span></td>' +
+                    '<td><span class="status-badge status-' + c.status + '">' + c.status + '</span></td>' +
+                    '<td></td>';
 
-        showToast("Category added successfully");
-    }
+                var actionsCell = tr.querySelector('td:last-child');
+                actionsCell.style.display = 'flex';
+                actionsCell.style.gap = '8px';
 
-    // TOAST
+                var editBtn = document.createElement('button');
+                editBtn.type = 'button';
+                editBtn.className = 'action-btn action-edit';
+                editBtn.innerHTML = '<i class="bi bi-pencil"></i> Edit';
+                editBtn.onclick = function () { openEditCategoryModal(c.id, c.name, c.code, c.type); };
+                actionsCell.appendChild(editBtn);
 
-    function showToast(message) {
+                if (c.status === 'Active') {
+                    var archiveBtn = document.createElement('button');
+                    archiveBtn.type = 'button';
+                    archiveBtn.className = 'action-btn action-archive';
+                    archiveBtn.innerHTML = '<i class="bi bi-archive"></i> Archive';
+                    archiveBtn.onclick = function () { openArchiveCategoryModal(c.id, c.name, false); };
+                    actionsCell.appendChild(archiveBtn);
+                } else {
+                    var restoreBtn = document.createElement('button');
+                    restoreBtn.type = 'button';
+                    restoreBtn.className = 'action-btn action-restore';
+                    restoreBtn.innerHTML = '<i class="bi bi-arrow-counterclockwise"></i> Restore';
+                    restoreBtn.onclick = function () { openArchiveCategoryModal(c.id, c.name, true); };
+                    actionsCell.appendChild(restoreBtn);
+                }
 
-        const toast = document.getElementById("toast");
+                tbody.appendChild(tr);
+            });
 
-        toast.innerText = message;
+            updateCounts();
+        };
 
-        toast.style.display = "block";
+        function escapeHtml(str) {
+            var div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
 
-        setTimeout(() => {
+        // ---------- Add modal ----------
+        window.openAddCategoryModal = function (defaultType) {
+            document.getElementById('addCatAppliesTo').value = defaultType || (currentTab !== 'All' ? currentTab : 'MedicalCondition');
+            document.getElementById('addCatName').value = '';
+            document.getElementById('addCatCode').value = '';
+            document.getElementById('addCatCodeError').style.display = 'none';
+            document.getElementById('addCategoryModal').classList.add('open');
+        };
 
-            toast.style.display = "none";
+        window.closeAddCategoryModal = function () {
+            document.getElementById('addCategoryModal').classList.remove('open');
+        };
 
-        }, 2000);
-    }
+        window.submitAddCategory = function () {
+            var type = document.getElementById('addCatAppliesTo').value;
+            var name = document.getElementById('addCatName').value.trim();
+            var code = document.getElementById('addCatCode').value.trim().toUpperCase();
+            var errorHint = document.getElementById('addCatCodeError');
 
+            if (!name || !code) {
+                showToast('Please provide both a name and a code');
+                return;
+            }
+
+            var duplicate = categories.some(function (c) { return c.code === code; });
+            if (duplicate) {
+                errorHint.style.display = 'block';
+                return;
+            }
+
+            // TODO: replace with a real POST to your Categories controller.
+
+            errorHint.style.display = 'none';
+            categories.push({ id: nextId++, type: type, code: code, name: name, status: 'Active' });
+            closeAddCategoryModal();
+            showToast('Category added successfully');
+            renderTable();
+        };
+
+        // ---------- Edit modal ----------
+        var editCategoryTargetId = null;
+
+        window.openEditCategoryModal = function (id, name, code, type) {
+            editCategoryTargetId = id;
+            document.getElementById('editCatIdLabel').textContent = '#' + id;
+            document.getElementById('editCatAppliesTo').value = type;
+            document.getElementById('editCatName').value = name;
+            document.getElementById('editCatCode').value = code;
+            document.getElementById('editCatCodeError').style.display = 'none';
+            document.getElementById('editCategoryModal').classList.add('open');
+        };
+
+        window.closeEditCategoryModal = function () {
+            document.getElementById('editCategoryModal').classList.remove('open');
+            editCategoryTargetId = null;
+        };
+
+        window.submitEditCategory = function () {
+            var type = document.getElementById('editCatAppliesTo').value;
+            var name = document.getElementById('editCatName').value.trim();
+            var code = document.getElementById('editCatCode').value.trim().toUpperCase();
+            var errorHint = document.getElementById('editCatCodeError');
+
+            if (!name || !code) {
+                showToast('Please provide both a name and a code');
+                return;
+            }
+
+            var duplicate = categories.some(function (c) { return c.code === code && c.id !== editCategoryTargetId; });
+            if (duplicate) {
+                errorHint.style.display = 'block';
+                return;
+            }
+
+            // TODO: replace with a real PUT/POST to your Categories controller.
+
+            var cat = categories.find(function (c) { return c.id === editCategoryTargetId; });
+            if (cat) {
+                cat.type = type;
+                cat.name = name;
+                cat.code = code;
+            }
+
+            errorHint.style.display = 'none';
+            closeEditCategoryModal();
+            showToast('Category updated successfully');
+            renderTable();
+        };
+
+        // ---------- Archive / Restore modal ----------
+        var archiveCategoryTargetId = null;
+        var archiveCategoryTargetAction = null; // 'Archive' or 'Restore'
+
+        window.openArchiveCategoryModal = function (id, name, isCurrentlyArchived) {
+            archiveCategoryTargetId = id;
+            archiveCategoryTargetAction = isCurrentlyArchived ? 'Restore' : 'Archive';
+
+            var icon = document.getElementById('archiveCatIcon');
+            var title = document.getElementById('archiveCatTitle');
+            var text = document.getElementById('archiveCatText');
+            var confirmBtn = document.getElementById('archiveCatConfirmBtn');
+
+            if (archiveCategoryTargetAction === 'Archive') {
+                icon.className = 'cat-icon cat-icon-archive';
+                icon.innerHTML = '<i class="bi bi-archive"></i>';
+                title.textContent = 'Archive "' + name + '"?';
+                text.textContent = 'Archived categories are hidden from selection lists but existing records that use them are unaffected. You can restore this category at any time.';
+                confirmBtn.textContent = 'Archive';
+                confirmBtn.className = 'cat-modal-btn cat-modal-archive';
+            } else {
+                icon.className = 'cat-icon cat-icon-restore';
+                icon.innerHTML = '<i class="bi bi-arrow-counterclockwise"></i>';
+                title.textContent = 'Restore "' + name + '"?';
+                text.textContent = 'This category will become available again in selection lists across the system.';
+                confirmBtn.textContent = 'Restore';
+                confirmBtn.className = 'cat-modal-btn cat-modal-restore';
+            }
+
+            document.getElementById('archiveCategoryModal').classList.add('open');
+        };
+
+        window.closeArchiveCategoryModal = function () {
+            document.getElementById('archiveCategoryModal').classList.remove('open');
+            archiveCategoryTargetId = null;
+            archiveCategoryTargetAction = null;
+        };
+
+        window.confirmArchiveCategory = function () {
+            var cat = categories.find(function (c) { return c.id === archiveCategoryTargetId; });
+            if (cat) {
+                cat.status = archiveCategoryTargetAction === 'Archive' ? 'Archived' : 'Active';
+            }
+
+            // TODO: replace with a real POST to your Categories controller.
+
+            var action = archiveCategoryTargetAction;
+            closeArchiveCategoryModal();
+            showToast('Category ' + (action === 'Archive' ? 'archived' : 'restored') + ' successfully');
+            renderTable();
+        };
+
+        // ---------- Toast ----------
+        var toastTimer = null;
+        window.showToast = function (message) {
+            var toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.style.display = 'block';
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(function () {
+                toast.style.display = 'none';
+            }, 2200);
+        };
+
+        // ---------- Close modals on outside click ----------
+        window.addEventListener('click', function (e) {
+            if (e.target.id === 'addCategoryModal') closeAddCategoryModal();
+            if (e.target.id === 'editCategoryModal') closeEditCategoryModal();
+            if (e.target.id === 'archiveCategoryModal') closeArchiveCategoryModal();
+        });
+
+        renderTable();
+
+    })();
 </script>
