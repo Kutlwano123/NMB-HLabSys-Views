@@ -15,7 +15,10 @@ namespace NMB_HLabSys.Controllers
         {
             return View();
         }
-
+        public IActionResult Profile()
+        {
+            return View();
+        }
         public IActionResult CreateUser()
         {
             return View();

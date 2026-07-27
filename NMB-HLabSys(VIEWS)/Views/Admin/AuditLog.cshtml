@@ -7,14 +7,14 @@
 @section Styles {
     <style>
 
-        /* =========================
-                   HEADER (PATIENT STYLE)
-                ========================= */
+        /* ================= HEADER ================= */
         .page-header {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 22px;
         }
 
             .page-header h2 {
@@ -26,90 +26,140 @@
                 font-size: 12px;
                 color: var(--text-light);
                 margin-top: 4px;
+                max-width: 520px;
             }
 
-        /* =========================
-                   FILTER BAR (SIMPLIFIED)
-                ========================= */
-        .filter-bar {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 14px;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        /* ================= TOOLBAR ================= */
+        .toolbar {
+            display: flex;
             gap: 12px;
+            flex-wrap: wrap;
+            align-items: center;
             margin-bottom: 18px;
         }
 
-            .filter-bar input,
-            .filter-bar select {
-                padding: 8px 10px;
-                border: 1px solid var(--border);
-                border-radius: 8px;
-                font-size: 12px;
-                background: var(--bg);
+        .search-box {
+            position: relative;
+            flex: 1;
+            min-width: 220px;
+            max-width: 320px;
+        }
+
+            .search-box i {
+                position: absolute;
+                left: 12px;
+                top: 50%;
+                transform: translateY(-50%);
+                color: var(--text-light);
+                font-size: 13px;
             }
 
-        /* =========================
-                   BADGES (PATIENT STYLE)
-                ========================= */
+            .search-box input {
+                width: 100%;
+                padding: 9px 12px 9px 34px;
+                border: 1px solid var(--border);
+                border-radius: 8px;
+                font-size: 13px;
+                box-sizing: border-box;
+            }
+
+        .filter-select,
+        .filter-date {
+            padding: 9px 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 13px;
+            background: var(--surface);
+        }
+
+        .filter-select {
+            min-width: 150px;
+        }
+
+        /* ================= BADGES ================= */
+        .badge-cat {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 9px;
+            border-radius: 999px;
+            background: #f1e8fe;
+            color: #6a2fb0;
+        }
+
         .action-badge {
             display: inline-block;
             padding: 3px 10px;
-            border-radius: 20px;
+            border-radius: 999px;
             font-size: 11px;
-            font-weight: 600;
+            font-weight: 700;
         }
 
-        .action-login {
+        .action-Login {
             background: #e8f5e9;
             color: #2e7d32;
         }
 
-        .action-logout {
+        .action-Logout {
             background: #fff3cd;
             color: #b58900;
         }
 
-        .action-create {
+        .action-Create {
             background: #e8eaee;
             color: #3a4a5a;
         }
 
-        .action-update {
+        .action-Update {
             background: #e8eef4;
             color: #2a5080;
         }
 
-        .action-delete {
+        .action-Delete {
             background: var(--accent-pale);
             color: var(--accent);
         }
 
-        /* =========================
-                   PANEL STYLE
-                ========================= */
-        .panel {
+        /* ================= TABLE ================= */
+        .card {
             background: var(--surface);
             border: 1px solid var(--border);
             border-radius: 12px;
             overflow: hidden;
         }
 
-        .empty {
-            text-align: center;
-            padding: 24px;
-            font-size: 13px;
+        .table td {
+            vertical-align: middle;
+        }
+
+        .cell-light {
+            font-size: 12px;
             color: var(--text-light);
         }
+
+        .cell-user {
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .empty-state {
+            padding: 40px 20px;
+            text-align: center;
+            color: var(--text-light);
+            font-size: 13px;
+        }
+
+            .empty-state i {
+                font-size: 26px;
+                display: block;
+                margin-bottom: 8px;
+                opacity: .5;
+            }
 
     </style>
 }
 
-<!-- =========================
-HEADER
-========================= -->
+<!-- ================= HEADER ================= -->
 <div class="page-header">
 
     <div>
@@ -117,51 +167,42 @@ HEADER
         <p>@DateTime.Now.ToString("dddd, dd MMMM yyyy") — System activity overview</p>
     </div>
 
-    @* <a href="#"
-       style="background:var(--accent);color:#fff;padding:8px 14px;border-radius:8px;text-decoration:none;font-size:13px;">
-        Export Log
-    </a> *@
+</div>
+
+<!-- ================= TOOLBAR ================= -->
+<div class="toolbar">
+
+    <div class="search-box">
+        <i class="bi bi-search"></i>
+        <input type="text" id="searchInput" placeholder="Search by user or description…" oninput="renderTable()" />
+    </div>
+
+    <select id="actionFilter" class="filter-select" onchange="renderTable()">
+        <option value="">All Actions</option>
+        <option value="Login">Login</option>
+        <option value="Logout">Logout</option>
+        <option value="Create">Create</option>
+        <option value="Update">Update</option>
+        <option value="Delete">Delete</option>
+    </select>
+
+    <select id="roleFilter" class="filter-select" onchange="renderTable()">
+        <option value="">All Roles</option>
+        <option value="Admin">Admin</option>
+        <option value="Doctor">Doctor</option>
+        <option value="LabTechnician">Lab Technician</option>
+        <option value="Patient">Patient</option>
+        <option value="LabManager">Lab Manager</option>
+    </select>
+
+    <input type="date" id="onDate" class="filter-date" onchange="renderTable()" />
 
 </div>
 
-<!-- =========================
-FILTERS (STATIC)
-========================= -->
-<div class="filter-bar">
+<!-- ================= TABLE ================= -->
+<div class="card">
 
-    <input type="date" />
-    <input type="date" />
-
-    <select>
-        <option>All Actions</option>
-        <option>Login</option>
-        <option>Logout</option>
-        <option>Create</option>
-        <option>Update</option>
-        <option>Delete</option>
-    </select>
-
-    <select>
-        <option>All Roles</option>
-        <option>Admin</option>
-        <option>Doctor</option>
-        <option>LabTechnician</option>
-        <option>Patient</option>
-        <option>LabManager</option>
-    </select>
-
-    <button style="background:var(--accent);color:#fff;border:none;border-radius:8px;padding:8px 12px;font-size:12px;">
-        Filter
-    </button>
-
-</div>
-
-<!-- =========================
-TABLE PANEL
-========================= -->
-<div class="panel">
-
-    <table class="table table-sm" style="margin:0;">
+    <table class="table table-sm" style="margin:0;width:100%;">
 
         <thead>
             <tr>
@@ -174,55 +215,82 @@ TABLE PANEL
             </tr>
         </thead>
 
-        <tbody>
-
-            <tr>
-                <td style="font-size:12px;color:var(--text-light);">09:10</td>
-                <td style="font-weight:600;">admin@nmb.ac.za</td>
-                <td><span class="badge-lite">Admin</span></td>
-                <td><span class="action-badge action-login">Login</span></td>
-                <td style="font-size:12px;color:var(--text-light);">User logged in</td>
-                <td style="font-size:12px;color:var(--text-light);">192.168.1.10</td>
-            </tr>
-
-            <tr>
-                <td style="font-size:12px;color:var(--text-light);">09:25</td>
-                <td style="font-weight:600;">doctor@nmb.ac.za</td>
-                <td><span class="badge-lite">Doctor</span></td>
-                <td><span class="action-badge action-create">Create</span></td>
-                <td style="font-size:12px;color:var(--text-light);">New test request created</td>
-                <td style="font-size:12px;color:var(--text-light);">192.168.1.22</td>
-            </tr>
-
-            <tr>
-                <td style="font-size:12px;color:var(--text-light);">09:40</td>
-                <td style="font-weight:600;">labtech@nmb.ac.za</td>
-                <td><span class="badge-lite">LabTech</span></td>
-                <td><span class="action-badge action-update">Update</span></td>
-                <td style="font-size:12px;color:var(--text-light);">Updated results</td>
-                <td style="font-size:12px;color:var(--text-light);">192.168.1.33</td>
-            </tr>
-
-            <tr>
-                <td style="font-size:12px;color:var(--text-light);">10:05</td>
-                <td style="font-weight:600;">manager@nmb.ac.za</td>
-                <td><span class="badge-lite">Manager</span></td>
-                <td><span class="action-badge action-delete">Delete</span></td>
-                <td style="font-size:12px;color:var(--text-light);">Removed record</td>
-                <td style="font-size:12px;color:var(--text-light);">192.168.1.40</td>
-            </tr>
-
-            <tr>
-                <td style="font-size:12px;color:var(--text-light);">10:30</td>
-                <td style="font-weight:600;">patient@nmb.ac.za</td>
-                <td><span class="badge-lite">Patient</span></td>
-                <td><span class="action-badge action-logout">Logout</span></td>
-                <td style="font-size:12px;color:var(--text-light);">User logged out</td>
-                <td style="font-size:12px;color:var(--text-light);">192.168.1.55</td>
-            </tr>
-
+        <tbody id="logTableBody">
+            <!-- populated by JS -->
         </tbody>
 
     </table>
 
+    <div class="empty-state" id="emptyState" style="display:none;">
+        <i class="bi bi-clock-history"></i>
+        No activity found.
+    </div>
+
 </div>
+
+<!-- ================= SCRIPT ================= -->
+<script>
+    (function () {
+
+        // ---------- Seed data (prototype only — replace with data from the server) ----------
+        var logs = [
+            { time: '09:10', date: '2026-07-27', user: 'admin@nmb.ac.za', role: 'Admin', action: 'Login', description: 'User logged in', ip: '192.168.1.10' },
+            { time: '09:25', date: '2026-07-27', user: 'doctor@nmb.ac.za', role: 'Doctor', action: 'Create', description: 'New test request created', ip: '192.168.1.22' },
+            { time: '09:40', date: '2026-07-27', user: 'labtech@nmb.ac.za', role: 'LabTechnician', action: 'Update', description: 'Updated results', ip: '192.168.1.33' },
+            { time: '10:05', date: '2026-07-27', user: 'manager@nmb.ac.za', role: 'LabManager', action: 'Delete', description: 'Removed record', ip: '192.168.1.40' },
+            { time: '10:30', date: '2026-07-27', user: 'patient@nmb.ac.za', role: 'Patient', action: 'Logout', description: 'User logged out', ip: '192.168.1.55' }
+        ];
+
+        var roleLabels = {
+            Admin: 'Admin',
+            Doctor: 'Doctor',
+            LabTechnician: 'Lab Tech',
+            Patient: 'Patient',
+            LabManager: 'Manager'
+        };
+
+        // ---------- Table rendering ----------
+        window.renderTable = function () {
+            var tbody = document.getElementById('logTableBody');
+            var emptyState = document.getElementById('emptyState');
+            var search = document.getElementById('searchInput').value.trim().toLowerCase();
+            var action = document.getElementById('actionFilter').value;
+            var role = document.getElementById('roleFilter').value;
+            var onDate = document.getElementById('onDate').value;
+
+            var rows = logs.filter(function (l) {
+                if (action && l.action !== action) return false;
+                if (role && l.role !== role) return false;
+                if (onDate && l.date !== onDate) return false;
+                if (search && l.user.toLowerCase().indexOf(search) === -1 && l.description.toLowerCase().indexOf(search) === -1) return false;
+                return true;
+            });
+
+            tbody.innerHTML = '';
+            emptyState.style.display = rows.length === 0 ? 'block' : 'none';
+
+            rows.forEach(function (l) {
+                var tr = document.createElement('tr');
+
+                tr.innerHTML =
+                    '<td class="cell-light">' + escapeHtml(l.time) + '</td>' +
+                    '<td class="cell-user">' + escapeHtml(l.user) + '</td>' +
+                    '<td><span class="badge-cat">' + escapeHtml(roleLabels[l.role] || l.role) + '</span></td>' +
+                    '<td><span class="action-badge action-' + l.action + '">' + l.action + '</span></td>' +
+                    '<td class="cell-light">' + escapeHtml(l.description) + '</td>' +
+                    '<td class="cell-light">' + escapeHtml(l.ip) + '</td>';
+
+                tbody.appendChild(tr);
+            });
+        };
+
+        function escapeHtml(str) {
+            var div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        renderTable();
+
+    })();
+</script>

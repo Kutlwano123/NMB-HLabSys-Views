@@ -8,8 +8,8 @@
     <style>
 
         /* =========================
-                   HEADER
-                ========================= */
+                           HEADER
+                        ========================= */
         .page-header {
             display: flex;
             justify-content: space-between;
@@ -29,8 +29,8 @@
             }
 
         /* =========================
-                   STAT GRID
-                ========================= */
+                           STAT GRID
+                        ========================= */
         .stat-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -125,8 +125,7 @@
             gap: 4px;
         }
 
-            .stat-card-actions .mini-link,
-            .stat-card-actions .quick-add-btn {
+            .stat-card-actions .mini-link {
                 width: 28px;
                 height: 28px;
                 border-radius: 8px;
@@ -141,13 +140,11 @@
                 font-size: 12px;
             }
 
-                .stat-card-actions .mini-link:hover,
-                .stat-card-actions .quick-add-btn:hover {
+                .stat-card-actions .mini-link:hover {
                     border-color: var(--accent);
                     color: var(--accent);
                 }
 
-                .stat-card-actions .quick-add-btn:focus-visible,
                 .stat-card-actions .mini-link:focus-visible {
                     outline: 2px solid var(--accent);
                     outline-offset: 2px;
@@ -188,8 +185,8 @@
             }
 
         /* =========================
-                   TWO COLUMN
-                ========================= */
+                           TWO COLUMN
+                        ========================= */
         .two-col {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -224,29 +221,6 @@
             padding: 24px;
             font-size: 13px;
             color: var(--text-light);
-        }
-
-        .status-badge {
-            font-size: 11px;
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-weight: 600;
-            display: inline-block;
-        }
-
-        .status-pending {
-            background: #fff3cd;
-            color: #7a5d00;
-        }
-
-        .status-completed {
-            background: #e8f5e9;
-            color: #2e7d32;
-        }
-
-        .status-processing {
-            background: #e8ecf3;
-            color: #415a77;
         }
 
         .role-badge {
@@ -318,8 +292,64 @@
             }
 
         /* =========================
-                   RECENT ACTIVITY (Audit Log)
-                ========================= */
+                           QUICK ACTIONS
+                        ========================= */
+        .quick-actions-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .quick-action-btn {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            text-decoration: none;
+            color: var(--text-dark);
+            transition: 0.2s ease;
+        }
+
+            .quick-action-btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 16px rgba(0,0,0,0.06);
+                border-color: var(--accent);
+            }
+
+            .quick-action-btn:focus-visible {
+                outline: 2px solid var(--accent);
+                outline-offset: 2px;
+            }
+
+        .quick-action-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        .quick-action-label {
+            font-size: 13px;
+            font-weight: 600;
+            line-height: 1.3;
+        }
+
+        .quick-action-sub {
+            font-size: 11px;
+            color: var(--text-light);
+            margin-top: 1px;
+        }
+
+        /* =========================
+                           RECENT ACTIVITY (Audit Log)
+                        ========================= */
         .activity-list {
             list-style: none;
             margin: 0;
@@ -358,127 +388,6 @@
             font-size: 11px;
             color: var(--text-light);
         }
-
-        /* =========================
-                   QUICK ADD MODAL
-                ========================= */
-        .modal-overlay-admin {
-            position: fixed;
-            inset: 0;
-            background: rgba(20,24,30,0.45);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-        }
-
-            .modal-overlay-admin.open {
-                display: flex;
-            }
-
-        .quick-add-modal {
-            background: #fff;
-            border-radius: 14px;
-            max-width: 380px;
-            width: 90%;
-            padding: 22px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.2);
-        }
-
-            .quick-add-modal h3 {
-                font-family: 'DM Serif Display', serif;
-                font-size: 18px;
-                margin: 0 0 4px;
-            }
-
-            .quick-add-modal .modal-sub {
-                font-size: 12px;
-                color: var(--text-light);
-                margin-bottom: 16px;
-            }
-
-            .quick-add-modal label {
-                display: block;
-                font-size: 12px;
-                font-weight: 600;
-                margin-bottom: 4px;
-                margin-top: 12px;
-            }
-
-            .quick-add-modal input[type="text"],
-            .quick-add-modal textarea {
-                width: 100%;
-                padding: 8px 10px;
-                border: 1px solid var(--border);
-                border-radius: 8px;
-                font-size: 13px;
-                font-family: inherit;
-                box-sizing: border-box;
-            }
-
-            .quick-add-modal textarea {
-                min-height: 60px;
-                resize: vertical;
-            }
-
-            .quick-add-modal .modal-close {
-                background: none;
-                border: none;
-                font-size: 20px;
-                float: right;
-                cursor: pointer;
-                color: var(--text-light);
-                line-height: 1;
-            }
-
-            .quick-add-modal .modal-actions {
-                display: flex;
-                gap: 10px;
-                margin-top: 20px;
-            }
-
-                .quick-add-modal .modal-actions button {
-                    flex: 1;
-                    padding: 10px;
-                    border-radius: 8px;
-                    border: 1px solid var(--border);
-                    background: #fff;
-                    cursor: pointer;
-                    font-size: 13px;
-                }
-
-                    .quick-add-modal .modal-actions button.primary {
-                        background: var(--accent);
-                        color: #fff;
-                        border-color: var(--accent);
-                    }
-
-        /* --- Toast --- */
-        .toast-stack {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 1100;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .toast-msg {
-            background: #2e2e2e;
-            color: #fff;
-            padding: 10px 16px;
-            border-radius: 8px;
-            font-size: 13px;
-            opacity: 0;
-            transform: translateY(6px);
-            transition: 0.25s ease;
-        }
-
-            .toast-msg.show {
-                opacity: 1;
-                transform: translateY(0);
-            }
 
         .sr-only {
             position: absolute;
@@ -527,14 +436,14 @@ STAT CARDS
         </div>
     </button>
 
-    <!-- Pending Requests: jumps to + filters the Recent Requests table -->
-    <button type="button" class="stat-card" data-filter="pending" title="Show pending test requests">
+    <!-- Pending Requests -->
+    <a href="~/Admin/TestRequests" class="stat-card" style="text-decoration:none;color:inherit;" title="View test requests">
         <div class="stat-icon gold" aria-hidden="true"><i class="bi bi-hourglass-split"></i></div>
         <div class="stat-card-body">
             <div class="stat-value" data-count="6">0</div>
             <div class="stat-label">Pending Requests</div>
         </div>
-    </button>
+    </a>
 
     <!-- Test Categories -->
     <div class="stat-card">
@@ -545,7 +454,6 @@ STAT CARDS
         </div>
         <div class="stat-card-actions">
             <a href="~/Admin/TestCategories" class="mini-link" title="Manage test categories" aria-label="Manage test categories"><i class="bi bi-arrow-right"></i></a>
-            <button type="button" class="quick-add-btn" data-type="categories" title="Quick add a category" aria-label="Quick add a category"><i class="bi bi-plus-lg"></i></button>
         </div>
     </div>
 
@@ -558,7 +466,6 @@ STAT CARDS
         </div>
         <div class="stat-card-actions">
             <a href="~/Admin/Medications" class="mini-link" title="Manage medications" aria-label="Manage medications"><i class="bi bi-arrow-right"></i></a>
-            <button type="button" class="quick-add-btn" data-type="medications" title="Quick add a medication" aria-label="Quick add a medication"><i class="bi bi-plus-lg"></i></button>
         </div>
     </div>
 
@@ -571,7 +478,6 @@ STAT CARDS
         </div>
         <div class="stat-card-actions">
             <a href="~/Admin/Conditions" class="mini-link" title="Manage conditions" aria-label="Manage conditions"><i class="bi bi-arrow-right"></i></a>
-            <button type="button" class="quick-add-btn" data-type="conditions" title="Quick add a condition" aria-label="Quick add a condition"><i class="bi bi-plus-lg"></i></button>
         </div>
     </div>
 
@@ -584,7 +490,6 @@ STAT CARDS
         </div>
         <div class="stat-card-actions">
             <a href="~/Admin/Allergies" class="mini-link" title="Manage allergies" aria-label="Manage allergies"><i class="bi bi-arrow-right"></i></a>
-            <button type="button" class="quick-add-btn" data-type="allergies" title="Quick add an allergy" aria-label="Quick add an allergy"><i class="bi bi-plus-lg"></i></button>
         </div>
     </div>
 
@@ -599,65 +504,9 @@ STAT CARDS
 </div>
 
 <!-- =========================
-TWO COLUMN: REQUESTS + USERS
+TWO COLUMN: RECENT USERS + QUICK ACTIONS
 ========================= -->
 <div class="two-col">
-
-    <!-- RECENT REQUESTS -->
-    <div id="requestsSection">
-
-        <div class="section-heading">
-            <i class="bi bi-file-medical" style="color:var(--accent);" aria-hidden="true"></i>
-            Recent Requests
-        </div>
-
-        <div class="panel">
-
-            <div class="table-toolbar">
-                <label class="sr-only" for="requestSearch">Search requests</label>
-                <input type="search" id="requestSearch" placeholder="Search by patient or status...">
-
-                <label class="sr-only" for="requestStatusFilter">Filter by status</label>
-                <select id="requestStatusFilter">
-                    <option value="">All statuses</option>
-                    <option value="completed">Completed</option>
-                    <option value="pending">Pending</option>
-                    <option value="processing">Processing</option>
-                </select>
-            </div>
-
-            <table class="table table-sm" id="requestsTable">
-                <thead>
-                    <tr>
-                        <th class="sortable" data-sort="patient" scope="col">Patient <i class="bi bi-arrow-down-up"></i></th>
-                        <th class="sortable" data-sort="status" scope="col">Status <i class="bi bi-arrow-down-up"></i></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr class="req-row" data-status="completed" data-patient="john smith">
-                        <td>John Smith</td>
-                        <td><span class="status-badge status-completed">Completed</span></td>
-                    </tr>
-                    <tr class="req-row" data-status="pending" data-patient="mary johnson">
-                        <td>Mary Johnson</td>
-                        <td><span class="status-badge status-pending">Pending</span></td>
-                    </tr>
-                    <tr class="req-row" data-status="processing" data-patient="david brown">
-                        <td>David Brown</td>
-                        <td><span class="status-badge status-processing">Processing</span></td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <div class="empty" id="noRequestsMsg" style="display:none;">
-                No requests match your search or filter.
-            </div>
-
-        </div>
-
-        <a href="~/Admin/TestRequests" class="view-all-link">View all requests <i class="bi bi-arrow-right"></i></a>
-
-    </div>
 
     <!-- RECENT USERS -->
     <div id="usersSection">
@@ -724,6 +573,72 @@ TWO COLUMN: REQUESTS + USERS
 
     </div>
 
+    <!-- QUICK ACTIONS -->
+    <div id="quickActionsSection">
+
+        <div class="section-heading">
+            <i class="bi bi-lightning-charge" style="color:var(--accent);" aria-hidden="true"></i>
+            Quick Actions
+        </div>
+
+        <div class="panel">
+
+            <div class="quick-actions-grid">
+
+                <a href="~/Admin/Medications" class="quick-action-btn">
+                    <div class="quick-action-icon" style="background:#e8f5e9;color:#2e7d32;"><i class="bi bi-capsule"></i></div>
+                    <div>
+                        <div class="quick-action-label">Add Medication</div>
+                        <div class="quick-action-sub">Master data</div>
+                    </div>
+                </a>
+
+                <a href="~/Admin/Conditions" class="quick-action-btn">
+                    <div class="quick-action-icon" style="background:#fff3cd;color:#b58900;"><i class="bi bi-heart-pulse"></i></div>
+                    <div>
+                        <div class="quick-action-label">Add Condition</div>
+                        <div class="quick-action-sub">Master data</div>
+                    </div>
+                </a>
+
+                <a href="~/Admin/Allergies" class="quick-action-btn">
+                    <div class="quick-action-icon" style="background:var(--accent-pale);color:var(--accent);"><i class="bi bi-exclamation-triangle"></i></div>
+                    <div>
+                        <div class="quick-action-label">Add Allergy</div>
+                        <div class="quick-action-sub">Master data</div>
+                    </div>
+                </a>
+
+                <a href="~/Admin/TestCategories" class="quick-action-btn">
+                    <div class="quick-action-icon" style="background:#eef2f7;color:#3b4a5a;"><i class="bi bi-tags"></i></div>
+                    <div>
+                        <div class="quick-action-label">Add Category</div>
+                        <div class="quick-action-sub">Master data</div>
+                    </div>
+                </a>
+
+                <a href="~/Admin/Reports" class="quick-action-btn">
+                    <div class="quick-action-icon" style="background:#e8eef4;color:#2a5080;"><i class="bi bi-bar-chart"></i></div>
+                    <div>
+                        <div class="quick-action-label">Generate Report</div>
+                        <div class="quick-action-sub">Reporting</div>
+                    </div>
+                </a>
+
+                <a href="~/Admin/AuditLog" class="quick-action-btn">
+                    <div class="quick-action-icon" style="background:#f1e8fe;color:#6a2fb0;"><i class="bi bi-journal-text"></i></div>
+                    <div>
+                        <div class="quick-action-label">View Audit Log</div>
+                        <div class="quick-action-sub">System</div>
+                    </div>
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
 </div>
 
 <!-- =========================
@@ -782,31 +697,6 @@ RECENT ACTIVITY (Audit Log)
 
 </div>
 
-<!-- =========================
-QUICK ADD MODAL
-========================= -->
-<div class="modal-overlay-admin" id="quickAddBackdrop" role="dialog" aria-modal="true" aria-labelledby="quickAddTitle">
-    <div class="quick-add-modal">
-        <button type="button" class="modal-close" id="quickAddClose" aria-label="Close">&times;</button>
-        <h3 id="quickAddTitle">Add Medication</h3>
-        <div class="modal-sub" id="quickAddSub">Add a new medication to the master list.</div>
-
-        <label for="quickAddName">Name</label>
-        <input type="text" id="quickAddName" placeholder="e.g. Amoxicillin" />
-
-        <label for="quickAddNotes">Notes (optional)</label>
-        <textarea id="quickAddNotes" placeholder="Dosage, category, or any other detail"></textarea>
-
-        <div class="modal-actions">
-            <button type="button" id="quickAddCancel">Cancel</button>
-            <button type="button" id="quickAddSave" class="primary">Save</button>
-        </div>
-    </div>
-</div>
-
-<!-- TOASTS -->
-<div class="toast-stack" id="toastStack" aria-live="polite"></div>
-
 @section Scripts {
     <script>
         (function() {
@@ -833,20 +723,6 @@ QUICK ADD MODAL
                 }, 30);
             });
 
-            // ---------- Toast helper ----------
-            function showToast(message) {
-                var stack = document.getElementById('toastStack');
-                var toast = document.createElement('div');
-                toast.className = 'toast-msg';
-                toast.textContent = message;
-                stack.appendChild(toast);
-                requestAnimationFrame(function() { toast.classList.add('show'); });
-                setTimeout(function() {
-                    toast.classList.remove('show');
-                    setTimeout(function() { toast.remove(); }, 300);
-                }, 2500);
-            }
-
             // ---------- Total Users: role breakdown toggle ----------
             var totalUsersCard = document.getElementById('totalUsersCard');
             var userBreakdown = document.getElementById('userBreakdown');
@@ -858,64 +734,6 @@ QUICK ADD MODAL
                 if (!expanded) {
                     userBreakdown.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
                 }
-            });
-
-            // ---------- Requests table: search + status filter + sort ----------
-            var requestSearch = document.getElementById('requestSearch');
-            var requestStatusFilter = document.getElementById('requestStatusFilter');
-            var noRequestsMsg = document.getElementById('noRequestsMsg');
-            var requestSortState = { key: null, dir: 1 };
-
-            function applyRequestFilters() {
-                var query = requestSearch.value.trim().toLowerCase();
-                var status = requestStatusFilter.value;
-                var visibleCount = 0;
-
-                document.querySelectorAll('.req-row').forEach(function(row) {
-                    var rowStatus = row.getAttribute('data-status');
-                    var text = row.textContent.toLowerCase();
-                    var matchesStatus = !status || rowStatus === status;
-                    var matchesQuery = !query || text.indexOf(query) !== -1;
-                    var visible = matchesStatus && matchesQuery;
-                    row.classList.toggle('row-hidden', !visible);
-                    if (visible) visibleCount++;
-                });
-
-                noRequestsMsg.style.display = visibleCount === 0 ? 'block' : 'none';
-            }
-
-            requestSearch.addEventListener('input', applyRequestFilters);
-            requestStatusFilter.addEventListener('change', applyRequestFilters);
-
-            document.querySelectorAll('#requestsTable th.sortable').forEach(function(th) {
-                th.addEventListener('click', function() {
-                    var key = th.getAttribute('data-sort');
-                    requestSortState.dir = (requestSortState.key === key) ? requestSortState.dir * -1 : 1;
-                    requestSortState.key = key;
-
-                    document.querySelectorAll('#requestsTable th.sortable').forEach(function(h) {
-                        h.classList.remove('sort-active');
-                    });
-                    th.classList.add('sort-active');
-
-                    var tbody = document.querySelector('#requestsTable tbody');
-                    var rows = Array.prototype.slice.call(tbody.querySelectorAll('.req-row'));
-                    rows.sort(function(a, b) {
-                        var av = key === 'patient' ? a.getAttribute('data-patient') : a.getAttribute('data-status');
-                        var bv = key === 'patient' ? b.getAttribute('data-patient') : b.getAttribute('data-status');
-                        if (av < bv) return -1 * requestSortState.dir;
-                        if (av > bv) return 1 * requestSortState.dir;
-                        return 0;
-                    });
-                    rows.forEach(function(row) { tbody.appendChild(row); });
-                });
-            });
-
-            // Pending Requests stat card jumps to + filters the requests table
-            document.querySelector('.stat-card[data-filter="pending"]').addEventListener('click', function() {
-                requestStatusFilter.value = 'pending';
-                applyRequestFilters();
-                document.getElementById('requestsSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
             });
 
             // ---------- Users table: search + role filter + sort ----------
@@ -985,81 +803,11 @@ QUICK ADD MODAL
                 });
             });
 
-            // ---------- Quick Add modal (Categories / Medications / Conditions / Allergies) ----------
-            // Demo-only: updates the on-page counter and shows a toast. Swap this
-            // out for a real POST to the backend once the pages are wired up.
-            var quickAddConfig = {
-                categories:  { title: 'Add Test Category', sub: 'Add a new test category to the master list.',  namePlaceholder: 'e.g. Haematology' },
-                medications: { title: 'Add Medication',    sub: 'Add a new medication to the master list.',     namePlaceholder: 'e.g. Amoxicillin' },
-                conditions:  { title: 'Add Condition',     sub: 'Add a new condition to the master list.',      namePlaceholder: 'e.g. Hypertension' },
-                allergies:   { title: 'Add Allergy',       sub: 'Add a new allergy to the master list.',        namePlaceholder: 'e.g. Penicillin' }
-            };
-
-            var quickAddBackdrop = document.getElementById('quickAddBackdrop');
-            var quickAddTitle = document.getElementById('quickAddTitle');
-            var quickAddSub = document.getElementById('quickAddSub');
-            var quickAddName = document.getElementById('quickAddName');
-            var quickAddNotes = document.getElementById('quickAddNotes');
-            var quickAddCurrentType = null;
-            var quickAddLastFocused = null;
-
-            function openQuickAdd(type) {
-                var config = quickAddConfig[type];
-                if (!config) return;
-                quickAddCurrentType = type;
-                quickAddTitle.textContent = config.title;
-                quickAddSub.textContent = config.sub;
-                quickAddName.placeholder = config.namePlaceholder;
-                quickAddName.value = '';
-                quickAddNotes.value = '';
-                quickAddLastFocused = document.activeElement;
-                quickAddBackdrop.classList.add('open');
-                quickAddName.focus();
-            }
-
-            function closeQuickAdd() {
-                quickAddBackdrop.classList.remove('open');
-                if (quickAddLastFocused) quickAddLastFocused.focus();
-            }
-
-            document.querySelectorAll('.quick-add-btn').forEach(function(btn) {
-                btn.addEventListener('click', function() {
-                    openQuickAdd(btn.getAttribute('data-type'));
-                });
-            });
-
-            document.getElementById('quickAddClose').addEventListener('click', closeQuickAdd);
-            document.getElementById('quickAddCancel').addEventListener('click', closeQuickAdd);
-            quickAddBackdrop.addEventListener('click', function(e) {
-                if (e.target === quickAddBackdrop) closeQuickAdd();
-            });
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape' && quickAddBackdrop.classList.contains('open')) closeQuickAdd();
-            });
-
-            document.getElementById('quickAddSave').addEventListener('click', function() {
-                var name = quickAddName.value.trim();
-                if (!name) {
-                    quickAddName.focus();
-                    return;
-                }
-                var counterEl = document.getElementById('count-' + quickAddCurrentType);
-                if (counterEl) {
-                    var current = parseInt(counterEl.textContent, 10) || 0;
-                    counterEl.textContent = current + 1;
-                }
-                var label = quickAddConfig[quickAddCurrentType].title.replace('Add ', '');
-                showToast(label + ' "' + name + '" added.');
-                closeQuickAdd();
-            });
-
-            // ---------- Global topnav search (hooks into this page's tables) ----------
+            // ---------- Global topnav search (hooks into this page's table) ----------
             var globalSearch = document.getElementById('globalSearch');
             if (globalSearch) {
                 globalSearch.addEventListener('input', function() {
-                    requestSearch.value = globalSearch.value;
                     userSearch.value = globalSearch.value;
-                    applyRequestFilters();
                     applyUserFilters();
                 });
             }

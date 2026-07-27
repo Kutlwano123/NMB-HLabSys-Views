@@ -7,18 +7,32 @@
 @section Styles {
     <style>
 
+        /* ================= HEADER ================= */
         .page-header {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            margin-bottom: 22px;
+            align-items: flex-start;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 12px;
+            margin-bottom: 22px;
         }
 
+            .page-header h2 {
+                margin: 0;
+                font-size: 22px;
+            }
+
+            .page-header p {
+                font-size: 12px;
+                color: var(--text-light);
+                margin-top: 4px;
+                max-width: 520px;
+            }
+
+        /* ================= REPORT TYPE CARDS ================= */
         .report-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
             gap: 14px;
             margin-bottom: 24px;
         }
@@ -28,11 +42,16 @@
             border: 1px solid var(--border);
             border-radius: 12px;
             padding: 18px;
-            transition: 0.2s ease;
+            transition: .2s ease;
         }
 
             .report-card:hover {
                 transform: translateY(-2px);
+            }
+
+            .report-card i {
+                font-size: 20px;
+                color: var(--accent);
             }
 
         .report-title {
@@ -48,128 +67,217 @@
         }
 
         .report-btn {
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
             margin-top: 12px;
             padding: 7px 12px;
             font-size: 12px;
+            font-weight: 600;
             border-radius: 8px;
             background: var(--accent-pale);
             color: var(--accent);
-            text-decoration: none;
+            border: none;
+            cursor: pointer;
         }
 
-        .filter-bar {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 16px;
+        /* ================= TOOLBAR ================= */
+        .toolbar {
             display: flex;
             gap: 12px;
             flex-wrap: wrap;
-            margin-bottom: 20px;
+            align-items: center;
+            margin-bottom: 18px;
         }
 
-            .filter-bar input,
-            .filter-bar select {
-                padding: 8px 10px;
-                border-radius: 8px;
-                border: 1px solid var(--border);
+        .search-box {
+            position: relative;
+            flex: 1;
+            min-width: 220px;
+            max-width: 320px;
+        }
+
+            .search-box i {
+                position: absolute;
+                left: 12px;
+                top: 50%;
+                transform: translateY(-50%);
+                color: var(--text-light);
                 font-size: 13px;
             }
 
-        .table-card {
+            .search-box input {
+                width: 100%;
+                padding: 9px 12px 9px 34px;
+                border: 1px solid var(--border);
+                border-radius: 8px;
+                font-size: 13px;
+                box-sizing: border-box;
+            }
+
+        .filter-select,
+        .filter-date {
+            padding: 9px 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 13px;
+            background: var(--surface);
+        }
+
+        .filter-select {
+            min-width: 160px;
+        }
+
+        /* ================= BADGES ================= */
+        .badge-cat {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 9px;
+            border-radius: 999px;
+            background: #f1e8fe;
+            color: #6a2fb0;
+        }
+
+        /* ================= TABLE ================= */
+        .card {
             background: var(--surface);
             border: 1px solid var(--border);
             border-radius: 12px;
             overflow: hidden;
         }
 
+        .table td {
+            vertical-align: middle;
+        }
+
+        .report-name {
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .action-btn {
+            border-radius: 6px;
+            padding: 6px 10px;
+            font-size: 12px;
+            cursor: pointer;
+            border: none;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: var(--accent-pale);
+            color: var(--accent);
+        }
+
+        .empty-state {
+            padding: 40px 20px;
+            text-align: center;
+            color: var(--text-light);
+            font-size: 13px;
+        }
+
+            .empty-state i {
+                font-size: 26px;
+                display: block;
+                margin-bottom: 8px;
+                opacity: .5;
+            }
+
+        #toast {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #2ecc71;
+            color: white;
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            z-index: 99999;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+
     </style>
 }
 
-<!-- =========================
-HEADER
-========================= -->
+<!-- ================= HEADER ================= -->
 <div class="page-header">
 
     <div>
-        <h2 style="margin:0;">Reports</h2>
-        <p style="color:var(--text-light);font-size:13px;margin-top:4px;">
-            Prototype report dashboard 
-        </p>
+        <h2>Reports</h2>
+        <p>Generate and review system reports covering lab activity, results, and performance.</p>
     </div>
-
-    <button style="background:var(--accent);color:white;
-        border:none;padding:10px 14px;border-radius:10px;font-size:13px;">
-        <i class="bi bi-download"></i>
-        Export
-    </button>
 
 </div>
 
-<!-- =========================
-REPORT CARDS
-========================= -->
+<!-- ================= REPORT TYPE CARDS ================= -->
 <div class="report-grid">
 
     <div class="report-card">
         <i class="bi bi-file-medical"></i>
         <div class="report-title">Test Requests Overview</div>
         <div class="report-desc">Summary of lab test requests and statuses.</div>
-        <a href="#" class="report-btn">Generate</a>
+        <button type="button" class="report-btn" onclick="generateReport('Test Requests Overview', 'Lab')">
+            <i class="bi bi-lightning-charge"></i> Generate
+        </button>
     </div>
 
     <div class="report-card">
         <i class="bi bi-people"></i>
         <div class="report-title">User Activity</div>
         <div class="report-desc">Shows login and system usage patterns.</div>
-        <a href="#" class="report-btn">Generate</a>
+        <button type="button" class="report-btn" onclick="generateReport('User Activity', 'System')">
+            <i class="bi bi-lightning-charge"></i> Generate
+        </button>
     </div>
 
     <div class="report-card">
         <i class="bi bi-check-circle"></i>
         <div class="report-title">Completed Tests</div>
         <div class="report-desc">Displays completed laboratory results.</div>
-        <a href="#" class="report-btn">Generate</a>
+        <button type="button" class="report-btn" onclick="generateReport('Completed Tests', 'Results')">
+            <i class="bi bi-lightning-charge"></i> Generate
+        </button>
     </div>
 
     <div class="report-card">
         <i class="bi bi-bar-chart"></i>
         <div class="report-title">Performance Metrics</div>
         <div class="report-desc">Shows workload and efficiency indicators.</div>
-        <a href="#" class="report-btn">Generate</a>
+        <button type="button" class="report-btn" onclick="generateReport('Performance Metrics', 'Analytics')">
+            <i class="bi bi-lightning-charge"></i> Generate
+        </button>
     </div>
 
 </div>
 
-<!-- =========================
-FILTER BAR
-========================= -->
-<div class="filter-bar">
+<!-- ================= TOOLBAR ================= -->
+<div class="toolbar">
 
-    <input type="date" />
-    <input type="date" />
+    <div class="search-box">
+        <i class="bi bi-search"></i>
+        <input type="text" id="searchInput" placeholder="Search reports…" oninput="renderTable()" />
+    </div>
 
-    <select>
-        <option>All Reports</option>
-        <option>Test Requests</option>
-        <option>User Activity</option>
-        <option>Performance</option>
+    <select id="typeFilter" class="filter-select" onchange="renderTable()">
+        <option value="">All Types</option>
+        <option value="Lab">Lab</option>
+        <option value="System">System</option>
+        <option value="Results">Results</option>
+        <option value="Analytics">Analytics</option>
+        <option value="Audit">Audit</option>
     </select>
 
-    <button style="background:var(--accent);color:white;
-        border:none;padding:8px 14px;border-radius:8px;font-size:13px;">
-        Filter
-    </button>
+    <input type="date" id="fromDate" class="filter-date" onchange="renderTable()" />
+    <input type="date" id="toDate" class="filter-date" onchange="renderTable()" />
 
 </div>
 
-<!-- =========================
-STATIC TABLE
-========================= -->
-<div class="table-card">
+<!-- ================= TABLE ================= -->
+<div class="card">
 
-    <table class="table" style="margin:0;">
+    <table class="table" style="margin:0;width:100%;">
 
         <thead>
             <tr>
@@ -180,45 +288,126 @@ STATIC TABLE
             </tr>
         </thead>
 
-        <tbody>
-
-            <tr>
-                <td>Test Requests Summary</td>
-                <td>21 May 2026</td>
-                <td>Lab</td>
-                <td><a class="report-btn">PDF</a></td>
-            </tr>
-
-            <tr>
-                <td>User Activity Report</td>
-                <td>20 May 2026</td>
-                <td>System</td>
-                <td><a class="report-btn">PDF</a></td>
-            </tr>
-
-            <tr>
-                <td>Completed Tests Report</td>
-                <td>19 May 2026</td>
-                <td>Results</td>
-                <td><a class="report-btn">PDF</a></td>
-            </tr>
-
-            <tr>
-                <td>Performance Overview</td>
-                <td>18 May 2026</td>
-                <td>Analytics</td>
-                <td><a class="report-btn">PDF</a></td>
-            </tr>
-
-            <tr>
-                <td>Audit Summary</td>
-                <td>17 May 2026</td>
-                <td>Audit</td>
-                <td><a class="report-btn">PDF</a></td>
-            </tr>
-
+        <tbody id="reportTableBody">
+            <!-- populated by JS -->
         </tbody>
 
     </table>
 
+    <div class="empty-state" id="emptyState" style="display:none;">
+        <i class="bi bi-file-earmark-bar-graph"></i>
+        No reports found.
+    </div>
+
 </div>
+
+<!-- ================= TOAST ================= -->
+<div id="toast">Action completed successfully</div>
+
+<!-- ================= SCRIPT ================= -->
+<script>
+    (function () {
+
+        // ---------- Seed data (prototype only — replace with data from the server) ----------
+        var reports = [
+            { id: 1, name: 'Test Requests Summary', date: '2026-05-21', type: 'Lab' },
+            { id: 2, name: 'User Activity Report', date: '2026-05-20', type: 'System' },
+            { id: 3, name: 'Completed Tests Report', date: '2026-05-19', type: 'Results' },
+            { id: 4, name: 'Performance Overview', date: '2026-05-18', type: 'Analytics' },
+            { id: 5, name: 'Audit Summary', date: '2026-05-17', type: 'Audit' }
+        ];
+
+        var nextId = reports.length + 1;
+
+        // ---------- Table rendering ----------
+        window.renderTable = function () {
+            var tbody = document.getElementById('reportTableBody');
+            var emptyState = document.getElementById('emptyState');
+            var search = document.getElementById('searchInput').value.trim().toLowerCase();
+            var type = document.getElementById('typeFilter').value;
+            var fromDate = document.getElementById('fromDate').value;
+            var toDate = document.getElementById('toDate').value;
+
+            var rows = reports.filter(function (r) {
+                if (type && r.type !== type) return false;
+                if (search && r.name.toLowerCase().indexOf(search) === -1) return false;
+                if (fromDate && r.date < fromDate) return false;
+                if (toDate && r.date > toDate) return false;
+                return true;
+            });
+
+            rows.sort(function (a, b) { return b.date.localeCompare(a.date); });
+
+            tbody.innerHTML = '';
+            emptyState.style.display = rows.length === 0 ? 'block' : 'none';
+
+            rows.forEach(function (r) {
+                var tr = document.createElement('tr');
+                tr.id = 'row-' + r.id;
+
+                tr.innerHTML =
+                    '<td><div class="report-name">' + escapeHtml(r.name) + '</div></td>' +
+                    '<td style="font-size:12.5px;color:var(--text-light);">' + formatDate(r.date) + '</td>' +
+                    '<td><span class="badge-cat">' + escapeHtml(r.type) + '</span></td>' +
+                    '<td></td>';
+
+                var actionsCell = tr.querySelector('td:last-child');
+                var downloadBtn = document.createElement('button');
+                downloadBtn.type = 'button';
+                downloadBtn.className = 'action-btn';
+                downloadBtn.innerHTML = '<i class="bi bi-download"></i> PDF';
+                downloadBtn.onclick = function () { downloadReport(r.name); };
+                actionsCell.appendChild(downloadBtn);
+
+                tbody.appendChild(tr);
+            });
+        };
+
+        function formatDate(iso) {
+            var d = new Date(iso + 'T00:00:00');
+            return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+        }
+
+        function escapeHtml(str) {
+            var div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        // ---------- Generate ----------
+        window.generateReport = function (name, type) {
+            // TODO: replace with a real POST to your Reports controller to generate the file server-side.
+
+            var today = new Date().toISOString().slice(0, 10);
+
+            reports.unshift({
+                id: nextId++,
+                name: name,
+                date: today,
+                type: type
+            });
+
+            showToast('"' + name + '" generated successfully');
+            renderTable();
+        };
+
+        // ---------- Download ----------
+        window.downloadReport = function (name) {
+            // TODO: replace with a real file download from your Reports controller.
+            showToast('Downloading "' + name + '"…');
+        };
+
+        // ---------- Toast ----------
+        var toastTimer = null;
+        window.showToast = function (message) {
+            var toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.style.display = 'block';
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(function () { toast.style.display = 'none'; }, 2200);
+        };
+
+        renderTable();
+
+    })();
+</script>
