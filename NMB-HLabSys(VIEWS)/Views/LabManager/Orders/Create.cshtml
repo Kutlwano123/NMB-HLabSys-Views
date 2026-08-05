@@ -1,10 +1,10 @@
-﻿@{
+﻿@using NMB_HLabSys_VIEWS_.Models
+@{
     ViewData["Title"] = "Create Order";
     Layout = "~/Views/Shared/_ManagersLayout.cshtml";
-    var order = new { OrderNumber = "", OrderItem = "", Supplier = "", Status = "Pending" };
 }
 <div class="row justify-content-center">
-    <div class="col-md-6">
+    <div class="col-md-8">
         <div class="card shadow-sm">
             <div class="card-header bg-primary text-white">
                 <h5 class="mb-0">Create New Order</h5>
@@ -14,24 +14,36 @@
                     @Html.AntiForgeryToken()
                     <div class="mb-3">
                         <label for="OrderNumber" class="form-label">Order Number</label>
-                        <input type="text" class="form-control" id="OrderNumber" name="OrderNumber" value="@order.OrderNumber" required />
+                        <input type="text" class="form-control" id="OrderNumber" name="OrderNumber" placeholder="ORD-20260001" required />
                     </div>
                     <div class="mb-3">
-                        <label for="OrderItem" class="form-label">Order Item</label>
-                        <input type="text" class="form-control" id="OrderItem" name="OrderItem" value="@order.OrderItem" required />
-                    </div>
-                    <div class="mb-3">
-                        <label for="Supplier" class="form-label">Supplier</label>
-                        <input type="text" class="form-control" id="Supplier" name="Supplier" value="@order.Supplier" required />
-                    </div>
-                    <div class="mb-3">
-                        <label for="Status" class="form-label">Status</label>
-                        <select class="form-select" id="Status" name="Status">
-                            <option value="Pending" selected>Pending</option>
-                            <option value="Ordered">Ordered</option>
-                            <option value="Received">Received</option>
-                            <option value="Cancelled">Cancelled</option>
+                        <label for="SupplierId" class="form-label">Supplier</label>
+                        <select class="form-select" id="SupplierId" name="SupplierId">
+                            <option value="">Select supplier</option>
+                            @foreach (var supplier in ViewBag.Suppliers as List<Supplier>)
+                            {
+                                <option value="@supplier.Id">@supplier.SupplierName</option>
+                            }
                         </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Consumables</label>
+                        <div class="border rounded p-3">
+                            @foreach (var consumable in ViewBag.Consumables as List<Consumable>)
+                            {
+                                <div class="row mb-2 align-items-center">
+                                    <div class="col-md-7">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="ConsumableIds" value="@consumable.Id" id="consumable_@consumable.Id" />
+                                            <label class="form-check-label" for="consumable_@consumable.Id">@consumable.ConsumableName</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-5">
+                                        <input type="number" class="form-control form-control-sm" name="Quantities" min="1" placeholder="Qty" />
+                                    </div>
+                                </div>
+                            }
+                        </div>
                     </div>
                     <div class="d-flex justify-content-between">
                         <a asp-controller="LabManager" asp-action="Orders" class="btn btn-secondary">Cancel</a>

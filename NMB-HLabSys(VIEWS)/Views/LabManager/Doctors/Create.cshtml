@@ -1,7 +1,7 @@
-﻿@{
+﻿@using NMB_HLabSys_VIEWS_.Models
+@{
     ViewData["Title"] = "Create Doctor";
     Layout = "~/Views/Shared/_ManagersLayout.cshtml";
-    var specialties = new[] { "Cardiology", "Neurology", "Pediatrics", "Oncology", "Orthopedics" };
 }
 
 <div class="row justify-content-center">
@@ -14,22 +14,24 @@
                 <form asp-controller="LabManager" asp-action="CreateDoctor" method="post">
                     @Html.AntiForgeryToken()
                     <div class="mb-3">
-                        <label class="form-label">Doctor Name</label>
+                        <label class="form-label">Name</label>
                         <input name="Name" class="form-control" placeholder="Enter doctor name" />
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Specialty</label>
-                        <select name="Specialty" class="form-control">
-                            <option value="">Select Specialty</option>
-                            @foreach (var specialty in specialties)
-                            {
-                                <option value="@specialty">@specialty</option>
-                            }
-                        </select>
+                        <label class="form-label">Surname</label>
+                        <input name="Surname" class="form-control" placeholder="Enter doctor surname" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">HPCSA Number</label>
+                        <input name="HpcsaNumber" class="form-control" placeholder="Enter HPCSA number" />
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Email</label>
-                        <input name="Email" type="email" class="form-control" placeholder="Enter email address" />
+                        <input name="EmailAddress" type="email" class="form-control" placeholder="Enter email address" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Contact Number</label>
+                        <input name="ContactNumber" class="form-control" placeholder="Enter contact number" />
                     </div>
                     <div class="d-grid gap-2">
                         <button type="submit" class="btn btn-warning">Add Doctor</button>

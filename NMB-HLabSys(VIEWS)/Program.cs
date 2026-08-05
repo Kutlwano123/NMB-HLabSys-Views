@@ -8,6 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // ── MVC ────────────────────────────────────────────────────
 builder.Services.AddControllersWithViews();
+builder.Services.AddSingleton<NMB_HLabSys_VIEWS_.Models.ILabManagerService, NMB_HLabSys_VIEWS_.Models.InMemoryLabManagerService>();
 
 // ── Session (for storing technician settings) ──────────────
 builder.Services.AddSession(options =>

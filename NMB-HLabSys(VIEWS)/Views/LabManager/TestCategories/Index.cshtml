@@ -1,13 +1,8 @@
-﻿@{
+﻿@using NMB_HLabSys_VIEWS_.Models
+@model List<TestCategory>
+@{
     ViewData["Title"] = "Test Categories";
     Layout = "~/Views/Shared/_ManagersLayout.cshtml";
-
-    var categories = new[]
-    {
-        new { Id = 1, Name = "Hematology", Description = "Blood and cellular analysis", TestCount = 6 },
-        new { Id = 2, Name = "Chemistry", Description = "Metabolic and enzyme panels", TestCount = 8 },
-        new { Id = 3, Name = "Microbiology", Description = "Culture and sensitivity testing", TestCount = 4 }
-    };
 }
 
 <style>
@@ -85,7 +80,7 @@
     </a>
 </div>
 
-@if (!categories.Any())
+@if (!Model.Any())
 {
     <div class="alert alert-info">No test categories found. Add one to get started.</div>
 }
@@ -101,15 +96,13 @@ else
             </tr>
         </thead>
         <tbody>
-            @foreach (var category in categories)
+            @foreach (var category in Model)
             {
                 <tr>
-                    <td>@category.Name</td>
+                    <td>@category.CategoryName</td>
                     <td>@category.Description</td>
                     <td>
-                        <span class="badge mgr-badge">
-                            @category.TestCount test(s)
-                        </span>
+                        <span class="badge mgr-badge">@category.TestTypeIds.Count test(s)</span>
                     </td>
                     <td class="text-center">
                         <a asp-controller="LabManager" asp-action="TestCategoryDetails" asp-route-id="@category.Id"
@@ -123,4 +116,9 @@ else
             }
         </tbody>
     </table>
+}
+
+@if (TempData["StatusMessage"] != null)
+{
+    <div class="alert alert-success mt-3">@TempData["StatusMessage"]</div>
 }

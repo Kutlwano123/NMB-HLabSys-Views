@@ -1,35 +1,11 @@
-﻿@{
+﻿@using NMB_HLabSys_VIEWS_.Models
+@{
     ViewData["Title"] = "Add Test Type";
     Layout = "~/Views/Shared/_ManagersLayout.cshtml";
-
-    var categories = new[]
-    {
-        new { Id = 1, Name = "Hematology" },
-        new { Id = 2, Name = "Chemistry" },
-        new { Id = 3, Name = "Microbiology" }
-    };
-
-    var sampleTypes = new[]
-    {
-        new { Id = 1, Name = "EDTA Tube" },
-        new { Id = 2, Name = "Citrate Tube" },
-        new { Id = 3, Name = "Serum" },
-        new { Id = 4, Name = "Urine" }
-    };
-
-    var consumables = new[]
-    {
-        new { Id = 1, Name = "Syringes 5ml" },
-        new { Id = 2, Name = "Latex Gloves" },
-        new { Id = 3, Name = "Test Tubes" }
-    };
-
-    var technicians = new[]
-    {
-        new { Id = 1, Name = "David Miller" },
-        new { Id = 2, Name = "Emma Wilson" },
-        new { Id = 3, Name = "James Taylor" }
-    };
+    var categories = ViewBag.Categories as List<TestCategory> ?? new List<TestCategory>();
+    var sampleTypes = ViewBag.SampleTypes as List<SampleType> ?? new List<SampleType>();
+    var consumables = ViewBag.Consumables as List<Consumable> ?? new List<Consumable>();
+    var technicians = ViewBag.Technicians as List<LabTechnicianUser> ?? new List<LabTechnicianUser>();
 }
 
 <style>
@@ -93,11 +69,11 @@
                 </div>
                 <div class="col-md-6 mb-3">
                     <label class="form-label fw-semibold">Test Category</label>
-                    <select name="TestCategoryID" class="form-select">
+                    <select name="CategoryId" class="form-select">
                         <option value="">Select a category</option>
                         @foreach (var c in categories)
                         {
-                            <option value="@c.Id">@c.Name</option>
+                            <option value="@c.Id">@c.CategoryName</option>
                         }
                     </select>
                 </div>
@@ -106,11 +82,11 @@
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <label class="form-label fw-semibold">Sample Type</label>
-                    <select name="SampleTypeID" class="form-select">
+                    <select name="SampleType" class="form-select">
                         <option value="">Select a sample type</option>
                         @foreach (var s in sampleTypes)
                         {
-                            <option value="@s.Id">@s.Name</option>
+                            <option value="@s.Name">@s.Name</option>
                         }
                     </select>
                 </div>
@@ -131,7 +107,7 @@
                 </div>
                 <div class="col-md-4 mb-3">
                     <label class="form-label fw-semibold">Turnaround (minutes)</label>
-                    <input name="TurnAroundTimeMinutes" class="form-control" type="number" min="0" placeholder="e.g. 90" />
+                    <input name="TurnaroundTimeMinutes" class="form-control" type="number" min="0" placeholder="e.g. 90" />
                 </div>
             </div>
 
@@ -142,9 +118,9 @@
                     {
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="checkbox"
-                                   name="SelectedConsumableIds" value="@consumable.Id"
+                                   name="ConsumableIds" value="@consumable.Id"
                                    id="consumable_@consumable.Id" />
-                            <label class="form-check-label" for="consumable_@consumable.Id">@consumable.Name</label>
+                            <label class="form-check-label" for="consumable_@consumable.Id">@consumable.ConsumableName</label>
                         </div>
                     }
                 </div>
@@ -157,7 +133,7 @@
                     {
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="checkbox"
-                                   name="SelectedTechnicianIds" value="@tech.Id"
+                                   name="TechnicianIds" value="@tech.Id"
                                    id="technician_@tech.Id" />
                             <label class="form-check-label" for="technician_@tech.Id">@tech.Name</label>
                         </div>

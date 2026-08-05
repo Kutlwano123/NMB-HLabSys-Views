@@ -1,11 +1,9 @@
-﻿@{
+﻿@using NMB_HLabSys_VIEWS_.Models
+@model List<Order>
+@{
     ViewData["Title"] = "Orders";
     Layout = "~/Views/Shared/_ManagersLayout.cshtml";
-    var orders = new[] {
-        new { Id = 123, Consumable = "Reanalysis Kits", Supplier = "Lab Supplies Co.", Status = "In Progress", OrderedDate = DateTime.Now.AddDays(-1).ToString("MMMM dd, yyyy"), DueDate = DateTime.Now.AddDays(2).ToString("MMMM dd, yyyy") },
-        new { Id = 124, Consumable = "DNA Extraction Kits", Supplier = "Medical Equipment Inc.", Status = "Completed", OrderedDate = DateTime.Now.AddDays(-5).ToString("MMMM dd, yyyy"), DueDate = DateTime.Now.AddDays(-2).ToString("MMMM dd, yyyy") },
-        new { Id = 125, Consumable = "PCR Reagents", Supplier = "Diagnostic Tools Corp.", Status = "Pending", OrderedDate = DateTime.Now.ToString("MMMM dd, yyyy"), DueDate = DateTime.Now.AddDays(3).ToString("MMMM dd, yyyy") }
-    };
+    var supplierNames = ViewBag.SupplierNames as Dictionary<int, string> ?? new Dictionary<int, string>();
 }
 <style>
     .mgr-page-header {
@@ -82,7 +80,7 @@
     </a>
 </div>
 
-@if (!orders.Any())
+@if (!Model.Any())
 {
     <div class="alert alert-info">No orders found. Create one to get started.</div>
 }
@@ -91,24 +89,24 @@ else
     <table class="table table-hover mgr-table">
         <thead>
             <tr>
-                <th>Order ID</th>
-                <th>Consumable</th>
+                <th>Order Number</th>
                 <th>Supplier</th>
+                <th>Status</th>
                 <th class="text-center">Actions</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var order in orders)
+            @foreach (var order in Model)
             {
                 <tr>
-                    <td>@order.Id</td>
-                    <td>@order.Consumable</td>
-                    <td>@order.Supplier</td>
+                    <td>@order.OrderNumber</td>
+                    <td>@(supplierNames.TryGetValue(order.SupplierId, out var supplierName) ? supplierName : "Unassigned")</td>
+                    <td><span class="badge mgr-badge">@order.Status</span></td>
                     <td class="text-center">
                         <a asp-action="OrderDetails" asp-route-id="@order.Id"
                            class="btn btn-sm btn-outline-primary mgr-action-btn">Details</a>
-                        <a asp-action="EditOrder" asp-route-id="@order.Id"
-                           class="btn btn-sm btn-outline-secondary mgr-action-btn">Edit</a>
+                        <a asp-action="ReceiveOrder" asp-route-id="@order.Id"
+                           class="btn btn-sm btn-outline-success mgr-action-btn">Receive</a>
                         <a asp-action="DeleteOrder" asp-route-id="@order.Id"
                            class="btn btn-sm btn-outline-danger mgr-action-btn">Delete</a>
                     </td>
@@ -118,3 +116,7 @@ else
     </table>
 }
 
+@if (TempData["StatusMessage"] != null)
+{
+    <div class="alert alert-success mt-3">@TempData["StatusMessage"]</div>
+}

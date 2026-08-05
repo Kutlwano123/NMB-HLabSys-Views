@@ -1,13 +1,9 @@
-﻿@{
+﻿@using NMB_HLabSys_VIEWS_.Models
+@model List<TestType>
+@{
     ViewData["Title"] = "Test Types";
     Layout = "~/Views/Shared/_ManagersLayout.cshtml";
-
-    var testTypes = new[]
-    {
-        new { Id = 1, Name = "Complete Blood Count", Category = "Hematology", SampleType = "EDTA Tube", TurnaroundTimeMinutes = 30 },
-        new { Id = 2, Name = "Liver Function Test", Category = "Chemistry", SampleType = "Serum", TurnaroundTimeMinutes = 60 },
-        new { Id = 3, Name = "Urine Culture", Category = "Microbiology", SampleType = "Urine", TurnaroundTimeMinutes = 120 }
-    };
+    var categoryNames = ViewBag.CategoryNames as Dictionary<int, string> ?? new Dictionary<int, string>();
 }
 <style>
     .mgr-page-header {
@@ -84,7 +80,7 @@
     </a>
 </div>
 
-@if (!testTypes.Any())
+@if (!Model.Any())
 {
     <div class="alert alert-info">No test types found. Add one to get started.</div>
 }
@@ -101,14 +97,14 @@ else
             </tr>
         </thead>
         <tbody>
-            @foreach (var testType in testTypes)
+            @foreach (var testType in Model)
             {
                 <tr>
-                    <td>@testType.Name</td>
-                    <td>@testType.Category</td>
+                    <td>@testType.TestName</td>
+                    <td>@(categoryNames.TryGetValue(testType.CategoryId, out var categoryName) ? categoryName : "Unassigned")</td>
                     <td>@testType.SampleType</td>
                     <td>
-                        <span class="badge mgr-badge">@testType.TurnaroundTimeMinutes</span>
+                        <span class="badge mgr-badge">@testType.TurnaroundTimeMinutes min</span>
                     </td>
                     <td class="text-center">
                         <a asp-action="TestTypeDetails" asp-route-id="@testType.Id"
@@ -122,4 +118,9 @@ else
             }
         </tbody>
     </table>
+}
+
+@if (TempData["StatusMessage"] != null)
+{
+    <div class="alert alert-success mt-3">@TempData["StatusMessage"]</div>
 }

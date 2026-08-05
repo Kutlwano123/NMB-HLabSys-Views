@@ -1,14 +1,8 @@
-﻿@{
+﻿@using NMB_HLabSys_VIEWS_.Models
+@model List<Supplier>
+@{
     ViewData["Title"] = "Suppliers";
     Layout = "~/Views/Shared/_ManagersLayout.cshtml";
-    
-    var suppliers = new[]
-    {
-        new { Id = 1, Name = "Lab Supplies Co.", Contact = "John Doe", Email = "john.doe@lab supplies.com"},
-        new { Id = 2, Name = "Medical Equipments Inc.", Contact = "Jane Smith", Email = "jane.smith@medicalequipments.com" },
-        new { Id = 3, Name = "Chemicals & Reagents Ltd.", Contact = "Bob Johnson", Email = "bob.johnson@chemicalsreagents.com" },
-        new { Id = 4, Name = "Diagnostic Tools Corp.", Contact = "Alice Brown", Email = "alice.brown@diagnostictools.com" }
-    };
 }
 
 <style>
@@ -86,7 +80,7 @@
     </a>
 </div>
 
-@if (!suppliers.Any())
+@if (!Model.Any())
 {
     <div class="alert alert-info">No suppliers found. Add one to get started.</div>
 }
@@ -102,12 +96,12 @@ else
             </tr>
         </thead>
         <tbody>
-            @foreach (var supplier in suppliers)
+            @foreach (var supplier in Model)
             {
                 <tr>
-                    <td>@supplier.Name</td>
-                    <td>@supplier.Contact</td>
-                    <td>@supplier.Email</td>
+                    <td>@supplier.SupplierName</td>
+                    <td>@supplier.ContactPerson</td>
+                    <td>@supplier.EmailAddress</td>
                     <td class="text-center">
                         <a asp-controller="LabManager" asp-action="SupplierDetails" asp-route-id="@supplier.Id"
                            class="btn btn-sm btn-outline-primary mgr-action-btn">Details</a>
@@ -120,4 +114,9 @@ else
             }
         </tbody>
     </table>
+}
+
+@if (TempData["StatusMessage"] != null)
+{
+    <div class="alert alert-success mt-3">@TempData["StatusMessage"]</div>
 }

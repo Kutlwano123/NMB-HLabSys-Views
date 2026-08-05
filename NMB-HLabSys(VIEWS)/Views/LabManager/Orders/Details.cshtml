@@ -1,35 +1,37 @@
-﻿@{
+﻿@using NMB_HLabSys_VIEWS_.Models
+@model Order
+@{
     ViewData["Title"] = "Order Details";
     Layout = "~/Views/Shared/_ManagersLayout.cshtml";
-    var order = new
-    {
-        Id = 123,
-        Consumable = "Reanalysis Kits",
-        Status = "In Progress",
-        OrderedDate = DateTime.Now.AddDays(-1).ToString("MMMM dd, yyyy"),
-        DueDate = DateTime.Now.AddDays(2).ToString("MMMM dd, yyyy"),
-        TechnicianName = "Jane Smith"
-    };
+    var supplier = (ViewContext.HttpContext.RequestServices.GetService(typeof(ILabManagerService)) as ILabManagerService)?.GetSupplier(Model.SupplierId);
 }
 <div class="row justify-content-center">
     <div class="col-md-8">
         <div class="card shadow-sm">
             <div class="card-header bg-primary text-white">
-                <h5 class="mb-0">Order Details - #@order.Id</h5>
+                <h5 class="mb-0">Order Details - #@Model.OrderNumber</h5>
             </div>
             <div class="card-body">
                 <dl class="row">
-                    <dt class="col-sm-4">Consumable:</dt>
-                    <dd class="col-sm-8">@order.Consumable</dd>
+                    <dt class="col-sm-4">Supplier:</dt>
+                    <dd class="col-sm-8">@(supplier?.SupplierName ?? "Unknown")</dd>
                     <dt class="col-sm-4">Status:</dt>
-                    <dd class="col-sm-8">@order.Status</dd>
+                    <dd class="col-sm-8">@Model.Status</dd>
                     <dt class="col-sm-4">Ordered Date:</dt>
-                    <dd class="col-sm-8">@order.OrderedDate</dd>
-                    <dt class="col-sm-4">Due Date:</dt>
-                    <dd class="col-sm-8">@order.DueDate</dd>
-                    <dt class="col-sm-4">Technician:</dt>
-                    <dd class="col-sm-8">@order.TechnicianName</dd>
+                    <dd class="col-sm-8">@Model.OrderDate.ToShortDateString()</dd>
+                    <dt class="col-sm-4">Completed Date:</dt>
+                    <dd class="col-sm-8">@(Model.DateCompleted?.ToShortDateString() ?? "Pending")</dd>
+                    <dt class="col-sm-4">Cancellation Reason:</dt>
+                    <dd class="col-sm-8">@(Model.CancellationReason ?? "None")</dd>
                 </dl>
+                <h6 class="mt-4">Items</h6>
+                <ul>
+                    @foreach (var item in Model.Items)
+                    {
+                        var consumable = (ViewContext.HttpContext.RequestServices.GetService(typeof(ILabManagerService)) as ILabManagerService)?.GetConsumable(item.ConsumableId);
+                        <li>@(consumable?.ConsumableName ?? "Unknown") — Qty @item.QuantityOrdered — @item.Status</li>
+                    }
+                </ul>
             </div>
         </div>
     </div>

@@ -1,33 +1,24 @@
-﻿@{
+﻿@using NMB_HLabSys_VIEWS_.Models
+@model TestCategory
+@{
     ViewData["Title"] = "Delete Test Category";
     Layout = "~/Views/Shared/_ManagersLayout.cshtml";
-
-    var category = new
-    {
-        Id = 3,
-        Name = "Microbiology",
-        Description = "Culture and sensitivity testing",
-        TestTypeCount = 0   // set > 0 to show the "cannot delete" warning instead
-    };
 }
 
 <div class="row justify-content-center">
     <div class="col-md-6">
-
         <div class="card shadow-sm border-danger">
             <div class="card-header bg-danger text-white">
                 <h5 class="mb-0">Confirm Deletion</h5>
             </div>
             <div class="card-body">
-
-                @if (category.TestTypeCount > 0)
+                @if (ViewBag.CanDelete == false)
                 {
                     <div class="alert alert-danger">
                         <strong>Cannot delete this category.</strong>
-                        It has <strong>@category.TestTypeCount test type(s)</strong> linked to it.
-                        Remove or reassign those test types first.
+                        It has linked test types. Remove or reassign those test types first.
                     </div>
-                    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+                    <a asp-action="TestCategories" class="btn btn-secondary">Back to List</a>
                 }
                 else
                 {
@@ -35,10 +26,10 @@
 
                     <dl class="row">
                         <dt class="col-sm-4">Category Name</dt>
-                        <dd class="col-sm-8">@category.Name</dd>
+                        <dd class="col-sm-8">@Model.CategoryName</dd>
 
                         <dt class="col-sm-4">Description</dt>
-                        <dd class="col-sm-8">@category.Description</dd>
+                        <dd class="col-sm-8">@Model.Description</dd>
                     </dl>
 
                     <div class="alert alert-warning">
@@ -46,9 +37,9 @@
                         This action cannot be undone.
                     </div>
 
-                    <form asp-action="Delete" method="post">
+                    <form asp-action="DeleteTestCategory" method="post">
                         @Html.AntiForgeryToken()
-                        <input type="hidden" name="TestCategoryID" value="@category.Id" />
+                        <input type="hidden" name="TestCategoryId" value="@Model.Id" />
 
                         <div class="d-flex justify-content-between">
                             <a asp-controller="LabManager" asp-action="TestCategories" class="btn btn-secondary">Cancel</a>
@@ -56,10 +47,7 @@
                         </div>
                     </form>
                 }
-
             </div>
         </div>
-
     </div>
 </div>
-

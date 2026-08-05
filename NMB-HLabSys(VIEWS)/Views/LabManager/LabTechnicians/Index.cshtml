@@ -1,12 +1,8 @@
-﻿@{
+﻿@using NMB_HLabSys_VIEWS_.Models
+@model List<LabTechnicianUser>
+@{
     ViewData["Title"] = "Lab Technicians";
     Layout = "~/Views/Shared/_ManagersLayout.cshtml";
-    var labTechnicians = new[]
-    {
-        new { Id = 1, Name = "John Doe", Specialty = "Microbiology", Contact = "john.doe@example.com" },
-        new { Id = 2, Name = "Jane Smith", Specialty = "Haematology", Contact = "jane.smith@example.com" },
-        new { Id = 3, Name = "Emily Davis", Specialty = "Biochemistry", Contact = "emily.davis@example.com" }
-    };
 }
 
 <style>
@@ -78,13 +74,13 @@
 </style>
 
 <div class="mgr-page-header">
-    <h2 class="mgr-page-title">Doctors</h2>
-    <a asp-action="CreateDoctor" class="btn mgr-btn-primary">
-        <i class="bi bi-plus-circle"></i> Add Doctor
+    <h2 class="mgr-page-title">Lab Technicians</h2>
+    <a asp-action="CreateLabTechnician" class="btn mgr-btn-primary">
+        <i class="bi bi-plus-circle"></i> Add Technician
     </a>
 </div>
 
-@if (!labTechnicians.Any())
+@if (!Model.Any())
 {
     <div class="alert alert-info">No lab technicians found. Add one to get started.</div>
 }
@@ -94,28 +90,33 @@ else
         <thead>
             <tr>
                 <th>Lab Technician Name</th>
-                <th>Specialty</th>
+                <th>Employee Number</th>
                 <th>Email</th>
                 <th class="text-center">Actions</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var labTechnician in labTechnicians)
+            @foreach (var technician in Model)
             {
                 <tr>
-                    <td>@labTechnician.Name</td>
-                    <td>@labTechnician.Specialty</td>
-                    <td>@labTechnician.Contact</td>
+                    <td>@technician.Name @technician.Surname</td>
+                    <td>@technician.EmployeeNumber</td>
+                    <td>@technician.EmailAddress</td>
                     <td class="text-center">
-                        <a asp-controller="LabManager" asp-action="LabTechnicianDetails" asp-route-id="@labTechnician.Id"
+                        <a asp-controller="LabManager" asp-action="LabTechnicianDetails" asp-route-id="@technician.Id"
                            class="btn btn-sm btn-outline-primary mgr-action-btn">Details</a>
-                        <a asp-controller="LabManager" asp-action="EditLabTechnician" asp-route-id="@labTechnician.Id"
+                        <a asp-controller="LabManager" asp-action="EditLabTechnician" asp-route-id="@technician.Id"
                            class="btn btn-sm btn-outline-secondary mgr-action-btn">Edit</a>
-                        <a asp-controller="LabManager" asp-action="DeleteLabTechnician" asp-route-id="@labTechnician.Id"
+                        <a asp-controller="LabManager" asp-action="DeleteLabTechnician" asp-route-id="@technician.Id"
                            class="btn btn-sm btn-outline-danger mgr-action-btn">Delete</a>
                     </td>
                 </tr>
             }
         </tbody>
     </table>
+}
+
+@if (TempData["StatusMessage"] != null)
+{
+    <div class="alert alert-success mt-3">@TempData["StatusMessage"]</div>
 }

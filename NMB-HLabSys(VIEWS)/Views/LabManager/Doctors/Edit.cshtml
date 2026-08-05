@@ -1,12 +1,12 @@
-﻿@{
-    ViewData["Title"] = "Edit Doctor"; 
+﻿@using NMB_HLabSys_VIEWS_.Models
+@model DoctorUser
+@{
+    ViewData["Title"] = "Edit Doctor";
     Layout = "~/Views/Shared/_ManagersLayout.cshtml";
-    var doctor = new { Id = 1, Name = "Dr. Alice Smith", Specialty = "Cardiology", Contact = "alice.smith@hospital.com" };
 }
 
 <div class="row justify-content-center">
     <div class="col-md-6">
-
         <div class="card shadow-sm">
             <div class="card-header bg-warning">
                 <h5 class="mb-0">Edit Doctor</h5>
@@ -14,22 +14,31 @@
             <div class="card-body">
                 <form asp-controller="LabManager" asp-action="EditDoctor" method="post">
                     @Html.AntiForgeryToken()
-
-                    <input type="hidden" name="DoctorID" value="@doctor.Id" />
+                    <input type="hidden" name="DoctorId" value="@Model.Id" />
 
                     <div class="mb-3">
-                        <label class="form-label fw-semibold">Doctor Name</label>
-                        <input name="DoctorName" class="form-control" value="@doctor.Name" />
+                        <label class="form-label fw-semibold">Name</label>
+                        <input name="Name" class="form-control" value="@Model.Name" />
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label fw-semibold">Specialty</label>
-                        <input name="Specialty" class="form-control" value="@doctor.Specialty" />
+                        <label class="form-label fw-semibold">Surname</label>
+                        <input name="Surname" class="form-control" value="@Model.Surname" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">HPCSA Number</label>
+                        <input name="HpcsaNumber" class="form-control" value="@Model.HpcsaNumber" />
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Email</label>
-                        <input name="Email" type="email" class="form-control" value="@doctor.Contact" />
+                        <input name="EmailAddress" type="email" class="form-control" value="@Model.EmailAddress" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Contact Number</label>
+                        <input name="ContactNumber" class="form-control" value="@Model.ContactNumber" />
                     </div>
 
                     <div class="d-flex justify-content-between">
@@ -39,6 +48,5 @@
                 </form>
             </div>
         </div>
-
     </div>
 </div>

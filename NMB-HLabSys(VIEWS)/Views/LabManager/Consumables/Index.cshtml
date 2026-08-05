@@ -1,13 +1,9 @@
-﻿@{
+﻿@using NMB_HLabSys_VIEWS_.Models
+@model List<Consumable>
+@{
     ViewData["Title"] = "Consumables";
     Layout = "~/Views/Shared/_ManagersLayout.cshtml";
-
-    var consumables = new[]
-    {
-        new { Id = 1, Name = "Syringes 5ml", Supplier = "MedSupply Co.", ReorderLevel = 20, QuantityOnHand = 15 },
-        new { Id = 2, Name = "Latex Gloves", Supplier = "HealthPro", ReorderLevel = 50, QuantityOnHand = 200 },
-        new { Id = 3, Name = "Test Tubes", Supplier = "Lab Essentials", ReorderLevel = 40, QuantityOnHand = 120 }
-    };
+    var supplierNames = ViewBag.SupplierNames as Dictionary<int, string> ?? new Dictionary<int, string>();
 }
 
 <style>
@@ -85,7 +81,7 @@
     </a>
 </div>
 
-@if (!consumables.Any())
+@if (!Model.Any())
 {
     <div class="alert alert-info">No consumables found. Add one to get started.</div>
 }
@@ -102,11 +98,11 @@ else
             </tr>
         </thead>
         <tbody>
-            @foreach (var consumable in consumables)
+            @foreach (var consumable in Model)
             {
                 <tr>
-                    <td>@consumable.Name</td>
-                    <td>@consumable.Supplier</td>
+                    <td>@consumable.ConsumableName</td>
+                    <td>@(supplierNames.TryGetValue(consumable.SupplierId, out var supplierName) ? supplierName : "Unassigned")</td>
                     <td>@consumable.ReorderLevel</td>
                     <td>
                         <span class="badge mgr-badge">@consumable.QuantityOnHand</span>
@@ -125,3 +121,7 @@ else
     </table>
 }
 
+@if (TempData["StatusMessage"] != null)
+{
+    <div class="alert alert-success mt-3">@TempData["StatusMessage"]</div>
+}

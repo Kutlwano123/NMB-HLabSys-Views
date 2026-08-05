@@ -1,0 +1,58 @@
+@using NMB_HLabSys_VIEWS_.Models
+@model ReportsViewModel
+@{
+    ViewData["Title"] = "Management Reports";
+    Layout = "~/Views/Shared/_ManagersLayout.cshtml";
+}
+
+<style>
+    .report-card { background: #fff; border: 1px solid var(--mgr-border, #ddd9d2); border-radius: 16px; padding: 20px; }
+    .report-row { display: flex; gap: 12px; flex-wrap: wrap; align-items: end; margin-bottom: 16px; }
+    .report-row .form-group { min-width: 200px; }
+</style>
+
+<div class="report-card">
+    <h2 class="mgr-page-title">Management Reports</h2>
+    <p class="text-muted">Generate a report of total tests performed by category for the selected date range.</p>
+
+    <form asp-action="Reports" method="post" class="mt-3">
+        @Html.AntiForgeryToken()
+        <div class="report-row">
+            <div class="form-group">
+                <label class="form-label">Start date</label>
+                <input asp-for="StartDate" class="form-control" type="date" />
+            </div>
+            <div class="form-group">
+                <label class="form-label">End date</label>
+                <input asp-for="EndDate" class="form-control" type="date" />
+            </div>
+            <button type="submit" class="btn btn-primary">Generate report</button>
+            <a asp-action="ExportReportPdf" asp-route-startDate="@Model.StartDate.ToString("yyyy-MM-dd")" asp-route-endDate="@Model.EndDate.ToString("yyyy-MM-dd")" class="btn btn-outline-secondary">Export PDF</a>
+        </div>
+    </form>
+
+    @if (Model.ReportRows.Any())
+    {
+        <table class="table table-hover mt-3">
+            <thead>
+                <tr>
+                    <th>Category</th>
+                    <th>Total tests performed</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var row in Model.ReportRows)
+                {
+                    <tr>
+                        <td>@row.CategoryName</td>
+                        <td>@row.TotalTestsPerformed</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <div class="alert alert-info mt-3">No report rows found for the selected date range.</div>
+    }
+</div>

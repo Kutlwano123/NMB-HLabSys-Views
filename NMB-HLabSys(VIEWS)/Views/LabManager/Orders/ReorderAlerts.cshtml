@@ -1,11 +1,8 @@
-﻿@{
+﻿@using NMB_HLabSys_VIEWS_.Models
+@model List<Consumable>
+@{
     ViewData["Title"] = "Reorder Alerts";
     Layout = "~/Views/Shared/_ManagersLayout.cshtml";
-    var alerts = new[] {
-        new { Id = 1, Consumable = "Blood Collection Tubes", Supplier = "MedTech Inc.", CurrentStock = 15, ReorderLevel = 20 },
-        new { Id = 2, Consumable = "Gloves (Box of 100)", Supplier = "HealthCare Supplies", CurrentStock = 8, ReorderLevel = 10 },
-        new { Id = 3, Consumable = "Microscope Slides", Supplier = "Lab Essentials", CurrentStock = 50, ReorderLevel = 30 }
-    };
 }
 <style>
     .mgr-page-header {
@@ -55,7 +52,7 @@
     <a asp-action="Orders" class="btn btn-outline-secondary">Back to Orders</a>
 </div>
 
-@if (!alerts.Any())
+@if (!Model.Any())
 {
     <div class="alert alert-info">No consumables are near or below reorder level.</div>
 }
@@ -71,16 +68,15 @@ else
             </tr>
         </thead>
         <tbody>
-            @foreach (var consumable in alerts)
+            @foreach (var consumable in Model)
             {
                 <tr>
-                    <td>@consumable.Consumable</td>
-                    <td>@consumable.Supplier</td>
+                    <td>@consumable.ConsumableName</td>
+                    <td>@(ViewContext.HttpContext.RequestServices.GetService(typeof(ILabManagerService)) as ILabManagerService)?.GetSupplier(consumable.SupplierId)?.SupplierName</td>
                     <td>@consumable.ReorderLevel</td>
-                    <td><span class="mgr-chip">@consumable.CurrentStock</span></td>
+                    <td><span class="mgr-chip">@consumable.QuantityOnHand</span></td>
                 </tr>
             }
         </tbody>
     </table>
 }
-

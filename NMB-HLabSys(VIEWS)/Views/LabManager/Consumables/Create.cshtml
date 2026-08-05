@@ -1,4 +1,5 @@
-﻿@{
+﻿@using NMB_HLabSys_VIEWS_.Models
+@{
     ViewData["Title"] = "Add Consumable";
     Layout = "~/Views/Shared/_ManagersLayout.cshtml";
 }
@@ -64,11 +65,12 @@
                 </div>
                 <div class="col-md-6 mb-3">
                     <label class="form-label fw-semibold">Supplier</label>
-                    <select name="SupplierID" class="form-select">
+                    <select name="SupplierId" class="form-select">
                         <option value="">Select a supplier</option>
-                        <option value="1">MedSupply Co.</option>
-                        <option value="2">HealthPro</option>
-                        <option value="3">Lab Essentials</option>
+                        @foreach (var supplier in ViewBag.Suppliers as List<Supplier>)
+                        {
+                            <option value="@supplier.Id">@supplier.SupplierName</option>
+                        }
                     </select>
                 </div>
             </div>
