@@ -4,6 +4,8 @@ namespace NMB_HLabSys_VIEWS_.Controllers
 {
     public class LabManagerController : Controller
     {
+        public IActionResult Index() => RedirectToAction(nameof(Dashboard));
+
         public IActionResult Dashboard()
         {
             return View();
