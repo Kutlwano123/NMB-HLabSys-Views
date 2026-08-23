@@ -3,54 +3,177 @@
     ViewData["Title"] = "Create Order";
     Layout = "~/Views/Shared/_ManagersLayout.cshtml";
 }
-<div class="row justify-content-center">
-    <div class="col-md-8">
-        <div class="card shadow-sm">
-            <div class="card-header bg-primary text-white">
-                <h5 class="mb-0">Create New Order</h5>
+<style>
+    .mgr-form-wrap {
+        max-width: 760px;
+        margin: 0 auto;
+    }
+
+    .mgr-form-card {
+        background: #fff;
+        border: 1px solid var(--mgr-border, #ddd9d2);
+        border-radius: 12px;
+        padding: 24px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    .mgr-form-title {
+        font-family: 'DM Serif Display', serif;
+        font-size: 20px;
+        color: var(--mgr-text-dark, #1e2420);
+        margin-bottom: 6px;
+    }
+
+    .mgr-form-subtitle {
+        font-size: 13px;
+        color: var(--mgr-text-mid, #4a5248);
+        margin-bottom: 20px;
+    }
+
+    .mgr-form-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+    }
+
+    .mgr-btn-primary {
+        background: var(--mgr-accent, #7a3030);
+        border-color: var(--mgr-accent, #7a3030);
+        color: #fff;
+    }
+
+        .mgr-btn-primary:hover {
+            background: var(--mgr-accent-2, #9a4040);
+            border-color: var(--mgr-accent-2, #9a4040);
+            color: #fff;
+        }
+</style>
+
+<div class="mgr-form-wrap" style="max-width: 800px;">
+    <div class="mgr-form-card">
+        <h5 class="mgr-form-title">Create New Order</h5>
+        <p class="mgr-form-subtitle">Generate a purchase order for laboratory consumables.</p>
+
+
+        <form asp-action="CreateOrder" method="post">
+            @Html.AntiForgeryToken()
+
+            <div class="row">
+                <div class="col-md-12 mb-3">
+                    <label for="SupplierId" class="form-label fw-semibold">Supplier</label>
+                    <!-- Added onchange event to trigger the filtering -->
+                    <select class="form-select" id="SupplierId" name="SupplierId" required onchange="filterConsumables()">
+                        <option value="">-- Select a Supplier --</option>
+                        @foreach (var supplier in ViewBag.Suppliers as List<Supplier>)
+                        {
+                            <option value="@supplier.Id">@supplier.SupplierName</option>
+                        }
+                    </select>
+                </div>
             </div>
-            <div class="card-body">
-                <form asp-action="CreateOrder" method="post">
-                    @Html.AntiForgeryToken()
-                    <div class="mb-3">
-                        <label for="OrderNumber" class="form-label">Order Number</label>
-                        <input type="text" class="form-control" id="OrderNumber" name="OrderNumber" placeholder="ORD-20260001" required />
-                    </div>
-                    <div class="mb-3">
-                        <label for="SupplierId" class="form-label">Supplier</label>
-                        <select class="form-select" id="SupplierId" name="SupplierId">
-                            <option value="">Select supplier</option>
-                            @foreach (var supplier in ViewBag.Suppliers as List<Supplier>)
-                            {
-                                <option value="@supplier.Id">@supplier.SupplierName</option>
-                            }
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Consumables</label>
-                        <div class="border rounded p-3">
+
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Select Consumables</label>
+
+                <!-- This message shows when no supplier is selected -->
+                <div class="alert alert-light border text-muted small" id="NoSupplierMsg">
+                    <i class="bi bi-info-circle me-1"></i> Please select a supplier above to view their available consumables.
+                </div>
+
+                <!-- This table stays hidden until a supplier is chosen -->
+                <div class="border rounded p-0 overflow-hidden" id="ConsumablesList" style="display: none;">
+                    <table class="table table-hover mb-0 mgr-table">
+                        <thead class="bg-light">
+                            <tr>
+                                <th style="width: 50px;"></th>
+                                <th>Consumable</th>
+                                <th style="width: 150px;">Order Qty</th>
+                            </tr>
+                        </thead>
+                        <tbody>
                             @foreach (var consumable in ViewBag.Consumables as List<Consumable>)
                             {
-                                <div class="row mb-2 align-items-center">
-                                    <div class="col-md-7">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" name="ConsumableIds" value="@consumable.Id" id="consumable_@consumable.Id" />
-                                            <label class="form-check-label" for="consumable_@consumable.Id">@consumable.ConsumableName</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-5">
-                                        <input type="number" class="form-control form-control-sm" name="Quantities" min="1" placeholder="Qty" />
-                                    </div>
-                                </div>
+                                // We attach the SupplierId to the row so JavaScript can filter it
+                                <tr class="consumable-row" data-supplier="@consumable.SupplierId" style="display: none;">
+                                    <td class="text-center align-middle">
+                                        <input class="form-check-input consumable-checkbox" type="checkbox"
+                                               name="ConsumableIds" value="@consumable.Id"
+                                               id="chk_@consumable.Id" onchange="toggleQuantity(@consumable.Id)" />
+                                    </td>
+                                    <td class="align-middle">
+                                        <label class="form-check-label w-100 mb-0" for="chk_@consumable.Id">
+                                            @consumable.ConsumableName
+                                            <span class="badge bg-light text-dark ms-2 border">Stock: @consumable.QuantityOnHand</span>
+                                        </label>
+                                    </td>
+                                    <td>
+                                        <!-- The name dynamically includes the ID (e.g. Quantity_5) -->
+                                        <input type="number" class="form-control form-control-sm qty-input"
+                                               name="Quantity_@consumable.Id" id="qty_@consumable.Id"
+                                               min="1" placeholder="Qty" disabled />
+                                    </td>
+                                </tr>
                             }
-                        </div>
-                    </div>
-                    <div class="d-flex justify-content-between">
-                        <a asp-controller="LabManager" asp-action="Orders" class="btn btn-secondary">Cancel</a>
-                        <button type="submit" class="btn btn-primary">Create Order</button>
-                    </div>
-                </form>
+                        </tbody>
+                    </table>
+                </div>
             </div>
-        </div>
+
+            <div class="mgr-form-actions mt-4">
+                <a asp-controller="LabManager" asp-action="Orders" class="btn btn-outline-secondary">Cancel</a>
+                <button type="submit" class="btn mgr-btn-primary">Create Order</button>
+            </div>
+        </form>
     </div>
 </div>
+
+<!-- Tiny script to make the form smart -->
+<script>
+    function filterConsumables() {
+        const supplierId = document.getElementById('SupplierId').value;
+        const rows = document.querySelectorAll('.consumable-row');
+        const listContainer = document.getElementById('ConsumablesList');
+        const noMsg = document.getElementById('NoSupplierMsg');
+
+        if (!supplierId) {
+            listContainer.style.display = 'none';
+            noMsg.style.display = 'block';
+            return;
+        }
+
+        listContainer.style.display = 'block';
+        noMsg.style.display = 'none';
+
+        rows.forEach(row => {
+            // Reset everything when switching suppliers
+            const checkbox = row.querySelector('.consumable-checkbox');
+            const qtyInput = row.querySelector('.qty-input');
+            checkbox.checked = false;
+            qtyInput.value = '';
+            qtyInput.disabled = true;
+
+            // Only show rows that belong to the chosen supplier
+            if (row.getAttribute('data-supplier') === supplierId) {
+                row.style.display = 'table-row';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    }
+
+    function toggleQuantity(id) {
+        const checkbox = document.getElementById('chk_' + id);
+        const qtyInput = document.getElementById('qty_' + id);
+
+        // Only allow typing a quantity if the checkbox is checked
+        if (checkbox.checked) {
+            qtyInput.disabled = false;
+            qtyInput.required = true;
+            qtyInput.focus();
+        } else {
+            qtyInput.disabled = true;
+            qtyInput.required = false;
+            qtyInput.value = '';
+        }
+    }
+</script>

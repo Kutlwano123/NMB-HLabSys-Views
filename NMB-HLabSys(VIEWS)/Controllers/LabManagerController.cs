@@ -82,20 +82,29 @@ namespace NMB_HLabSys_VIEWS_.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult EditConsumable(int id, IFormCollection form)
+        public IActionResult EditConsumable(IFormCollection form)
         {
             try
             {
-                var name = GetValue(form, "ConsumableName", "Name");
-                var reorderLevel = int.Parse(GetValue(form, "ReorderLevel", "Reorder") ?? "0");
-                var quantityOnHand = int.Parse(GetValue(form, "QuantityOnHand", "Quantity") ?? "0");
-                var supplierId = int.Parse(GetValue(form, "SupplierId", "Supplier") ?? "0");
+                // Safely extract all values matching the exact 'name' attributes in our Razor view
+                var id = int.TryParse(form["ConsumableId"], out var parsedId) ? parsedId : 0;
+                var name = form["ConsumableName"].ToString();
+                var supplierId = int.TryParse(form["SupplierId"], out var parsedSupplier) ? parsedSupplier : 0;
+                var reorderLevel = int.TryParse(form["ReorderLevel"], out var parsedReorder) ? parsedReorder : 0;
+                var quantityOnHand = int.TryParse(form["QuantityOnHand"], out var parsedQty) ? parsedQty : 0;
+
+                // Pass them to your service to save
                 _labManagerService.UpdateConsumable(id, name, reorderLevel, quantityOnHand, supplierId);
+
+                // Flash a success message and redirect
+                TempData["StatusMessage"] = "Consumable updated successfully.";
                 return RedirectToAction(nameof(Consumables));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                TempData["StatusMessage"] = "Unable to update consumable.";
+                var receivedId = form["SupplierId"].ToString();
+
+                TempData["StatusMessage"] = $"Failed: {ex.Message} (The form sent Supplier ID: '{receivedId}')";
                 return RedirectToAction(nameof(Consumables));
             }
         }
@@ -103,9 +112,23 @@ namespace NMB_HLabSys_VIEWS_.Controllers
         [HttpGet]
         public IActionResult DeleteConsumable(int id)
         {
-            var model = _labManagerService.GetConsumable(id);
-            if (model == null) return NotFound();
-            return View("Consumables/Delete", model);
+            var consumable = _labManagerService.GetConsumable(id);
+            if (consumable == null)
+            {
+                return NotFound();
+            }
+
+            var supplier = _labManagerService.GetSupplier(consumable.SupplierId);
+
+            var viewModel = new NMB_HLabSys_VIEWS.ViewModels.DeleteConsumableViewModel
+            {
+                Id = consumable.Id,
+                ConsumableName = consumable.ConsumableName,
+                SupplierName = supplier?.SupplierName ?? "Unknown Supplier",
+                ReorderLevel = consumable.ReorderLevel,
+                QuantityOnHand = consumable.QuantityOnHand
+            };
+            return View("Consumables/Delete", viewModel);
         }
 
         [HttpPost]
@@ -174,27 +197,63 @@ namespace NMB_HLabSys_VIEWS_.Controllers
             }
         }
 
+        [HttpGet]
         public IActionResult TestTypes()
         {
-            var testTypes = _labManagerService.GetTestTypes().ToList();
-            ViewBag.CategoryNames = _labManagerService.GetCategories()
-                .ToDictionary(x => x.Id, x => x.CategoryName);
+            var testTypes = _labManagerService.GetTestTypes();
+            var categories = _labManagerService.GetCategories();
+            var sampleTypes = _labManagerService.GetSampleTypes();
 
-            return View("TestTypes/Index", testTypes);
+            var viewModels = testTypes.Select(t => new NMB_HLabSys_VIEWS.ViewModels.TestTypeDetailsViewModel
+            {
+                Id = t.Id,
+                TestName = t.TestName,
+                CategoryName = categories.FirstOrDefault(c => c.Id == t.CategoryId)?.CategoryName ?? "Unknown",
+                SampleTypeName = sampleTypes.FirstOrDefault(s => s.Id == t.SampleTypeId)?.Name ?? "Unknown",
+                UnitOfMeasurement = t.UnitOfMeasurement,
+                NormalRangeMin = t.NormalRangeMin,
+                NormalRangeMax = t.NormalRangeMax,
+                TurnaroundTimeMinutes = t.TurnaroundTimeMinutes
+            }).ToList();
+
+            return View("TestTypes/Index", viewModels);
         }
 
         public IActionResult TestTypeDetails(int id)
         {
             var model = _labManagerService.GetTestType(id);
             if (model == null) return NotFound();
-            ViewBag.Category = _labManagerService.GetCategory(model.CategoryId);
-            return View("TestTypes/Details", model);
+            var category = _labManagerService.GetCategory(model.CategoryId);
+            var sampleType = _labManagerService.GetSampleType(model.SampleTypeId);
+            var consumables = _labManagerService.GetConsumables()
+                .Where(c => model.ConsumableIds.Contains(c.Id))
+                .ToList();
+            ViewBag.Consumables = consumables;
+            var technicians = _labManagerService.GetLabTechnicians()
+                .Where(t => model.TechnicianIds.Contains(t.Id))
+                .ToList();
+            ViewBag.Technicians = technicians;
+            var viewModel = new NMB_HLabSys_VIEWS.ViewModels.TestTypeDetailsViewModel
+            {
+                Id = model.Id,
+                TestName = model.TestName,
+                CategoryName = category?.CategoryName ?? "Unknown",
+                SampleTypeName = sampleType?.Name ?? "Unknown",
+                UnitOfMeasurement = model.UnitOfMeasurement,
+                NormalRangeMin = model.NormalRangeMin,
+                NormalRangeMax = model.NormalRangeMax,
+                TurnaroundTimeMinutes = model.TurnaroundTimeMinutes,
+                ConsumableNames = consumables.Select(c => c.ConsumableName).ToList(),
+                TechnicianNames = technicians.Select(t => $"{t.Name} {t.Surname}").ToList()
+            };
+            return View("TestTypes/Details", viewModel);
         }
 
         [HttpGet]
         public IActionResult CreateTestType()
         {
             ViewBag.Categories = _labManagerService.GetCategories().ToList();
+            ViewBag.SampleTypes = _labManagerService.GetSampleTypes().ToList();
             ViewBag.Consumables = _labManagerService.GetConsumables().ToList();
             ViewBag.Technicians = _labManagerService.GetLabTechnicians().ToList();
             return View("TestTypes/Create");
@@ -206,21 +265,48 @@ namespace NMB_HLabSys_VIEWS_.Controllers
         {
             try
             {
-                var testName = GetValue(form, "TestName", "Name");
-                var categoryId = int.Parse(GetValue(form, "CategoryId", "Category") ?? "0");
-                var sampleType = GetValue(form, "SampleType");
-                var unitOfMeasurement = GetValue(form, "UnitOfMeasurement", "Units");
-                var minRange = GetValue(form, "NormalRangeMin", "MinNormalRange");
-                var maxRange = GetValue(form, "NormalRangeMax", "MaxNormalRange");
-                var turnaroundTime = int.Parse(GetValue(form, "TurnaroundTimeMinutes", "TurnaroundTime") ?? "0");
-                var consumableIds = GetIntList(form, "ConsumableIds", "Consumables");
-                var technicianIds = GetIntList(form, "TechnicianIds", "Technicians");
-                _labManagerService.CreateTestType(testName, categoryId, sampleType, unitOfMeasurement, minRange, maxRange, turnaroundTime, consumableIds, technicianIds);
+                // Safe parsing of standard fields
+                var testName = form["TestName"].ToString();
+                var categoryId = int.TryParse(form["CategoryId"], out var parsedCat) ? parsedCat : 0;
+                var sampleTypeId = int.TryParse(form["SampleTypeId"], out var parsedSample) ? parsedSample : 0;
+                var unitOfMeasurement = form["UnitOfMeasurement"].ToString();
+                var minRange = decimal.TryParse(form["NormalRangeMin"], out var parsedMin) ? parsedMin : 0m;
+                var maxRange = decimal.TryParse(form["NormalRangeMax"], out var parsedMax) ? parsedMax : 0m;
+                var turnaroundTime = int.TryParse(form["TurnaroundTimeMinutes"], out var parsedTime) ? parsedTime : 0;
+
+                // Bulletproof Checkbox Parsing for Consumables
+                var consumableIds = new List<int>();
+                if (!string.IsNullOrWhiteSpace(form["ConsumableIds"]))
+                {
+                    foreach (var val in form["ConsumableIds"].ToString().Split(','))
+                    {
+                        if (int.TryParse(val, out var parsedCons)) consumableIds.Add(parsedCons);
+                    }
+                }
+
+                // Bulletproof Checkbox Parsing for Technicians
+                var technicianIds = new List<int>();
+                if (!string.IsNullOrWhiteSpace(form["TechnicianIds"]))
+                {
+                    foreach (var val in form["TechnicianIds"].ToString().Split(','))
+                    {
+                        if (int.TryParse(val, out var parsedTech)) technicianIds.Add(parsedTech);
+                    }
+                }
+
+                // Pass to your Service
+                _labManagerService.CreateTestType(
+                    testName, categoryId, sampleTypeId, unitOfMeasurement,
+                    minRange, maxRange, turnaroundTime, consumableIds, technicianIds
+                );
+
+                TempData["StatusMessage"] = "Test type successfully created.";
                 return RedirectToAction(nameof(TestTypes));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                TempData["StatusMessage"] = "Unable to create test type.";
+                // If it fails (like a duplicate name), output exactly why
+                TempData["StatusMessage"] = $"Unable to create test type. Error: {ex.Message}";
                 return RedirectToAction(nameof(TestTypes));
             }
         }
@@ -228,35 +314,89 @@ namespace NMB_HLabSys_VIEWS_.Controllers
         [HttpGet]
         public IActionResult EditTestType(int id)
         {
-            var model = _labManagerService.GetTestType(id);
-            if (model == null) return NotFound();
-            ViewBag.Categories = _labManagerService.GetCategories().ToList();
-            ViewBag.Consumables = _labManagerService.GetConsumables().ToList();
-            ViewBag.Technicians = _labManagerService.GetLabTechnicians().ToList();
-            return View("TestTypes/Edit", model);
+            var testType = _labManagerService.GetTestType(id);
+            if (testType == null) return NotFound();
+
+            var allConsumables = _labManagerService.GetConsumables();
+            var consumableCheckboxes = allConsumables.Select(c => new NMB_HLabSys_VIEWS.ViewModels.CheckboxItemViewModel
+            {
+                Id = c.Id,
+                Name = c.ConsumableName,
+                IsSelected = testType.ConsumableIds.Contains(c.Id)
+            }).ToList();
+
+            var allTechnicians = _labManagerService.GetLabTechnicians();
+            var technicianCheckboxes = allTechnicians.Select(t => new NMB_HLabSys_VIEWS.ViewModels.CheckboxItemViewModel
+            {
+                Id = t.Id,
+                Name = $"{t.Name} {t.Surname}",
+                IsSelected = testType.TechnicianIds.Contains(t.Id)
+            }).ToList();
+
+            var viewModel = new NMB_HLabSys_VIEWS.ViewModels.EditTestTypeViewModel
+            {
+                Id = testType.Id,
+                TestName = testType.TestName,
+                CategoryId = testType.CategoryId,
+                SampleTypeId = testType.SampleTypeId,
+                UnitOfMeasurement = testType.UnitOfMeasurement,
+                NormalRangeMin = testType.NormalRangeMin,
+                NormalRangeMax = testType.NormalRangeMax,
+                TurnaroundTimeMinutes = testType.TurnaroundTimeMinutes,
+                AvailableCategories = _labManagerService.GetCategories().ToList(),
+                AvailableSampleTypes = _labManagerService.GetSampleTypes().ToList(),
+                AvailableConsumables = consumableCheckboxes,
+                AvailableTechnicians = technicianCheckboxes
+            };
+
+            return View("TestTypes/Edit", viewModel);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult EditTestType(int id, IFormCollection form)
+        public IActionResult EditTestType(IFormCollection form)
         {
             try
             {
-                var testName = GetValue(form, "TestName", "Name");
-                var categoryId = int.Parse(GetValue(form, "CategoryId", "Category") ?? "0");
-                var sampleType = GetValue(form, "SampleType");
-                var unitOfMeasurement = GetValue(form, "UnitOfMeasurement", "Units");
-                var minRange = GetValue(form, "NormalRangeMin", "MinNormalRange");
-                var maxRange = GetValue(form, "NormalRangeMax", "MaxNormalRange");
-                var turnaroundTime = int.Parse(GetValue(form, "TurnaroundTimeMinutes", "TurnaroundTime") ?? "0");
-                var consumableIds = GetIntList(form, "ConsumableIds", "Consumables");
-                var technicianIds = GetIntList(form, "TechnicianIds", "Technicians");
-                _labManagerService.UpdateTestType(id, testName, categoryId, sampleType, unitOfMeasurement, minRange, maxRange, turnaroundTime, consumableIds, technicianIds);
+                // Safe parsing: defaults to 0 instead of crashing if the form data is missing
+                var id = int.TryParse(form["TestTypeID"], out var parsedId) ? parsedId : 0;
+                var testName = form["TestName"].ToString();
+                var categoryId = int.TryParse(form["CategoryId"], out var parsedCat) ? parsedCat : 0;
+                var sampleTypeId = int.TryParse(form["SampleTypeId"], out var parsedSample) ? parsedSample : 0;
+                var unitOfMeasurement = form["UnitOfMeasurement"].ToString();
+                var minRange = decimal.TryParse(form["NormalRangeMin"], out var parsedMin) ? parsedMin : 0m;
+                var maxRange = decimal.TryParse(form["NormalRangeMax"], out var parsedMax) ? parsedMax : 0m;
+                var turnaroundTime = int.TryParse(form["TurnaroundTimeMinutes"], out var parsedTime) ? parsedTime : 0;
+
+                // Bulletproof Checkbox Parsing
+                var consumableIds = new List<int>();
+                if (!string.IsNullOrWhiteSpace(form["ConsumableIds"]))
+                {
+                    foreach (var val in form["ConsumableIds"].ToString().Split(','))
+                    {
+                        if (int.TryParse(val, out var parsedCons)) consumableIds.Add(parsedCons);
+                    }
+                }
+
+                var technicianIds = new List<int>();
+                if (!string.IsNullOrWhiteSpace(form["TechnicianIds"]))
+                {
+                    foreach (var val in form["TechnicianIds"].ToString().Split(','))
+                    {
+                        if (int.TryParse(val, out var parsedTech)) technicianIds.Add(parsedTech);
+                    }
+                }
+
+                _labManagerService.UpdateTestType(
+                    id, testName, categoryId, sampleTypeId, unitOfMeasurement,
+                    minRange, maxRange, turnaroundTime, consumableIds, technicianIds
+                );
+
                 return RedirectToAction(nameof(TestTypes));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                TempData["StatusMessage"] = "Unable to update test type.";
+                TempData["StatusMessage"] = $"Unable to update test type. Error: {ex.Message}";
                 return RedirectToAction(nameof(TestTypes));
             }
         }
@@ -264,18 +404,51 @@ namespace NMB_HLabSys_VIEWS_.Controllers
         [HttpGet]
         public IActionResult DeleteTestType(int id)
         {
-            var model = _labManagerService.GetTestType(id);
-            if (model == null) return NotFound();
-            return View("TestTypes/Delete", model);
+            var testType = _labManagerService.GetTestType(id);
+            if (testType == null)
+            {
+                return NotFound();
+            }
+
+            var category = _labManagerService.GetCategory(testType.CategoryId);
+            var sampleType = _labManagerService.GetSampleType(testType.SampleTypeId);
+
+            var viewModel = new NMB_HLabSys_VIEWS.ViewModels.DeleteTestTypeViewModel
+            {
+                Id = testType.Id,
+                TestName = testType.TestName,
+                CategoryName = category?.CategoryName ?? "Unknown",
+                SampleTypeName = sampleType?.Name ?? "Unknown",
+                TurnaroundTimeMinutes = testType.TurnaroundTimeMinutes
+            };
+
+            return View("TestTypes/Delete", viewModel);
         }
 
-        [HttpPost]
+        [HttpPost, ActionName("DeleteTestType")]
         [ValidateAntiForgeryToken]
-        public IActionResult DeleteTestType(int id, int? testTypeId)
+        public IActionResult DeleteTestTypeConfirmed(int id)
         {
-            var deleteId = testTypeId ?? id;
-            _labManagerService.DeleteTestType(deleteId);
-            return RedirectToAction(nameof(TestTypes));
+            try
+            {
+                var success = _labManagerService.DeleteTestType(id);
+
+                if (success)
+                {
+                    TempData["StatusMessage"] = "Test type successfully deleted.";
+                }
+                else
+                {
+                    TempData["StatusMessage"] = "Unable to delete test type. It may not exist.";
+                }
+
+                return RedirectToAction(nameof(TestTypes));
+            }
+            catch (Exception ex)
+            {
+                TempData["StatusMessage"] = $"Error deleting test type: {ex.Message}";
+                return RedirectToAction(nameof(TestTypes));
+            }
         }
 
         public IActionResult TestCategories()
@@ -318,26 +491,37 @@ namespace NMB_HLabSys_VIEWS_.Controllers
         public IActionResult EditTestCategory(int id)
         {
             var category = _labManagerService.GetCategory(id);
+            ViewBag.categories = _labManagerService.GetCategories().ToList();
             if (category == null) return NotFound();
             return View("TestCategories/Edit", category);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult EditTestCategory(int id, IFormCollection form)
+        public IActionResult EditTestCategory(int id, TestCategory category)
         {
-            try
+            // Security check: Ensure the ID in the URL matches the hidden ID in the form
+            if (id != category.Id)
             {
-                var categoryName = GetValue(form, "CategoryName", "Name");
-                var description = GetValue(form, "Description");
-                _labManagerService.UpdateCategory(id, categoryName, description);
-                return RedirectToAction(nameof(TestCategories));
+                return NotFound();
             }
-            catch (Exception)
+
+            // ModelState.IsValid automatically checks any [Required] or [StringLength] attributes on your Model
+            if (ModelState.IsValid)
             {
-                TempData["StatusMessage"] = "Unable to update category.";
-                return RedirectToAction(nameof(TestCategories));
+                try
+                {
+                    _labManagerService.UpdateCategory(category.Id, category.CategoryName, category.Description);
+
+                    TempData["StatusMessage"] = "Category updated successfully.";
+                    return RedirectToAction(nameof(TestCategories));
+                }
+                catch (Exception)
+                {
+                    TempData["StatusMessage"] = "Unable to update category.";
+                }
             }
+            return View("TestCategories/Edit", category);
         }
 
         [HttpGet]
@@ -463,12 +647,16 @@ namespace NMB_HLabSys_VIEWS_.Controllers
         {
             try
             {
-                var name = GetValue(form, "Name");
-                var surname = GetValue(form, "Surname");
-                var hpcsaNumber = GetValue(form, "HpcsaNumber");
-                var emailAddress = GetValue(form, "EmailAddress");
-                var contactNumber = GetValue(form, "ContactNumber");
-                _labManagerService.CreateDoctor(name, surname, hpcsaNumber, emailAddress, contactNumber);
+                _labManagerService.CreateDoctor(
+                    form["Name"].ToString(),
+                    form["Surname"].ToString(),
+                    form["HpcsaNumber"].ToString(),
+                    form["Specialty"].ToString(),
+                    form["EmailAddress"].ToString(),
+                    form["ContactNumber"].ToString()
+                );
+
+                TempData["StatusMessage"] = "Doctor successfully registered.";
                 return RedirectToAction(nameof(Doctors));
             }
             catch (Exception)
@@ -495,9 +683,10 @@ namespace NMB_HLabSys_VIEWS_.Controllers
                 var name = GetValue(form, "Name");
                 var surname = GetValue(form, "Surname");
                 var hpcsaNumber = GetValue(form, "HpcsaNumber");
+                var specialty = GetValue(form, "Specialty");
                 var emailAddress = GetValue(form, "EmailAddress");
                 var contactNumber = GetValue(form, "ContactNumber");
-                _labManagerService.UpdateDoctor(id, name, surname, hpcsaNumber, emailAddress, contactNumber);
+                _labManagerService.UpdateDoctor(id, name, surname, hpcsaNumber, specialty, emailAddress, contactNumber);
                 return RedirectToAction(nameof(Doctors));
             }
             catch (Exception)
@@ -531,10 +720,29 @@ namespace NMB_HLabSys_VIEWS_.Controllers
 
         public IActionResult LabTechnicianDetails(int id)
         {
-            var model = _labManagerService.GetLabTechnician(id);
-            if (model == null) return NotFound();
-            ViewBag.AssignedTestTypes = _labManagerService.GetTestTypes().Where(x => model.AssignedTestTypeIds.Contains(x.Id)).ToList();
-            return View("LabTechnicians/Details", model);
+            var tech = _labManagerService.GetLabTechnicians().FirstOrDefault(t => t.Id == id);
+            if (tech == null) return NotFound();
+
+            // Fetch the actual names of the tests assigned to this technician
+            var allTestTypes = _labManagerService.GetTestTypes();
+            var assignedTestNames = allTestTypes
+                .Where(t => tech.AssignedTestTypeIds.Contains(t.Id))
+                .Select(t => t.TestName)
+                .ToList();
+
+            var viewModel = new NMB_HLabSys_VIEWS.ViewModels.TechnicianDetailsViewModel
+            {
+                Id = tech.Id,
+                Name = tech.Name,
+                Surname = tech.Surname,
+                SouthAfricanIdNumber = tech.SouthAfricanIdNumber,
+                EmployeeNumber = tech.EmployeeNumber,
+                EmailAddress = tech.EmailAddress,
+                ContactNumber = tech.ContactNumber,
+                AssociatedTests = assignedTestNames
+            };
+
+            return View("LabTechnicians/Details",viewModel);
         }
 
         [HttpGet]
@@ -681,35 +889,66 @@ namespace NMB_HLabSys_VIEWS_.Controllers
         [HttpGet]
         public IActionResult DeleteSampleType(int id)
         {
-            var model = _labManagerService.GetSampleType(id);
-            if (model == null) return NotFound();
-            return View("SampleTypes/Delete", model);
+            var sampleType = _labManagerService.GetSampleType(id);
+            if (sampleType == null) return NotFound();
+
+            // Safety check: See if any test types are currently using this sample type
+            bool isUsed = _labManagerService.GetTestTypes().Any(t => t.SampleTypeId == id);
+            ViewBag.CanDelete = !isUsed;
+
+            return View("SampleTypes/Delete", sampleType);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult DeleteSampleType(int id, int? sampleTypeId)
+        public IActionResult DeleteSampleTypeConfirmed(int id)
         {
-            var deleteId = sampleTypeId ?? id;
-            _labManagerService.DeleteSampleType(deleteId);
-            return RedirectToAction(nameof(SampleTypes));
+            try
+            {
+                _labManagerService.DeleteSampleType(id);
+                TempData["StatusMessage"] = "Sample type deleted successfully.";
+                return RedirectToAction(nameof(SampleTypes));
+            }
+            catch (Exception ex)
+            {
+                TempData["StatusMessage"] = $"Error deleting sample type: {ex.Message}";
+                return RedirectToAction(nameof(SampleTypes));
+            }
         }
 
+        [HttpGet]
         public IActionResult Orders()
         {
-            ViewBag.SupplierNames = _labManagerService.GetSuppliers()
-                .ToDictionary(x => x.Id, x => x.SupplierName);
-            return View("Orders/Index", _labManagerService.GetOrders().ToList());
+            // 1. Get all orders, sorted with the newest at the top
+            var orders = _labManagerService.GetOrders().OrderByDescending(o => o.OrderDate).ToList();
+
+            // 2. Data for our Smart Alerts
+            var consumables = _labManagerService.GetConsumables();
+            var suppliers = _labManagerService.GetSuppliers();
+
+            // Check for low stock (Quantity <= Reorder Level)
+            ViewBag.LowStockItems = consumables.Where(c => c.QuantityOnHand <= c.ReorderLevel).ToList();
+
+            // Pass suppliers as a dictionary for easy name lookups
+            ViewBag.SupplierDict = suppliers.ToDictionary(s => s.Id, s => s.SupplierName);
+
+            return View("Orders/Index", orders);
         }
 
         public IActionResult OrderDetails(int id)
         {
-            var model = _labManagerService.GetOrder(id);
-            if (model == null) return NotFound();
-            ViewBag.Supplier = _labManagerService.GetSupplier(model.SupplierId);
-            ViewBag.ConsumableNames = _labManagerService.GetConsumables()
-                .ToDictionary(x => x.Id, x => x.ConsumableName);
-            return View("Orders/Details", model);
+            // Fetch the order
+            var order = _labManagerService.GetOrders().FirstOrDefault(o => o.Id == id);
+            if (order == null) return NotFound();
+
+            // Fetch the supplier name
+            var supplier = _labManagerService.GetSupplier(order.SupplierId);
+            ViewBag.SupplierName = supplier?.SupplierName ?? "Unknown";
+
+            // Fetch consumable names into a fast lookup dictionary
+            var consumables = _labManagerService.GetConsumables().ToDictionary(c => c.Id, c => c.ConsumableName);
+            ViewBag.ConsumableDict = consumables;
+            return View("Orders/Details", order);
         }
 
         [HttpGet]
@@ -726,21 +965,49 @@ namespace NMB_HLabSys_VIEWS_.Controllers
         {
             try
             {
-                var supplierId = int.Parse(GetValue(form, "SupplierId", "Supplier") ?? "0");
-                var orderNumber = GetValue(form, "OrderNumber");
-                var items = ParseOrderItems(form);
-                if (supplierId <= 0 || !items.Any())
+                string randomSuffix = new Random().Next(1000, 9999).ToString();
+                var orderNumber = $"ORD-{DateTime.Now:yyyyMMdd}-{randomSuffix}";
+
+                var supplierId = int.Parse(form["SupplierId"]);
+
+                // Create a list of tuples to hold (ConsumableId, Quantity)
+                var orderedItems = new List<(int consumableId, int quantity)>();
+
+                // Grab the checked checkboxes
+                if (!string.IsNullOrWhiteSpace(form["ConsumableIds"]))
                 {
-                    throw new InvalidOperationException("Please select a supplier and at least one consumable item.");
+                    var selectedIds = form["ConsumableIds"].ToString().Split(',');
+
+                    foreach (var idString in selectedIds)
+                    {
+                        if (int.TryParse(idString, out int consumableId))
+                        {
+                            // Look up the specific quantity field for THIS consumable ID
+                            string quantityFieldName = $"Quantity_{consumableId}";
+
+                            if (int.TryParse(form[quantityFieldName], out int quantity) && quantity > 0)
+                            {
+                                orderedItems.Add((consumableId, quantity));
+                            }
+                        }
+                    }
                 }
-                _labManagerService.CreateOrder(supplierId, items, orderNumber);
-                TempData["StatusMessage"] = "Order created successfully.";
-                return RedirectToAction(nameof(Orders));
+
+                if (!orderedItems.Any())
+                {
+                    throw new Exception("You must select at least one consumable and provide a valid quantity.");
+                }
+
+                // Pass the successfully parsed items to your LabManagerService
+                _labManagerService.CreateOrder(supplierId, orderedItems.ToArray(), orderNumber);
+
+                TempData["StatusMessage"] = "Order successfully created.";
+                return RedirectToAction("Orders");
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                TempData["StatusMessage"] = "Unable to create order.";
-                return RedirectToAction(nameof(Orders));
+                TempData["StatusMessage"] = $"Failed to create order: {ex.Message}";
+                return RedirectToAction("CreateOrder");
             }
         }
 
@@ -757,9 +1024,19 @@ namespace NMB_HLabSys_VIEWS_.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult ReceiveOrder(int id)
         {
-            _labManagerService.ReceiveOrder(id);
-            TempData["StatusMessage"] = "Order marked as received.";
-            return RedirectToAction(nameof(Orders));
+            try
+            {
+                // This triggers the automation we wrote in Step 1
+                _labManagerService.ReceiveOrder(id);
+
+                TempData["StatusMessage"] = "Order marked as received. Inventory quantities have been updated automatically!";
+                return RedirectToAction(nameof(Orders));
+            }
+            catch (Exception ex)
+            {
+                TempData["StatusMessage"] = $"Failed to receive order: {ex.Message}";
+                return RedirectToAction(nameof(Orders));
+            }
         }
 
         [HttpPost]

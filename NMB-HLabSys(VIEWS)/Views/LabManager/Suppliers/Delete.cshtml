@@ -1,7 +1,7 @@
-﻿@{
+﻿@model Supplier
+@{
     ViewData["Title"] = "Delete Supplier";
     Layout = "~/Views/Shared/_ManagersLayout.cshtml";
-    var supplier = new { Id = 1, Name = "Lab Supplies Co.", Contact = "John Doe", Email = "john.doe@lab supplies.com" };
 }
 <div class="row justify-content-center">
     <div class="col-md-6">
@@ -15,10 +15,13 @@
 
                     <dl class="row">
                         <dt class="col-sm-4">Supplier Name</dt>
-                        <dd class="col-sm-8">@supplier.Name</dd>
+                        <dd class="col-sm-8">@Model.SupplierName</dd>
 
-                        <dt class="col-sm-4">Description</dt>
-                        <dd class="col-sm-8">@supplier.Email</dd>
+                        <dt class="col-sm-4">Contact Person</dt>
+                        <dd class="col-sm-8">@Model.ContactPerson</dd>
+
+                        <dt class="col-sm-4">Email</dt>
+                        <dd class="col-sm-8">@Model.EmailAddress</dd>
                     </dl>
 
                     <div class="alert alert-warning">
@@ -28,7 +31,7 @@
 
                     <form asp-action="DeleteSupplier" method="post">
                         @Html.AntiForgeryToken()
-                        <input type="hidden" name="SupplierID" value="@supplier.Id" />
+                        <input type="hidden" name="SupplierID" value="@Model.Id" />
 
                         <div class="d-flex justify-content-between">
                             <a asp-controller="LabManager" asp-action="Suppliers" class="btn btn-secondary">Cancel</a>

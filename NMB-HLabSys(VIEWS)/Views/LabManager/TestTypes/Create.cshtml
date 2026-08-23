@@ -65,11 +65,11 @@
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <label class="form-label fw-semibold">Test Name</label>
-                    <input name="TestName" class="form-control" placeholder="e.g. Full Blood Count" />
+                    <input name="TestName" class="form-control" placeholder="e.g. Full Blood Count" required />
                 </div>
                 <div class="col-md-6 mb-3">
                     <label class="form-label fw-semibold">Test Category</label>
-                    <select name="CategoryId" class="form-select">
+                    <select name="CategoryId" class="form-select" required>
                         <option value="">Select a category</option>
                         @foreach (var c in categories)
                         {
@@ -82,32 +82,37 @@
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <label class="form-label fw-semibold">Sample Type</label>
-                    <select name="SampleType" class="form-select">
+                    <!-- FIX: Name changed to SampleTypeId -->
+                    <select name="SampleTypeId" class="form-select" required>
                         <option value="">Select a sample type</option>
                         @foreach (var s in sampleTypes)
                         {
-                            <option value="@s.Name">@s.Name</option>
+                            <!-- FIX: Value changed from s.Name to s.Id -->
+                            <option value="@s.Id">@s.Name</option>
                         }
                     </select>
                 </div>
                 <div class="col-md-6 mb-3">
                     <label class="form-label fw-semibold">Units of Measurement</label>
-                    <input name="UnitOfMeasurement" class="form-control" placeholder="e.g. g/dL, x10³/µL" />
+                    <input name="UnitOfMeasurement" class="form-control" placeholder="e.g. g/dL, x10³/µL" required />
                 </div>
             </div>
 
             <div class="row">
                 <div class="col-md-4 mb-3">
                     <label class="form-label fw-semibold">Normal Range (Min)</label>
-                    <input name="MinNormalRange" class="form-control" placeholder="e.g. 4.0" />
+                    <!-- FIX: Name changed to NormalRangeMin -->
+                    <input name="NormalRangeMin" class="form-control" placeholder="e.g. 4.0" required />
                 </div>
                 <div class="col-md-4 mb-3">
                     <label class="form-label fw-semibold">Normal Range (Max)</label>
-                    <input name="MaxNormalRange" class="form-control" placeholder="e.g. 11.0" />
+                    <!-- FIX: Name changed to NormalRangeMax -->
+                    <input name="NormalRangeMax" class="form-control" placeholder="e.g. 11.0" required />
                 </div>
                 <div class="col-md-4 mb-3">
                     <label class="form-label fw-semibold">Turnaround (minutes)</label>
-                    <input name="TurnaroundTimeMinutes" class="form-control" type="number" min="0" placeholder="e.g. 90" />
+                    <!-- FIX: Name changed to TurnaroundTimeMinutes -->
+                    <input name="TurnaroundTimeMinutes" class="form-control" type="number" min="0" placeholder="e.g. 90" required />
                 </div>
             </div>
 
@@ -135,7 +140,7 @@
                             <input class="form-check-input" type="checkbox"
                                    name="TechnicianIds" value="@tech.Id"
                                    id="technician_@tech.Id" />
-                            <label class="form-check-label" for="technician_@tech.Id">@tech.Name</label>
+                            <label class="form-check-label" for="technician_@tech.Id">@tech.Name @tech.Surname</label>
                         </div>
                     }
                 </div>
@@ -148,4 +153,3 @@
         </form>
     </div>
 </div>
-

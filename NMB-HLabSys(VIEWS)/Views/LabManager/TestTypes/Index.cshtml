@@ -1,9 +1,7 @@
-﻿@using NMB_HLabSys_VIEWS_.Models
-@model List<TestType>
+﻿@model IEnumerable<NMB_HLabSys_VIEWS.ViewModels.TestTypeDetailsViewModel>
 @{
     ViewData["Title"] = "Test Types";
     Layout = "~/Views/Shared/_ManagersLayout.cshtml";
-    var categoryNames = ViewBag.CategoryNames as Dictionary<int, string> ?? new Dictionary<int, string>();
 }
 <style>
     .mgr-page-header {
@@ -101,8 +99,8 @@ else
             {
                 <tr>
                     <td>@testType.TestName</td>
-                    <td>@(categoryNames.TryGetValue(testType.CategoryId, out var categoryName) ? categoryName : "Unassigned")</td>
-                    <td>@testType.SampleType</td>
+                    <td>@testType.CategoryName</td>
+                    <td>@testType.SampleTypeName</td>
                     <td>
                         <span class="badge mgr-badge">@testType.TurnaroundTimeMinutes min</span>
                     </td>

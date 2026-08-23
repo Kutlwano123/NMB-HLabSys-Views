@@ -5,6 +5,8 @@
 // ============================================================
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Reflection;
+using NMB_HLabSys_VIEWS_.Models;
 
 namespace NMB_HLabSys_VIEWS.ViewModels
 {
@@ -216,5 +218,74 @@ namespace NMB_HLabSys_VIEWS.ViewModels
         public System.DateTime? DueDate { get; set; }
         public System.DateTime RequestDate { get; set; }
         public bool IsOverdue { get; set; }
+    }
+    public class TestTypeDetailsViewModel
+    {
+        public int Id { get; set; }
+        public string TestName { get; set; } = string.Empty;
+        public string CategoryName { get; set; } = string.Empty;
+        public string SampleTypeName { get; set; } = string.Empty;
+        public string UnitOfMeasurement { get; set; } = string.Empty;
+        public decimal NormalRangeMin { get; set; }
+        public decimal NormalRangeMax { get; set; }
+        public int TurnaroundTimeMinutes { get; set; }
+
+        // Lists of names rather than IDs for the view
+        public List<string> ConsumableNames { get; set; } = new();
+        public List<string> TechnicianNames { get; set; } = new();
+    }
+    public class CheckboxItemViewModel
+    {
+        public int Id { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public bool IsSelected { get; set; }
+    }
+
+    public class EditTestTypeViewModel
+    {
+        // The Test Type being edited
+        public int Id { get; set; }
+        public string TestName { get; set; } = string.Empty;
+        public int CategoryId { get; set; }
+        public int SampleTypeId { get; set; }
+        public string UnitOfMeasurement { get; set; } = string.Empty;
+        public decimal NormalRangeMin { get; set; }
+        public decimal NormalRangeMax { get; set; }
+        public int TurnaroundTimeMinutes { get; set; }
+
+        // Dropdown Lists
+        public List<TestCategory> AvailableCategories { get; set; } = new();
+        public List<SampleType> AvailableSampleTypes { get; set; } = new();
+
+        // Checkbox Lists
+        public List<CheckboxItemViewModel> AvailableConsumables { get; set; } = new();
+        public List<CheckboxItemViewModel> AvailableTechnicians { get; set; } = new();
+    }
+    public class DeleteTestTypeViewModel
+    {
+        public int Id { get; set; }
+        public string TestName { get; set; } = string.Empty;
+        public string CategoryName { get; set; } = string.Empty;
+        public string SampleTypeName { get; set; } = string.Empty;
+        public int TurnaroundTimeMinutes { get; set; }
+    }
+    public class DeleteConsumableViewModel
+    {
+        public int Id { get; set; }
+        public string ConsumableName { get; set; } = string.Empty;
+        public string SupplierName { get; set; } = string.Empty;
+        public int ReorderLevel { get; set; }
+        public int QuantityOnHand { get; set; }
+    }
+    public class TechnicianDetailsViewModel
+    {
+        public int Id { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string Surname { get; set; } = string.Empty;
+        public string SouthAfricanIdNumber { get; set; } = string.Empty;
+        public string EmployeeNumber { get; set; } = string.Empty;
+        public string EmailAddress { get; set; } = string.Empty;
+        public string ContactNumber { get; set; } = string.Empty;
+        public List<string> AssociatedTests { get; set; } = new();
     }
 }

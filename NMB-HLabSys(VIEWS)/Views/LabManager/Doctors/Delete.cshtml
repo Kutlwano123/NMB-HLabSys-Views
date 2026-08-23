@@ -1,7 +1,8 @@
-﻿@{
+﻿@using NMB_HLabSys_VIEWS
+@model DoctorUser
+@{
     ViewData["Title"] = "Delete Doctor";
     Layout = "~/Views/Shared/_ManagersLayout.cshtml";
-    var doctor = new { Id = 1, Name = "Dr. Alice Smith", Specialty = "Cardiology", Contact = "alice.smith@hospital.com" };
 }
 <div class="row justify-content-center">
     <div class="col-md-6">
@@ -15,10 +16,16 @@
 
                 <dl class="row">
                     <dt class="col-sm-4">Doctor Name</dt>
-                    <dd class="col-sm-8">@doctor.Name</dd>
+                    <dd class="col-sm-8">Dr. @Model.Name @Model.Surname</dd>
 
                     <dt class="col-sm-4">Specialty</dt>
-                    <dd class="col-sm-8">@doctor.Specialty</dd>
+                    <dd class="col-sm-8">@Model.Specialty</dd>
+
+                    <dt class="col-sm-4">Contact Number</dt>
+                    <dd class="col-sm-8">@Model.ContactNumber</dd>
+
+                    <dt class="col-sm-4">Email</dt>
+                    <dd class="col-sm-8">@Model.EmailAddress</dd>
                 </dl>
 
                 <div class="alert alert-warning">
@@ -28,7 +35,7 @@
 
                 <form asp-action="DeleteDoctor" method="post">
                     @Html.AntiForgeryToken()
-                    <input type="hidden" name="DoctorID" value="@doctor.Id" />
+                    <input type="hidden" name="DoctorID" value="@Model.Id" />
 
                     <div class="d-flex justify-content-between">
                         <a asp-controller="LabManager" asp-action="Doctors" class="btn btn-secondary">Cancel</a>

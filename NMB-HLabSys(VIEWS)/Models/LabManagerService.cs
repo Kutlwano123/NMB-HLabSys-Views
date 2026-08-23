@@ -12,8 +12,8 @@ namespace NMB_HLabSys_VIEWS_.Models
 
         IEnumerable<TestType> GetTestTypes();
         TestType? GetTestType(int id);
-        TestType CreateTestType(string testName, int categoryId, string sampleType, string unitOfMeasurement, string minRange, string maxRange, int turnaroundTimeMinutes, IEnumerable<int> consumableIds, IEnumerable<int> technicianIds);
-        TestType? UpdateTestType(int id, string testName, int categoryId, string sampleType, string unitOfMeasurement, string minRange, string maxRange, int turnaroundTimeMinutes, IEnumerable<int> consumableIds, IEnumerable<int> technicianIds);
+        TestType CreateTestType(string testName, int categoryId, int sampleType, string unitOfMeasurement, decimal minRange, decimal maxRange, int turnaroundTimeMinutes, IEnumerable<int> consumableIds, IEnumerable<int> technicianIds);
+        TestType? UpdateTestType(int id, string testName, int categoryId, int sampleType, string unitOfMeasurement, decimal minRange, decimal maxRange, int turnaroundTimeMinutes, IEnumerable<int> consumableIds, IEnumerable<int> technicianIds);
         bool DeleteTestType(int id);
 
         IEnumerable<SampleType> GetSampleTypes();
@@ -45,8 +45,8 @@ namespace NMB_HLabSys_VIEWS_.Models
 
         IEnumerable<DoctorUser> GetDoctors();
         DoctorUser? GetDoctor(int id);
-        DoctorUser CreateDoctor(string name, string surname, string hpcsaNumber, string emailAddress, string contactNumber);
-        DoctorUser? UpdateDoctor(int id, string name, string surname, string hpcsaNumber, string emailAddress, string contactNumber);
+        DoctorUser? CreateDoctor(string name, string surname, string hpcsaNumber, string specialty, string emailAddress, string contactNumber);
+        DoctorUser? UpdateDoctor(int id, string name, string surname, string hpcsaNumber, string specialty, string emailAddress, string contactNumber);
         bool DeleteDoctor(int id);
 
         IEnumerable<LabTechnicianUser> GetLabTechnicians();
@@ -88,38 +88,46 @@ namespace NMB_HLabSys_VIEWS_.Models
 
         private void Seed()
         {
+            // 1. Create Categories
             var hematology = CreateCategory("Hematology", "Blood and cellular analysis");
             var chemistry = CreateCategory("Chemistry", "Metabolic and chemistry panels");
             var microbiology = CreateCategory("Microbiology", "Culture and sensitivity testing");
 
-            CreateTestType("Full Blood Count", hematology.Id, "Whole Blood", "x10³/µL", "4.0", "11.0", 30, new[] { 1 }, new[] { 1, 2 });
-            CreateTestType("Coagulation Studies", hematology.Id, "Plasma", "s", "10", "14", 45, new[] { 1, 2 }, new[] { 2 });
-            CreateTestType("Liver Function Test", chemistry.Id, "Serum", "U/L", "5", "40", 60, new[] { 3 }, new[] { 1 });
-            CreateTestType("Urine Culture", microbiology.Id, "Urine", "CFU/mL", "0", "1000", 120, new[] { 4 }, new[] { 2 });
-
+            // 2. Create Sample Types (IDs 1, 2, 3, 4)
             CreateSampleType("Whole Blood", "Whole blood sample collected in EDTA");
             CreateSampleType("Plasma", "Plasma sample suitable for coagulation testing");
             CreateSampleType("Serum", "Serum sample for chemistry testing");
             CreateSampleType("Urine", "Urine specimen collected for microbiology");
 
+            // 3. Create Suppliers
             CreateSupplier("MedSupply Co.", "Thabo Mokoena", "orders@medsupply.co.za");
             CreateSupplier("Lab Essentials", "Nandi Dube", "nandi@labessentials.co.za");
             CreateSupplier("HealthPro", "Lerato Molefe", "lerato@healthpro.co.za");
 
+            // 4. Create Consumables
             CreateConsumable("EDTA Tubes", 20, 45, 1);
             CreateConsumable("Coagulation Reagent", 12, 18, 2);
             CreateConsumable("Serum Separator Tubes", 15, 36, 2);
             CreateConsumable("Culture Media", 10, 18, 3);
 
-            CreateDoctor("Dr. A. Petersen", "Petersen", "HPCSA-1001", "doctor1@nmb.ac.za", "0821110001");
-            CreateDoctor("Dr. S. Ngcobo", "Ngcobo", "HPCSA-1002", "doctor2@nmb.ac.za", "0821110002");
+            // 5. Create Test Types
+            CreateTestType("Full Blood Count", hematology.Id, 1, "x10³/µL", 4.0m, 11.0m, 30, new[] { 1 }, new[] { 1, 2 });
+            CreateTestType("Coagulation Studies", hematology.Id, 2, "s", 10m, 14m, 45, new[] { 1, 2 }, new[] { 2 });
+            CreateTestType("Liver Function Test", chemistry.Id, 3, "U/L", 5m, 40m, 60, new[] { 3 }, new[] { 1 });
+            CreateTestType("Urine Culture", microbiology.Id, 4, "CFU/mL", 0m, 1000m, 120, new[] { 4 }, new[] { 2 });
+
+            // 6. Create Users (Doctors and Technicians)
+            CreateDoctor("Dr. A. Petersen", "Petersen", "HPCSA-1001", "Cardiology", "doctor1@nmb.ac.za", "0821110001");
+            CreateDoctor("Dr. S. Ngcobo", "Ngcobo", "HPCSA-1002", "Internal Medicine", "doctor2@nmb.ac.za", "0821110002");
 
             CreateLabTechnician("Kabelo", "Mabidikama", "9001015001089", "EMP-1001", "tech1@nmb.ac.za", "0711010001", new[] { 1, 2 });
             CreateLabTechnician("Lindo", "Mthembu", "9102026002088", "EMP-1002", "tech2@nmb.ac.za", "0711010002", new[] { 3, 4 });
 
+            // 7. Create Orders
             CreateOrder(1, new[] { (1, 30), (4, 20) }, "ORD-1001");
             CreateOrder(2, new[] { (2, 15) }, "ORD-1002");
 
+            // 8. Create Performance Records
             _performanceRecords.Add(new TestPerformanceRecord { Id = _nextPerformanceRecordId++, CategoryId = hematology.Id, TestTypeId = 1, PerformedOn = DateTime.Today.AddDays(-2) });
             _performanceRecords.Add(new TestPerformanceRecord { Id = _nextPerformanceRecordId++, CategoryId = hematology.Id, TestTypeId = 2, PerformedOn = DateTime.Today.AddDays(-5) });
             _performanceRecords.Add(new TestPerformanceRecord { Id = _nextPerformanceRecordId++, CategoryId = chemistry.Id, TestTypeId = 3, PerformedOn = DateTime.Today.AddDays(-9) });
@@ -168,7 +176,7 @@ namespace NMB_HLabSys_VIEWS_.Models
 
         public TestType? GetTestType(int id) => _testTypes.FirstOrDefault(x => x.Id == id);
 
-        public TestType CreateTestType(string testName, int categoryId, string sampleType, string unitOfMeasurement, string minRange, string maxRange, int turnaroundTimeMinutes, IEnumerable<int> consumableIds, IEnumerable<int> technicianIds)
+        public TestType CreateTestType(string testName, int categoryId, int sampleType, string unitOfMeasurement, decimal minRange, decimal maxRange, int turnaroundTimeMinutes, IEnumerable<int> consumableIds, IEnumerable<int> technicianIds)
         {
             if (_testTypes.Any(x => string.Equals(x.TestName, testName, StringComparison.OrdinalIgnoreCase)))
             {
@@ -184,7 +192,7 @@ namespace NMB_HLabSys_VIEWS_.Models
                 Id = _nextTestTypeId++,
                 TestName = testName,
                 CategoryId = categoryId,
-                SampleType = sampleType,
+                SampleTypeId = sampleType,
                 UnitOfMeasurement = unitOfMeasurement,
                 NormalRangeMin = minRange,
                 NormalRangeMax = maxRange,
@@ -199,7 +207,7 @@ namespace NMB_HLabSys_VIEWS_.Models
             return testType;
         }
 
-        public TestType? UpdateTestType(int id, string testName, int categoryId, string sampleType, string unitOfMeasurement, string minRange, string maxRange, int turnaroundTimeMinutes, IEnumerable<int> consumableIds, IEnumerable<int> technicianIds)
+        public TestType? UpdateTestType(int id, string testName, int categoryId, int sampleType, string unitOfMeasurement, decimal minRange, decimal maxRange, int turnaroundTimeMinutes, IEnumerable<int> consumableIds, IEnumerable<int> technicianIds)
         {
             var testType = _testTypes.FirstOrDefault(x => x.Id == id);
             if (testType == null) return null;
@@ -214,7 +222,7 @@ namespace NMB_HLabSys_VIEWS_.Models
 
             testType.TestName = testName;
             testType.CategoryId = categoryId;
-            testType.SampleType = sampleType;
+            testType.SampleTypeId = sampleType;
             testType.UnitOfMeasurement = unitOfMeasurement;
             testType.NormalRangeMin = minRange;
             testType.NormalRangeMax = maxRange;
@@ -422,21 +430,30 @@ namespace NMB_HLabSys_VIEWS_.Models
 
         public bool ReceiveOrder(int orderId)
         {
-            var order = _orders.FirstOrDefault(x => x.Id == orderId);
-            if (order == null) return false;
-            foreach (var item in order.Items)
+            // Find the order
+            var order = _orders.FirstOrDefault(o => o.Id == orderId);
+
+            // Only process if it exists and hasn't already been received
+            if (order != null && order.Status != "Received")
             {
-                var consumable = _consumables.FirstOrDefault(x => x.Id == item.ConsumableId);
-                if (consumable != null)
+                order.Status = "Received";
+                order.DateCompleted = DateTime.Today;
+
+                foreach (var item in order.Items)
                 {
-                    consumable.QuantityOnHand += item.QuantityOrdered;
+                    item.Status = "Received";
+                    item.DateReceived = DateTime.Today;
+
+                    // Automation: Find the consumable and increase the stock!
+                    var consumable = _consumables.FirstOrDefault(c => c.Id == item.ConsumableId);
+                    if (consumable != null)
+                    {
+                        consumable.QuantityOnHand += item.QuantityOrdered;
+                    }
                 }
-                item.Status = "Received";
-                item.DateReceived = DateTime.Today;
+                return true;
             }
-            order.Status = "Complete";
-            order.DateCompleted = DateTime.Today;
-            return true;
+            return false;
         }
 
         public bool CancelOrder(int orderId, string reason)
@@ -459,7 +476,7 @@ namespace NMB_HLabSys_VIEWS_.Models
 
         public DoctorUser? GetDoctor(int id) => _doctors.FirstOrDefault(x => x.Id == id);
 
-        public DoctorUser CreateDoctor(string name, string surname, string hpcsaNumber, string emailAddress, string contactNumber)
+        public DoctorUser CreateDoctor(string name, string surname, string hpcsaNumber, string specialty,string emailAddress, string contactNumber)
         {
             if (_doctors.Any(x => string.Equals(x.HpcsaNumber, hpcsaNumber, StringComparison.OrdinalIgnoreCase)))
             {
@@ -471,6 +488,7 @@ namespace NMB_HLabSys_VIEWS_.Models
                 Name = name,
                 Surname = surname,
                 HpcsaNumber = hpcsaNumber,
+                Specialty = specialty,
                 EmailAddress = emailAddress,
                 ContactNumber = contactNumber,
                 Password = GeneratePassword(),
@@ -480,7 +498,7 @@ namespace NMB_HLabSys_VIEWS_.Models
             return doctor;
         }
 
-        public DoctorUser? UpdateDoctor(int id, string name, string surname, string hpcsaNumber, string emailAddress, string contactNumber)
+        public DoctorUser? UpdateDoctor(int id, string name, string surname, string hpcsaNumber, string specialty, string emailAddress, string contactNumber)
         {
             var doctor = _doctors.FirstOrDefault(x => x.Id == id);
             if (doctor == null) return null;
@@ -491,6 +509,7 @@ namespace NMB_HLabSys_VIEWS_.Models
             doctor.Name = name;
             doctor.Surname = surname;
             doctor.HpcsaNumber = hpcsaNumber;
+            doctor.Specialty = specialty;
             doctor.EmailAddress = emailAddress;
             doctor.ContactNumber = contactNumber;
             return doctor;

@@ -3,34 +3,88 @@
     Layout = "~/Views/Shared/_ManagersLayout.cshtml";
     var supplier = new { Name = "", Contact = "", Email = "" };
 }
+<style>
+    .mgr-form-wrap {
+        max-width: 760px;
+        margin: 0 auto;
+    }
 
-<div class="row justify-content-center">
-    <div class="col-md-6">
-        <div class="card shadow-sm">
-            <div class="card-header bg-warning">
-                <h5 class="mb-0">Add New Supplier</h5>
+    .mgr-form-card {
+        background: #fff;
+        border: 1px solid var(--mgr-border, #ddd9d2);
+        border-radius: 12px;
+        padding: 24px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    .mgr-form-title {
+        font-family: 'DM Serif Display', serif;
+        font-size: 20px;
+        color: var(--mgr-text-dark, #1e2420);
+        margin-bottom: 6px;
+    }
+
+    .mgr-form-subtitle {
+        font-size: 13px;
+        color: var(--mgr-text-mid, #4a5248);
+        margin-bottom: 20px;
+    }
+
+    .mgr-form-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+    }
+
+    .mgr-btn-primary {
+        background: var(--mgr-accent, #7a3030);
+        border-color: var(--mgr-accent, #7a3030);
+        color: #fff;
+    }
+
+        .mgr-btn-primary:hover {
+            background: var(--mgr-accent-2, #9a4040);
+            border-color: var(--mgr-accent-2, #9a4040);
+            color: #fff;
+        }
+</style>
+
+
+<<div class="mgr-form-wrap">
+    <div class="mgr-form-card">
+        <h5 class="mgr-form-title">Add New Supplier</h5>
+        <p class="mgr-form-subtitle">Register a new supplier in the system for ordering consumables.</p>
+
+        <!-- Optional: Display error messages if creation fails -->
+        @if (TempData["StatusMessage"] != null)
+        {
+            <div class="alert alert-danger mb-3">
+                @TempData["StatusMessage"]
             </div>
-            <div class="card-body">
-                <form asp-controller="LabManager" asp-action="CreateSupplier" method="post">
-                    @Html.AntiForgeryToken()
-                    <div class="mb-3">
-                        <label class="form-label">Supplier Name</label>
-                        <input name="Name" class="form-control" placeholder="Enter supplier name" />
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Contact Person</label>
-                        <input name="Contact" class="form-control" placeholder="Enter contact person" />
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Email</label>
-                        <input name="Email" type="email" class="form-control" placeholder="Enter email address" />
-                    </div>
-                    <div class="d-grid gap-2">
-                        <button type="submit" class="btn btn-warning">Add Supplier</button>
-                        <a asp-controller="LabManager" asp-action="Suppliers" class="btn btn-outline-secondary">Back</a>
-                    </div>
-                </form>
+        }
+
+        <form asp-controller="LabManager" asp-action="CreateSupplier" method="post">
+            @Html.AntiForgeryToken()
+
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Supplier Name</label>
+                <input name="SupplierName" class="form-control" placeholder="e.g. MedSupply Co." required />
             </div>
-        </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Contact Person</label>
+                <input name="ContactPerson" class="form-control" placeholder="e.g. Thabo Mokoena" required />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Email Address</label>
+                <input name="EmailAddress" type="email" class="form-control" placeholder="e.g. orders@medsupply.co.za" required />
+            </div>
+
+            <div class="mgr-form-actions mt-4">
+                <a asp-controller="LabManager" asp-action="Suppliers" class="btn btn-outline-secondary">Cancel</a>
+                <button type="submit" class="btn mgr-btn-primary">Add Supplier</button>
+            </div>
+        </form>
     </div>
 </div>

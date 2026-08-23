@@ -15,10 +15,11 @@ namespace NMB_HLabSys_VIEWS_.Models
         public int Id { get; set; }
         public string TestName { get; set; } = string.Empty;
         public int CategoryId { get; set; }
-        public string SampleType { get; set; } = string.Empty;
+        public int SampleTypeId { get; set; }
         public string UnitOfMeasurement { get; set; } = string.Empty;
-        public string NormalRangeMin { get; set; } = string.Empty;
-        public string NormalRangeMax { get; set; } = string.Empty;
+        public string SampleTypeName { get; set; } = string.Empty;
+        public decimal NormalRangeMin { get; set; }
+        public decimal NormalRangeMax { get; set; }
         public int TurnaroundTimeMinutes { get; set; }
         public List<int> ConsumableIds { get; set; } = new();
         public List<int> TechnicianIds { get; set; } = new();
@@ -38,6 +39,7 @@ namespace NMB_HLabSys_VIEWS_.Models
         public int ReorderLevel { get; set; }
         public int QuantityOnHand { get; set; }
         public int SupplierId { get; set; }
+        public string SupplierName { get; set; } = string.Empty;
     }
 
     public class Supplier
@@ -79,6 +81,7 @@ namespace NMB_HLabSys_VIEWS_.Models
         public string Name { get; set; } = string.Empty;
         public string Surname { get; set; } = string.Empty;
         public string HpcsaNumber { get; set; } = string.Empty;
+        public string Specialty { get; set; } = string.Empty;
         public string EmailAddress { get; set; } = string.Empty;
         public string ContactNumber { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;

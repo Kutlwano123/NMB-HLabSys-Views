@@ -1,49 +1,90 @@
-﻿@{
+﻿@model NMB_HLabSys_VIEWS.ViewModels.DeleteConsumableViewModel
+@{
     ViewData["Title"] = "Delete Consumable";
     Layout = "~/Views/Shared/_ManagersLayout.cshtml";
-
-    var consumable = new
-    {
-        Id = 2,
-        Name = "Latex Gloves",
-        Supplier = "HealthPro",
-        ReorderLevel = 50,
-        QuantityOnHand = 200
-    };
 }
 
-<div class="row justify-content-center">
-    <div class="col-md-6">
-        <div class="card shadow-sm border-danger">
-            <div class="card-header bg-danger text-white">
-                <h5 class="mb-0">Confirm Deletion</h5>
-            </div>
-            <div class="card-body">
-                <p>Are you sure you want to delete the following consumable?</p>
-                <dl class="row">
-                    <dt class="col-sm-4">Name</dt>
-                    <dd class="col-sm-8">@consumable.Name</dd>
-                    <dt class="col-sm-4">Supplier</dt>
-                    <dd class="col-sm-8">@consumable.Supplier</dd>
-                    <dt class="col-sm-4">Reorder Level</dt>
-                    <dd class="col-sm-8">@consumable.ReorderLevel</dd>
-                    <dt class="col-sm-4">Quantity on Hand</dt>
-                    <dd class="col-sm-8">@consumable.QuantityOnHand</dd>
-                </dl>
-                <div class="alert alert-warning">
-                    <i class="bi bi-exclamation-triangle"></i>
-                    This action cannot be undone.
-                </div>
-                <form asp-action="Delete" method="post">
-                    @Html.AntiForgeryToken()
-                    <input type="hidden" name="ConsumableID" value="@consumable.Id" />
-                    <div class="d-flex justify-content-between">
-                        <a asp-controller="LabManager" asp-action="Consumables" class="btn btn-secondary">Cancel</a>
-                        <button type="submit" class="btn btn-danger">Yes, Delete</button>
-                    </div>
-                </form>
-            </div>
+<style>
+    .mgr-delete-card {
+        background: #fff;
+        border: 1px solid var(--mgr-border, #ddd9d2);
+        border-radius: 12px;
+        padding: 24px;
+        max-width: 700px;
+        margin: 0 auto;
+    }
+
+    .mgr-delete-title {
+        font-family: 'DM Serif Display', serif;
+        font-size: 20px;
+        color: var(--mgr-text-dark, #1e2420);
+        margin-bottom: 10px;
+    }
+
+    .mgr-delete-warning {
+        font-size: 13px;
+        color: var(--mgr-text-mid, #4a5248);
+        margin-bottom: 16px;
+    }
+
+    .mgr-delete-list {
+        list-style: none;
+        padding: 0;
+        margin: 0 0 20px 0;
+        display: grid;
+        gap: 8px;
+    }
+
+    .mgr-delete-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 10px;
+        background: var(--mgr-bg, #f4f2ef);
+        border-radius: 8px;
+        font-size: 13px;
+        color: var(--mgr-text-mid, #4a5248);
+    }
+
+    .mgr-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+    }
+
+    .mgr-btn-danger {
+        background: #7a3030;
+        border-color: #7a3030;
+        color: #fff;
+    }
+
+        .mgr-btn-danger:hover {
+            background: #9a4040;
+            border-color: #9a4040;
+            color: #fff;
+        }
+</style>
+
+
+<div class="mgr-delete-card">
+    <h5 class="mgr-delete-title">Delete Consumable</h5>
+    <p class="mgr-delete-warning">This action cannot be undone. Please confirm you want to permanently delete the consumable below.</p>
+
+    <ul class="mgr-delete-list">
+        <li class="mgr-delete-item"><span>Name</span><strong>@Model.ConsumableName</strong></li>
+        <li class="mgr-delete-item"><span>Supplier</span><strong>@Model.SupplierName</strong></li>
+        <li class="mgr-delete-item"><span>Reorder Level</span><strong>@Model.ReorderLevel</strong></li>
+        <li class="mgr-delete-item"><span>Quantity on Hand</span><strong>@Model.QuantityOnHand</strong></li>
+    </ul>
+
+    <form asp-action="Delete" method="post">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="ConsumableID" value="@Model.Id" />
+
+        <div class="mgr-actions">
+            <a asp-controller="LabManager" asp-action="Consumables" class="btn btn-outline-secondary">Cancel</a>
+            <button type="submit" class="btn mgr-btn-danger">Delete</button>
         </div>
-    </div>
+    </form>
+</div>
 
 

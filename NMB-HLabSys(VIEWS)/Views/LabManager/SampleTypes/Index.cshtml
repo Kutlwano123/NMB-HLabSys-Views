@@ -79,16 +79,21 @@
     </a>
 </div>
 
+@if (TempData["StatusMessage"] != null)
+{
+    <div class="alert alert-info mt-3">@TempData["StatusMessage"]</div>
+}
+
 @if (!Model.Any())
 {
-    <div class="alert alert-info">No sample types found. Add one to get started.</div>
+    <div class="alert alert-secondary">No sample types found.</div>
 }
 else
 {
     <table class="table table-hover mgr-table">
         <thead>
             <tr>
-                <th>Sample Type</th>
+                <th>Name</th>
                 <th>Description</th>
                 <th class="text-center">Actions</th>
             </tr>
@@ -97,23 +102,23 @@ else
             @foreach (var sampleType in Model)
             {
                 <tr>
-                    <td>@sampleType.Name</td>
-                    <td>@sampleType.Description</td>
+                    <td class="fw-semibold">@sampleType.Name</td>
+                    <td class="text-muted">@sampleType.Description</td>
                     <td class="text-center">
                         <a asp-action="SampleTypeDetails" asp-route-id="@sampleType.Id"
-                           class="btn btn-sm btn-outline-primary mgr-action-btn">Details</a>
+                        class="btn btn-sm btn-outline-primary mgr-action-btn">Details</a>
                         <a asp-action="EditSampleType" asp-route-id="@sampleType.Id"
-                           class="btn btn-sm btn-outline-secondary mgr-action-btn">Edit</a>
+                        class="btn btn-sm btn-outline-secondary mgr-action-btn">Edit</a>
                         <a asp-action="DeleteSampleType" asp-route-id="@sampleType.Id"
-                           class="btn btn-sm btn-outline-danger mgr-action-btn">Delete</a>
+                        class="btn btn-sm btn-outline-danger mgr-action-btn">Delete</a>
                     </td>
                 </tr>
             }
         </tbody>
     </table>
-}
 
-@if (TempData["StatusMessage"] != null)
-{
-    <div class="alert alert-success mt-3">@TempData["StatusMessage"]</div>
+    @if (TempData["StatusMessage"] != null)
+    {
+        <div class="alert alert-success mt-3">@TempData["StatusMessage"]</div>
+    }
 }

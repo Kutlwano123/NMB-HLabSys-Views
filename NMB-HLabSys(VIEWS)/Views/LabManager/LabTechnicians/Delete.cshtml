@@ -1,7 +1,8 @@
-﻿@{
+﻿@using NMB_HLabSys_VIEWS
+@model LabTechnicianUser
+@{
     ViewData["Title"] = "Delete Lab Technician";
     Layout = "~/Views/Shared/_ManagersLayout.cshtml";
-    var labTechnician = new { Id = 1, Name = "John Doe", Email = "john.doe@example.com" };
 }
 <div class="row justify-content-center">
     <div class="col-md-6">
@@ -14,11 +15,14 @@
                 <p>Are you sure you want to delete the following lab technician?</p>
 
                 <dl class="row">
-                    <dt class="col-sm-4">Lab Technician Name</dt>
-                    <dd class="col-sm-8">@labTechnician.Name</dd>
-
-                    <dt class="col-sm-4">Specialty</dt>
-                    <dd class="col-sm-8">@labTechnician.Email</dd>
+                    <dt class="col-sm-4">Name</dt>
+                    <dd class="col-sm-8">@Model.Name</dd>
+                    <dt class="col-sm-4">Surname</dt>
+                    <dd class="col-sm-8">@Model.Surname</dd>
+                    <dt class="col-sm-4">Employee Number</dt>
+                    <dd class="col-sm-8">@Model.EmployeeNumber</dd>
+                    <dt class="col-sm-4">SA ID Number</dt>
+                    <dd class="col-sm-8">@Model.SouthAfricanIdNumber</dd>
                 </dl>
 
                 <div class="alert alert-warning">
@@ -28,7 +32,7 @@
 
                 <form asp-action="DeleteLabTechnician" method="post">
                     @Html.AntiForgeryToken()
-                    <input type="hidden" name="LabTechnicianID" value="@labTechnician.Id" />
+                    <input type="hidden" name="LabTechnicianID" value="@Model.Id" />
 
                     <div class="d-flex justify-content-between">
                         <a asp-controller="LabManager" asp-action="LabTechnicians" class="btn btn-secondary">Cancel</a>

@@ -1,35 +1,79 @@
-﻿@{
+﻿@model NMB_HLabSys_VIEWS_.Models.SampleType
+@{
     ViewData["Title"] = "Edit Sample Type";
     Layout = "~/Views/Shared/_ManagersLayout.cshtml";
-    var sampleType = new { Id = 1, Name = "Blood Sample", Description = "Used for blood tests and analysis." };
 }
-<div class="row justify-content-center">
-    <div class="col-md-6">
-        <div class="card shadow-sm">
-            <div class="card-header bg-primary text-white">
-                <h5 class="mb-0">Edit Sample Type</h5>
+<style>
+    .mgr-form-wrap {
+        max-width: 760px;
+        margin: 0 auto;
+    }
+
+    .mgr-form-card {
+        background: #fff;
+        border: 1px solid var(--mgr-border, #ddd9d2);
+        border-radius: 12px;
+        padding: 24px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    .mgr-form-title {
+        font-family: 'DM Serif Display', serif;
+        font-size: 20px;
+        color: var(--mgr-text-dark, #1e2420);
+        margin-bottom: 6px;
+    }
+
+    .mgr-form-subtitle {
+        font-size: 13px;
+        color: var(--mgr-text-mid, #4a5248);
+        margin-bottom: 20px;
+    }
+
+    .mgr-form-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+    }
+
+    .mgr-btn-primary {
+        background: var(--mgr-accent, #7a3030);
+        border-color: var(--mgr-accent, #7a3030);
+        color: #fff;
+    }
+
+        .mgr-btn-primary:hover {
+            background: var(--mgr-accent-2, #9a4040);
+            border-color: var(--mgr-accent-2, #9a4040);
+            color: #fff;
+        }
+</style>
+
+<div class="mgr-form-wrap">
+    <div class="mgr-form-card">
+        <h5 class="mgr-form-title">Edit Sample Type</h5>
+        <p class="mgr-form-subtitle">Update the sample name and description.</p>
+
+        <form asp-action="EditSampleType" method="post">
+            @Html.AntiForgeryToken()
+
+            <!-- Passing the ID back to the Controller -->
+            <input type="hidden" name="Id" value="@Model.Id" />
+
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Sample Name</label>
+                <input name="Name" class="form-control" value="@Model.Name" required />
             </div>
-            <div class="card-body">
-                <form asp-action="EditSampleType" method="post">
-                    @Html.AntiForgeryToken()
-                    <input type="hidden" name="Id" value="@sampleType.Id" />
 
-                    <div class="mb-3">
-                        <label for="Name" class="form-label">Sample Type Name</label>
-                        <input type="text" class="form-control" id="Name" name="Name" value="@sampleType.Name" required />
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="Description" class="form-label">Description</label>
-                        <textarea class="form-control" id="Description" name="Description" rows="3">@sampleType.Description</textarea>
-                    </div>
-
-                    <div class="d-flex justify-content-between">
-                        <a asp-controller="LabManager" asp-action="SampleTypes" class="btn btn-secondary">Cancel</a>
-                        <button type="submit" class="btn btn-primary">Save Changes</button>
-                    </div>
-                </form>
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Description</label>
+                <textarea name="Description" class="form-control" rows="3" required>@Model.Description</textarea>
             </div>
-        </div>
+
+            <div class="mgr-form-actions">
+                <a asp-action="SampleTypes" class="btn btn-outline-secondary">Cancel</a>
+                <button type="submit" class="btn mgr-btn-primary">Save Changes</button>
+            </div>
+        </form>
     </div>
 </div>

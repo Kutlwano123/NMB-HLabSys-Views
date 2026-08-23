@@ -1,7 +1,8 @@
-﻿@{
+﻿@using NMB_HLabSys_VIEWS
+@model DoctorUser
+@{
     ViewData["Title"] = "Doctor Details";
     Layout = "~/Views/Shared/_ManagersLayout.cshtml";
-    var doctor = new { Id = 1, Name = "Dr. Alice Smith", Specialty = "Cardiology", Contact = "alice.smith@hospital.com" };
 }
 <style>
     .mgr-detail-card {
@@ -86,16 +87,17 @@
 </style>
 
 <div class="mgr-detail-card">
-    <h5 class="mgr-detail-title">@doctor.Name</h5>
+    <h5 class="mgr-detail-title">Dr. @Model.Name @Model.Surname</h5>
     <p class="mgr-detail-subtitle">Review doctor information, contact details, and associated tests.</p>
+    <p class="mgr-detail-subtitle">Specialty: @Model.Specialty</p>
 
     <ul class="mgr-detail-list">
-        <li class="mgr-detail-item"><span>Specialty</span><strong>@doctor.Specialty</strong></li>
-        <li class="mgr-detail-item"><span>Email</span><strong>@doctor.Contact</strong></li>
+        <li class="mgr-detail-item"><span>Contact Number</span><strong>@Model.ContactNumber</strong></li>
+        <li class="mgr-detail-item"><span>Email</span><strong>@Model.EmailAddress</strong></li>
     </ul>
 
     <div class="mgr-actions">
         <a asp-action="Doctors" class="btn btn-outline-secondary">Back</a>
-        <a asp-action="EditDoctor" asp-route-id="@doctor.Id" class="btn mgr-btn-primary">Edit</a>
+        <a asp-action="EditDoctor" asp-route-id="@Model.Id" class="btn mgr-btn-primary">Edit</a>
     </div>
 </div>

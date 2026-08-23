@@ -1,7 +1,7 @@
-﻿@{
+﻿@model Supplier
+@{
     ViewData["Title"] = "Supplier Details";
     Layout = "~/Views/Shared/_ManagersLayout.cshtml";
-    var supplier = new { Id = 1, Name = "Lab Supplies Co.", Contact = "John Doe", Email = "john.doe@lab supplies.com" };
 }
 <style>
     .mgr-detail-card {
@@ -86,16 +86,16 @@
 </style>
 
 <div class="mgr-detail-card">
-    <h5 class="mgr-detail-title">@supplier.Name</h5>
+    <h5 class="mgr-detail-title">@Model.SupplierName</h5>
     <p class="mgr-detail-subtitle">Review supplier information, contact details, and associated products.</p>
 
     <ul class="mgr-detail-list">
-        <li class="mgr-detail-item"><span>Contact Person</span><strong>@supplier.Contact</strong></li>
-        <li class="mgr-detail-item"><span>Email</span><strong>@supplier.Email</strong></li>
+        <li class="mgr-detail-item"><span>Contact Person</span><strong>@Model.ContactPerson</strong></li>
+        <li class="mgr-detail-item"><span>Email</span><strong>@Model.EmailAddress</strong></li>
     </ul>
 
     <div class="mgr-actions">
         <a asp-action="Suppliers" class="btn btn-outline-secondary">Back</a>
-        <a asp-action="EditSupplier" asp-route-id="@supplier.Id" class="btn mgr-btn-primary">Edit</a>
+        <a asp-action="EditSupplier" asp-route-id="@Model.Id" class="btn mgr-btn-primary">Edit</a>
     </div>
 </div>

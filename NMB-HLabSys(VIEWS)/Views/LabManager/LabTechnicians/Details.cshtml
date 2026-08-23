@@ -1,9 +1,21 @@
-﻿@{
+﻿@model NMB_HLabSys_VIEWS.ViewModels.TechnicianDetailsViewModel
+@{
     ViewData["Title"] = "Lab Technician Details";
     Layout = "~/Views/Shared/_ManagersLayout.cshtml";
-    var technician = new { Id = 1, Name = "John Doe", Specialty = "Microbiology", Contact = "john.doe@example.com" };
 }
 <style>
+    .mgr-chip {
+        display: inline-block;
+        padding: 4px 12px;
+        background-color: var(--mgr-bg, #f4f2ef);
+        border: 1px solid var(--mgr-border, #ddd9d2);
+        border-radius: 16px;
+        font-size: 12px;
+        color: var(--mgr-text-dark, #1e2420);
+        margin-right: 5px;
+        margin-bottom: 5px;
+    }
+
     .mgr-detail-card {
         background: #fff;
         border: 1px solid var(--mgr-border, #ddd9d2);
@@ -86,17 +98,35 @@
 </style>
 
 <div class="mgr-detail-card">
-    <h5 class="mgr-detail-title">@technician.Name</h5>
+    <h5 class="mgr-detail-title">@Model.Name @Model.Surname</h5>
     <p class="mgr-detail-subtitle">Review lab technician information, contact details, and associated tests.</p>
 
-    <ul class="mgr-detail-list">
-        <li class="mgr-detail-item"><span>Specialty</span><strong>@technician.Specialty</strong></li>
-        <li class="mgr-detail-item"><span>Email</span><strong>@technician.Contact</strong></li>
+    <ul class="mgr-detail-list mb-4">
+        <li class="mgr-detail-item"><span>Employee Number</span><strong>@Model.EmployeeNumber</strong></li>
+        <li class="mgr-detail-item"><span>SA ID Number</span><strong>@Model.SouthAfricanIdNumber</strong></li>
+        <li class="mgr-detail-item"><span>Email</span><strong>@Model.EmailAddress</strong></li>
+        <li class="mgr-detail-item"><span>Contact</span><strong>@Model.ContactNumber</strong></li>
     </ul>
 
+    <div class="mb-4">
+        <div class="fw-semibold text-dark mb-2" style="font-size: 14px;">Assigned Test Types</div>
+        <div>
+            @if (Model.AssociatedTests.Any())
+            {
+                foreach (var testName in Model.AssociatedTests)
+                {
+                    <span class="mgr-chip">@testName</span>
+                }
+            }
+            else
+            {
+                <span class="text-muted small">No tests currently assigned.</span>
+            }
+        </div>
+    </div>
+
     <div class="mgr-actions">
-        <a asp-action="LabTechnicians" class="btn btn-outline-secondary">Back</a>
-        <a asp-action="EditLabTechnician" asp-route-id="@technician.Id" class="btn mgr-btn-primary">Edit</a>
+        <a asp-action="LabTechnicians" class="btn btn-outline-secondary">Back to List</a>
+        <a asp-action="EditLabTechnician" asp-route-id="@Model.Id" class="btn mgr-btn-primary">Edit Technician</a>
     </div>
 </div>
-

@@ -1,15 +1,8 @@
-﻿@{
+﻿@model NMB_HLabSys_VIEWS.ViewModels.DeleteTestTypeViewModel
+@{
     ViewData["Title"] = "Delete Test Type";
     Layout = "~/Views/Shared/_ManagersLayout.cshtml";
 
-    var testType = new
-    {
-        Id = 1,
-        TestName = "Complete Blood Count",
-        Category = "Hematology",
-        SampleType = "EDTA Tube",
-        TurnaroundMins = 120
-    };
 }
 
 <style>
@@ -77,15 +70,15 @@
     <p class="mgr-delete-warning">This action cannot be undone. Please confirm you want to delete the test type below.</p>
 
     <ul class="mgr-delete-list">
-        <li class="mgr-delete-item"><span>Test Name</span><strong>@testType.TestName</strong></li>
-        <li class="mgr-delete-item"><span>Category</span><strong>@testType.Category</strong></li>
-        <li class="mgr-delete-item"><span>Sample Type</span><strong>@testType.SampleType</strong></li>
-        <li class="mgr-delete-item"><span>Turnaround</span><strong>@testType.TurnaroundMins mins</strong></li>
+        <li class="mgr-delete-item"><span>Test Name</span><strong>@Model.TestName</strong></li>
+        <li class="mgr-delete-item"><span>Category</span><strong>@Model.CategoryName</strong></li>
+        <li class="mgr-delete-item"><span>Sample Type</span><strong>@Model.SampleTypeName</strong></li>
+        <li class="mgr-delete-item"><span>Turnaround</span><strong>@Model.TurnaroundTimeMinutes mins</strong></li>
     </ul>
 
     <form asp-action="DeleteTestType" method="post">
         @Html.AntiForgeryToken()
-        <input type="hidden" name="TestTypeID" value="@testType.Id" />
+        <input type="hidden" name="TestTypeID" value="@Model.Id" />
         <div class="mgr-actions">
             <a asp-action="TestTypes" class="btn btn-outline-secondary">Cancel</a>
             <button type="submit" class="btn mgr-btn-danger">Delete</button>

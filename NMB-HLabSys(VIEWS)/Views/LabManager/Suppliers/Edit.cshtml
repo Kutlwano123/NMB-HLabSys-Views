@@ -1,46 +1,88 @@
-﻿@{
+﻿@using NMB_HLabSys_VIEWS
+@model Supplier
+@{
     ViewData["Title"] = "Edit Supplier";
     Layout = "~/Views/Shared/_ManagersLayout.cshtml";
-
-    var supplier = new { Id = 1, Name = "Lab Supplies Co.", Contact = "John Doe", Email = "john.doe@lab supplies.com" };
 }
+<style>
+    .mgr-form-wrap {
+        max-width: 760px;
+        margin: 0 auto;
+    }
 
-<div class="row justify-content-center">
-    <div class="col-md-6">
+    .mgr-form-card {
+        background: #fff;
+        border: 1px solid var(--mgr-border, #ddd9d2);
+        border-radius: 12px;
+        padding: 24px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
 
-        <div class="card shadow-sm">
-            <div class="card-header bg-warning">
-                <h5 class="mb-0">Edit Supplier</h5>
+    .mgr-form-title {
+        font-family: 'DM Serif Display', serif;
+        font-size: 20px;
+        color: var(--mgr-text-dark, #1e2420);
+        margin-bottom: 6px;
+    }
+
+    .mgr-form-subtitle {
+        font-size: 13px;
+        color: var(--mgr-text-mid, #4a5248);
+        margin-bottom: 20px;
+    }
+
+    .mgr-form-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+    }
+
+    .mgr-btn-primary {
+        background: var(--mgr-accent, #7a3030);
+        border-color: var(--mgr-accent, #7a3030);
+        color: #fff;
+    }
+
+        .mgr-btn-primary:hover {
+            background: var(--mgr-accent-2, #9a4040);
+            border-color: var(--mgr-accent-2, #9a4040);
+            color: #fff;
+        }
+</style>
+
+
+<div class="mgr-form-wrap">
+    <div class="mgr-form-card">
+        <h5 class="mgr-form-title">Edit Supplier</h5>
+        <p class="mgr-form-subtitle">Update supplier contact details and email information.</p>
+
+        <form asp-action="Edit" method="post">
+            @Html.AntiForgeryToken()
+
+            <!-- Make sure your POST controller action is looking for "SupplierID" or "id" -->
+            <input type="hidden" name="SupplierID" value="@Model.Id" />
+
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Supplier Name</label>
+                <input name="SupplierName" class="form-control" value="@Model.SupplierName" required />
             </div>
-            <div class="card-body">
-                <form asp-action="Edit" method="post">
-                    @Html.AntiForgeryToken()
 
-                    <input type="hidden" name="SupplierID" value="@supplier.Id" />
-
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold">Supplier Name</label>
-                        <input name="SupplierName" class="form-control" value="@supplier.Name" />
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold">Contact Person</label>
-                        <input name="ContactPerson" class="form-control" value="@supplier.Contact" />
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold">Email</label>
-                        <input name="Email" type="email" class="form-control" value="@supplier.Email" />
-                    </div>
-
-                    <div class="d-flex justify-content-between">
-                        <a asp-controller="LabManager" asp-action="Suppliers" class="btn btn-secondary">Cancel</a>
-                        <button type="submit" class="btn btn-warning">Save Changes</button>
-                    </div>
-                </form>
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Contact Person</label>
+                <input name="ContactPerson" class="form-control" value="@Model.ContactPerson" required />
             </div>
-        </div>
 
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Email Address</label>
+                <!-- Changed name from "Email" to "EmailAddress" to match the database model -->
+                <input name="EmailAddress" type="email" class="form-control" value="@Model.EmailAddress" required />
+            </div>
+
+            <div class="mgr-form-actions">
+                <a asp-controller="LabManager" asp-action="Suppliers" class="btn btn-outline-secondary">Cancel</a>
+                <button type="submit" class="btn mgr-btn-primary">Save Changes</button>
+            </div>
+        </form>
     </div>
 </div>
 

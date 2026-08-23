@@ -1,23 +1,69 @@
-﻿@{
+﻿@model NMB_HLabSys_VIEWS_.Models.SampleType
+@{
     ViewData["Title"] = "Sample Type Details";
     Layout = "~/Views/Shared/_ManagersLayout.cshtml";
-    var sampleType = new { Id = 1, Name = "Blood Sample", Description = "Used for blood tests and analysis." };
 }
-<div class="row justify-content-center">
-    <div class="col-md-8">
-        <div class="card shadow-sm">
-            <div class="card-header bg-info text-white">
-                <h5 class="mb-0">Sample Type Details</h5>
-            </div>
-            <div class="card-body">
-                <dl class="row">
-                    <dt class="col-sm-4">Sample Type Name</dt>
-                    <dd class="col-sm-8">@sampleType.Name</dd>
-                    <dt class="col-sm-4">Description</dt>
-                    <dd class="col-sm-8">@sampleType.Description</dd>
-                </dl>
-                <a asp-controller="LabManager" asp-action="SampleTypes" class="btn btn-secondary mt-3">Back to List</a>
-            </div>
-        </div>
+
+<style>
+    /* Add this if not already in your _ManagersLayout.cshtml */
+    .mgr-detail-card {
+        background: #fff;
+        border: 1px solid var(--mgr-border, #ddd9d2);
+        border-radius: 12px;
+        padding: 24px;
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    .mgr-detail-title {
+        font-family: 'DM Serif Display', serif;
+        font-size: 22px;
+        color: var(--mgr-text-dark, #1e2420);
+        margin-bottom: 6px;
+    }
+
+    .mgr-detail-subtitle {
+        font-size: 13px;
+        color: var(--mgr-text-mid, #4a5248);
+        margin-bottom: 20px;
+    }
+
+    .mgr-detail-list {
+        list-style: none;
+        padding: 0;
+        margin: 0 0 20px 0;
+        display: grid;
+        gap: 10px;
+    }
+
+    .mgr-detail-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 12px;
+        background: var(--mgr-bg, #f4f2ef);
+        border-radius: 8px;
+        font-size: 13px;
+        color: var(--mgr-text-mid, #4a5248);
+    }
+
+    .mgr-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+    }
+</style>
+
+<div class="mgr-detail-card">
+    <h5 class="mgr-detail-title">@Model.Name</h5>
+    <p class="mgr-detail-subtitle">Review sample type specifications.</p>
+
+    <ul class="mgr-detail-list">
+        <li class="mgr-detail-item"><span>Sample Name</span><strong>@Model.Name</strong></li>
+        <li class="mgr-detail-item"><span>Description</span><strong>@Model.Description</strong></li>
+    </ul>
+
+    <div class="mgr-actions">
+        <a asp-action="SampleTypes" class="btn btn-outline-secondary">Back</a>
+        <a asp-action="EditSampleType" asp-route-id="@Model.Id" class="btn mgr-btn-primary">Edit</a>
     </div>
- </div>
+</div>

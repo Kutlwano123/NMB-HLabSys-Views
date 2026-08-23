@@ -1,47 +1,7 @@
-﻿@{
+﻿@model NMB_HLabSys_VIEWS.ViewModels.EditTestTypeViewModel
+@{
     ViewData["Title"] = "Edit Test Type";
     Layout = "~/Views/Shared/_ManagersLayout.cshtml";
-
-    var testType = new
-    {
-        Id = 1,
-        TestName = "Complete Blood Count",
-        CategoryId = 1,
-        SampleTypeId = 1,
-        Unit = "x10⁹/L",
-        MinRange = "4.5",
-        MaxRange = "11.0",
-        TurnaroundMins = 120
-    };
-
-    var categories = new[]
-    {
-        new { Id = 1, Name = "Hematology" },
-        new { Id = 2, Name = "Chemistry" },
-        new { Id = 3, Name = "Microbiology" }
-    };
-
-    var sampleTypes = new[]
-    {
-        new { Id = 1, Name = "EDTA Tube" },
-        new { Id = 2, Name = "Citrate Tube" },
-        new { Id = 3, Name = "Serum" },
-        new { Id = 4, Name = "Urine" }
-    };
-
-    var consumables = new[]
-    {
-        new { Id = 1, Name = "Syringes 5ml",  Selected = true  },
-        new { Id = 2, Name = "Latex Gloves",  Selected = false },
-        new { Id = 3, Name = "Test Tubes",    Selected = true  }
-    };
-
-    var technicians = new[]
-    {
-        new { Id = 1, Name = "David Miller",  Selected = true  },
-        new { Id = 2, Name = "Emma Wilson",   Selected = true  },
-        new { Id = 3, Name = "James Taylor",  Selected = false }
-    };
 }
 
 <style>
@@ -97,22 +57,27 @@
 
         <form asp-action="EditTestType" method="post">
             @Html.AntiForgeryToken()
-            <input type="hidden" name="TestTypeID" value="@testType.Id" />
+            <input type="hidden" name="TestTypeID" value="@Model.Id" />
 
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <label class="form-label fw-semibold">Test Name</label>
-                    <input name="TestName" class="form-control" value="@testType.TestName" />
+                    <input name="TestName" class="form-control" value="@Model.TestName" />
                 </div>
                 <div class="col-md-6 mb-3">
                     <label class="form-label fw-semibold">Test Category</label>
-                    <select name="TestCategoryID" class="form-select">
+                    <select name="CategoryId" class="form-select">
                         <option value="">Select a category</option>
-                        @foreach (var c in categories)
+                        @foreach (var c in Model.AvailableCategories)
                         {
-                            <option value="@c.Id" selected="@(c.Id == testType.CategoryId)">
-                                @c.Name
-                            </option>
+                            if (c.Id == Model.CategoryId)
+                            {
+                                <option value="@c.Id" selected>@c.CategoryName</option>
+                            }
+                            else
+                            {
+                                <option value="@c.Id">@c.CategoryName</option>
+                            }
                         }
                     </select>
                 </div>
@@ -121,11 +86,11 @@
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <label class="form-label fw-semibold">Sample Type</label>
-                    <select name="SampleTypeID" class="form-select">
+                    <select name="SampleTypeId" class="form-select">
                         <option value="">Select a sample type</option>
-                        @foreach (var s in sampleTypes)
+                        @foreach (var s in Model.AvailableSampleTypes)
                         {
-                            @if (s.Id == testType.SampleTypeId)
+                            if (s.Id == Model.SampleTypeId)
                             {
                                 <option value="@s.Id" selected>@s.Name</option>
                             }
@@ -138,35 +103,35 @@
                 </div>
                 <div class="col-md-6 mb-3">
                     <label class="form-label fw-semibold">Units of Measurement</label>
-                    <input name="UnitOfMeasurement" class="form-control" value="@testType.Unit" />
+                    <input name="UnitOfMeasurement" class="form-control" value="@Model.UnitOfMeasurement" />
                 </div>
             </div>
 
             <div class="row">
                 <div class="col-md-4 mb-3">
                     <label class="form-label fw-semibold">Normal Range (Min)</label>
-                    <input name="MinNormalRange" class="form-control" value="@testType.MinRange" />
+                    <input name="NormalRangeMin" class="form-control" value="@Model.NormalRangeMin" />
                 </div>
                 <div class="col-md-4 mb-3">
                     <label class="form-label fw-semibold">Normal Range (Max)</label>
-                    <input name="MaxNormalRange" class="form-control" value="@testType.MaxRange" />
+                    <input name="NormalRangeMax" class="form-control" value="@Model.NormalRangeMax" />
                 </div>
                 <div class="col-md-4 mb-3">
                     <label class="form-label fw-semibold">Turnaround (minutes)</label>
-                    <input name="TurnAroundTimeMinutes" class="form-control" type="number" min="0" value="@testType.TurnaroundMins" />
+                    <input name="TurnaroundTimeMinutes" class="form-control" type="number" min="0" value="@Model.TurnaroundTimeMinutes" />
                 </div>
             </div>
 
             <div class="mb-3">
                 <label class="form-label fw-semibold text-dark">Consumables Used</label>
                 <div class="d-flex flex-wrap gap-2">
-                    @foreach (var consumable in consumables)
+                    @foreach (var consumable in Model.AvailableConsumables)
                     {
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="checkbox"
-                                   name="SelectedConsumableIds" value="@consumable.Id"
+                                   name="ConsumableIds" value="@consumable.Id"
                                    id="consumable_@consumable.Id"
-                                   @(consumable.Selected ? "checked" : "") />
+                            @(consumable.IsSelected ? "checked" : "") />
                             <label class="form-check-label" for="consumable_@consumable.Id">@consumable.Name</label>
                         </div>
                     }
@@ -176,13 +141,13 @@
             <div class="mb-3">
                 <label class="form-label fw-semibold">Assigned Technicians</label>
                 <div class="d-flex flex-wrap gap-2">
-                    @foreach (var tech in technicians)
+                    @foreach (var tech in Model.AvailableTechnicians)
                     {
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="checkbox"
-                                   name="SelectedTechnicianIds" value="@tech.Id"
+                                   name="TechnicianIds" value="@tech.Id"
                                    id="technician_@tech.Id"
-                                   @(tech.Selected ? "checked" : "") />
+                            @(tech.IsSelected ? "checked" : "") />
                             <label class="form-check-label" for="technician_@tech.Id">@tech.Name</label>
                         </div>
                     }
@@ -190,7 +155,7 @@
             </div>
 
             <div class="mgr-form-actions">
-                <a asp-controller="LabManager" asp-action="TestTypes" class="btn btn-outline-secondary">Cancel</a>
+                <a asp-action="TestTypes" class="btn btn-outline-secondary">Cancel</a>
                 <button type="submit" class="btn mgr-btn-primary">Save Changes</button>
             </div>
         </form>

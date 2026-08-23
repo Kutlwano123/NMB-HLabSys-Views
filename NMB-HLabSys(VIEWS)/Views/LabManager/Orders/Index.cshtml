@@ -3,7 +3,8 @@
 @{
     ViewData["Title"] = "Orders";
     Layout = "~/Views/Shared/_ManagersLayout.cshtml";
-    var supplierNames = ViewBag.SupplierNames as Dictionary<int, string> ?? new Dictionary<int, string>();
+    var lowStockItems = ViewBag.LowStockItems as List<Consumable> ?? new List<Consumable>();
+    var supplierDict = ViewBag.SupplierDict as Dictionary<int, string> ?? new Dictionary<int, string>();
 }
 <style>
     .mgr-page-header {
@@ -76,47 +77,116 @@
 <div class="mgr-page-header">
     <h2 class="mgr-page-title">Orders</h2>
     <a asp-action="CreateOrder" class="btn mgr-btn-primary">
-        <i class="bi bi-plus-circle"></i> Create Order
+        <i class="bi bi-cart-plus me-1"></i> Create Order
     </a>
 </div>
 
-@if (!Model.Any())
-{
-    <div class="alert alert-info">No orders found. Create one to get started.</div>
-}
-else
-{
-    <table class="table table-hover mgr-table">
-        <thead>
-            <tr>
-                <th>Order Number</th>
-                <th>Supplier</th>
-                <th>Status</th>
-                <th class="text-center">Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var order in Model)
-            {
-                <tr>
-                    <td>@order.OrderNumber</td>
-                    <td>@(supplierNames.TryGetValue(order.SupplierId, out var supplierName) ? supplierName : "Unassigned")</td>
-                    <td><span class="badge mgr-badge">@order.Status</span></td>
-                    <td class="text-center">
-                        <a asp-action="OrderDetails" asp-route-id="@order.Id"
-                           class="btn btn-sm btn-outline-primary mgr-action-btn">Details</a>
-                        <a asp-action="ReceiveOrder" asp-route-id="@order.Id"
-                           class="btn btn-sm btn-outline-success mgr-action-btn">Receive</a>
-                        <a asp-action="DeleteOrder" asp-route-id="@order.Id"
-                           class="btn btn-sm btn-outline-danger mgr-action-btn">Delete</a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-}
-
 @if (TempData["StatusMessage"] != null)
 {
-    <div class="alert alert-success mt-3">@TempData["StatusMessage"]</div>
+    <div class="alert alert-success border-0 shadow-sm">
+        <i class="bi bi-check-circle-fill me-2"></i> @TempData["StatusMessage"]
+    </div>
 }
+
+<!-- SMART ALERTS SECTION -->
+@if (lowStockItems.Any())
+{
+    <div class="card border-warning mb-4 shadow-sm">
+        <div class="card-header bg-warning text-dark fw-bold d-flex justify-content-between align-items-center">
+            <span><i class="bi bi-exclamation-triangle-fill me-2"></i> Low Stock Alerts (@lowStockItems.Count items)</span>
+        </div>
+        <div class="card-body p-0">
+            <table class="table table-sm mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th class="ps-3">Consumable</th>
+                        <th>Supplier</th>
+                        <th>Current Stock</th>
+                        <th>Reorder Level</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in lowStockItems)
+                    {
+                        <tr>
+                            <td class="ps-3 fw-semibold">@item.ConsumableName</td>
+                            <td>@(supplierDict.ContainsKey(item.SupplierId) ? supplierDict[item.SupplierId] : "Unknown")</td>
+                            <td class="text-danger fw-bold">@item.QuantityOnHand</td>
+                            <td class="text-muted">@item.ReorderLevel</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+
+<!-- ORDERS TABLE SECTION -->
+<div class="mgr-table-wrap">
+    @if (!Model.Any())
+    {
+        <div class="alert alert-secondary">No orders have been placed yet.</div>
+    }
+    else
+    {
+        <table class="table table-hover mgr-table mb-0">
+            <thead>
+                <tr>
+                    <th>Order #</th>
+                    <th>Date</th>
+                    <th>Supplier</th>
+                    <th>Items</th>
+                    <th>Status</th>
+                    <th class="text-end pe-3">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var order in Model)
+                {
+                    <tr>
+                        <td class="fw-bold">@order.OrderNumber</td>
+                        <td>@order.OrderDate.ToString("dd MMM yyyy")</td>
+                        <td>@(supplierDict.ContainsKey(order.SupplierId) ? supplierDict[order.SupplierId] : "Unknown")</td>
+                        <td>@order.Items.Count item(s)</td>
+                        <td>
+                            @if (order.Status == "Ordered")
+                            {
+                                <span class="badge bg-primary bg-opacity-10 text-primary border border-primary">Ordered</span>
+                            }
+                            else if (order.Status == "Received")
+                            {
+                                <span class="badge bg-success bg-opacity-10 text-success border border-success">Received</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">@order.Status</span>
+                            }
+                        </td>
+                        <td class="text-end pe-3 d-flex justify-content-end gap-2">
+                            <a asp-action="OrderDetails" asp-route-id="@order.Id" class="btn btn-sm btn-outline-primary mgr-action-btn">Details</a>
+
+                            <!-- One-Click Receive Button -->
+                            @if (order.Status == "Ordered")
+                            {
+                                <form asp-action="ReceiveOrder" method="post" class="m-0 p-0">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@order.Id" />
+                                    <button type="submit" class="btn btn-sm btn-success mgr-action-btn"
+                                            onclick="return confirm('Mark this order as received? This will automatically update your consumable inventory.');">
+                                        <i class="bi bi-box-arrow-in-down me-1"></i> Receive
+                                    </button>
+                                </form>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    @if (TempData["StatusMessage"] != null)
+    {
+        <div class="alert alert-success mt-3">@TempData["StatusMessage"]</div>
+    }
+</div>
+
+

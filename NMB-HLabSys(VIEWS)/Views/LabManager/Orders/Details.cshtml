@@ -3,36 +3,174 @@
 @{
     ViewData["Title"] = "Order Details";
     Layout = "~/Views/Shared/_ManagersLayout.cshtml";
+    var consumableDict = ViewBag.ConsumableDict as Dictionary<int, string> ?? new Dictionary<int, string>();
     var supplier = (ViewContext.HttpContext.RequestServices.GetService(typeof(ILabManagerService)) as ILabManagerService)?.GetSupplier(Model.SupplierId);
 }
-<div class="row justify-content-center">
-    <div class="col-md-8">
-        <div class="card shadow-sm">
-            <div class="card-header bg-primary text-white">
-                <h5 class="mb-0">Order Details - #@Model.OrderNumber</h5>
-            </div>
-            <div class="card-body">
-                <dl class="row">
-                    <dt class="col-sm-4">Supplier:</dt>
-                    <dd class="col-sm-8">@(supplier?.SupplierName ?? "Unknown")</dd>
-                    <dt class="col-sm-4">Status:</dt>
-                    <dd class="col-sm-8">@Model.Status</dd>
-                    <dt class="col-sm-4">Ordered Date:</dt>
-                    <dd class="col-sm-8">@Model.OrderDate.ToShortDateString()</dd>
-                    <dt class="col-sm-4">Completed Date:</dt>
-                    <dd class="col-sm-8">@(Model.DateCompleted?.ToShortDateString() ?? "Pending")</dd>
-                    <dt class="col-sm-4">Cancellation Reason:</dt>
-                    <dd class="col-sm-8">@(Model.CancellationReason ?? "None")</dd>
-                </dl>
-                <h6 class="mt-4">Items</h6>
-                <ul>
-                    @foreach (var item in Model.Items)
-                    {
-                        var consumable = (ViewContext.HttpContext.RequestServices.GetService(typeof(ILabManagerService)) as ILabManagerService)?.GetConsumable(item.ConsumableId);
-                        <li>@(consumable?.ConsumableName ?? "Unknown") — Qty @item.QuantityOrdered — @item.Status</li>
-                    }
-                </ul>
-            </div>
-        </div>
+<style>
+    .mgr-detail-card {
+        background: #fff;
+        border: 1px solid var(--mgr-border, #ddd9d2);
+        border-radius: 12px;
+        padding: 24px;
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    .mgr-detail-title {
+        font-family: 'DM Serif Display', serif;
+        font-size: 22px;
+        color: var(--mgr-text-dark, #1e2420);
+        margin-bottom: 6px;
+    }
+
+    .mgr-detail-subtitle {
+        font-size: 13px;
+        color: var(--mgr-text-mid, #4a5248);
+        margin-bottom: 20px;
+    }
+
+    .mgr-detail-list {
+        list-style: none;
+        padding: 0;
+        margin: 0 0 20px 0;
+        display: grid;
+        gap: 10px;
+    }
+
+    .mgr-detail-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 12px;
+        background: var(--mgr-bg, #f4f2ef);
+        border-radius: 8px;
+        font-size: 13px;
+        color: var(--mgr-text-mid, #4a5248);
+    }
+
+    .mgr-chip {
+        background: var(--mgr-accent-pale, #f0e8e8);
+        color: var(--mgr-accent, #7a3030);
+        font-weight: 600;
+        font-size: 11px;
+        padding: 4px 10px;
+        border-radius: 999px;
+    }
+
+    .mgr-section-title {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--mgr-text-dark, #1e2420);
+        margin-bottom: 8px;
+    }
+
+    .mgr-chip-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .mgr-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+    }
+
+    .mgr-btn-primary {
+        background: var(--mgr-accent, #7a3030);
+        border-color: var(--mgr-accent, #7a3030);
+        color: #fff;
+    }
+
+        .mgr-btn-primary:hover {
+            background: var(--mgr-accent-2, #9a4040);
+            border-color: var(--mgr-accent-2, #9a4040);
+            color: #fff;
+        }
+</style>
+<div class="mgr-detail-card">
+    <div class="d-flex justify-content-between align-items-center mb-1">
+        <h5 class="mgr-form-title mb-0">Order #@Model.OrderNumber</h5>
+        @if (Model.Status == "Ordered")
+        {
+            <span class="badge bg-primary bg-opacity-10 text-primary border border-primary px-2 py-1">Ordered</span>
+        }
+        else if (Model.Status == "Received")
+        {
+            <span class="badge bg-success bg-opacity-10 text-success border border-success px-2 py-1">Received</span>
+        }
+        else
+        {
+            <span class="badge bg-secondary">@Model.Status</span>
+        }
+    </div>
+
+    <p class="mgr-form-subtitle mb-4">Review purchase order details and fulfillment status.</p>
+
+    <h6 class="fw-bold mb-3 text-dark">Order Information</h6>
+    <ul class="mgr-detail-list mb-4">
+        <li class="mgr-detail-item"><span>Supplier</span><strong>@ViewBag.SupplierName</strong></li>
+        <li class="mgr-detail-item"><span>Ordered Date</span><strong>@Model.OrderDate.ToString("dd MMM yyyy")</strong></li>
+        <li class="mgr-detail-item">
+            <span>Completed Date</span>
+            <strong>@(Model.DateCompleted.HasValue ? Model.DateCompleted.Value.ToString("dd MMM yyyy") : "Pending")</strong>
+        </li>
+        @if (!string.IsNullOrEmpty(Model.CancellationReason))
+        {
+            <li class="mgr-detail-item border border-danger bg-danger bg-opacity-10">
+                <span class="text-danger">Cancellation Reason</span>
+                <strong class="text-danger">@Model.CancellationReason</strong>
+            </li>
+        }
+    </ul>
+
+    <h6 class="fw-bold mb-3 text-dark">Ordered Items</h6>
+    <div class="border rounded overflow-hidden mb-4">
+        <table class="table table-hover mb-0 mgr-table">
+            <thead class="bg-light">
+                <tr>
+                    <th class="ps-3">Consumable</th>
+                    <th class="text-center">Quantity</th>
+                    <th class="text-end pe-3">Item Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Items)
+                {
+                    <tr>
+                        <td class="ps-3 fw-semibold">
+                            @(consumableDict.ContainsKey(item.ConsumableId) ? consumableDict[item.ConsumableId] : "Unknown Consumable")
+                        </td>
+                        <td class="text-center">@item.QuantityOrdered</td>
+                        <td class="text-end pe-3">
+                            @if (item.Status == "Received")
+                            {
+                                <i class="bi bi-check-circle-fill text-success me-1">Received</i>    
+                            }
+                            else
+                            {
+                                <span class="text-muted">@item.Status</span>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="mgr-form-actions">
+        <a asp-action="Orders" class="btn btn-outline-secondary">Back</a>
+
+        <!-- Quick action to Receive right from the Details page! -->
+        @if (Model.Status == "Ordered")
+        {
+            <form asp-action="ReceiveOrder" method="post" class="m-0 p-0">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="id" value="@Model.Id" />
+                <button type="submit" class="btn btn-success"
+                        onclick="return confirm('Mark this order as received? This will automatically update your inventory.');">
+                    <i class="bi bi-box-arrow-in-down me-1"></i> Receive Order
+                </button>
+            </form>
+        }
     </div>
 </div>

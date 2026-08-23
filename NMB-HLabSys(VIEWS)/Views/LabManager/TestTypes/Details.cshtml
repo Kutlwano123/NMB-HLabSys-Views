@@ -1,20 +1,7 @@
-﻿@{
+﻿@model NMB_HLabSys_VIEWS.ViewModels.TestTypeDetailsViewModel
+@{
     ViewData["Title"] = "Test Type Details";
     Layout = "~/Views/Shared/_ManagersLayout.cshtml";
-
-    var testType = new
-    {
-        Id = 1,
-        TestName = "Complete Blood Count",
-        Category = "Hematology",
-        SampleType = "EDTA Tube",
-        Unit = "x10⁹/L",
-        MinRange = "4.5",
-        MaxRange = "11.0",
-        TurnaroundMins = 120,
-        Consumables = new[] { "Syringes 5ml", "Test Tubes" },
-        Technicians = new[] { "David Miller", "Emma Wilson" }
-    };
 }
 
 <style>
@@ -100,25 +87,25 @@
 </style>
 
 <div class="mgr-detail-card">
-    <h5 class="mgr-detail-title">@testType.TestName</h5>
+    <h5 class="mgr-detail-title">@Model.TestName</h5>
     <p class="mgr-detail-subtitle">Review test configuration, ranges, consumables, and assigned technicians.</p>
 
     <ul class="mgr-detail-list">
-        <li class="mgr-detail-item"><span>Category</span><strong>@testType.Category</strong></li>
-        <li class="mgr-detail-item"><span>Sample Type</span><strong>@testType.SampleType</strong></li>
-        <li class="mgr-detail-item"><span>Units</span><strong>@testType.Unit</strong></li>
-        <li class="mgr-detail-item"><span>Normal Range</span><strong>@testType.MinRange – @testType.MaxRange</strong></li>
-        <li class="mgr-detail-item"><span>Turnaround</span><strong>@testType.TurnaroundMins mins</strong></li>
+        <li class="mgr-detail-item"><span>Category</span><strong>@Model.CategoryName</strong></li>
+        <li class="mgr-detail-item"><span>Sample Type</span><strong>@Model.SampleTypeName</strong></li>
+        <li class="mgr-detail-item"><span>Units</span><strong>@Model.UnitOfMeasurement</strong></li>
+        <li class="mgr-detail-item"><span>Normal Range</span><strong>@Model.NormalRangeMin – @Model.NormalRangeMax</strong></li>
+        <li class="mgr-detail-item"><span>Turnaround</span><strong>@Model.TurnaroundTimeMinutes mins</strong></li>
     </ul>
 
     <div class="mb-3">
         <div class="mgr-section-title">Consumables Used</div>
         <div class="mgr-chip-list">
-            @if (testType.Consumables.Any())
+            @if (Model.ConsumableNames.Any())
             {
-                foreach (var item in testType.Consumables)
+                foreach (var name in Model.ConsumableNames)
                 {
-                    <span class="mgr-chip">@item</span>
+                    <span class="mgr-chip">@name</span>
                 }
             }
             else
@@ -131,11 +118,11 @@
     <div class="mb-4">
         <div class="mgr-section-title">Assigned Technicians</div>
         <div class="mgr-chip-list">
-            @if (testType.Technicians.Any())
+            @if (Model.TechnicianNames.Any())
             {
-                foreach (var tech in testType.Technicians)
+                foreach (var name in Model.TechnicianNames)
                 {
-                    <span class="mgr-chip">@tech</span>
+                    <span class="mgr-chip">@name</span>
                 }
             }
             else
@@ -147,6 +134,6 @@
 
     <div class="mgr-actions">
         <a asp-action="TestTypes" class="btn btn-outline-secondary">Back</a>
-        <a asp-action="EditTestType" asp-route-id="@testType.Id" class="btn mgr-btn-primary">Edit</a>
+        <a asp-action="EditTestType" asp-route-id="@Model.Id" class="btn mgr-btn-primary">Edit</a>
     </div>
-</div>
+</div>      
