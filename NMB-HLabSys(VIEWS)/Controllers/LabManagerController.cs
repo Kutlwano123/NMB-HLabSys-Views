@@ -1038,15 +1038,35 @@ namespace NMB_HLabSys_VIEWS_.Controllers
                 return RedirectToAction(nameof(Orders));
             }
         }
-
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult CancelOrder(int id, string reason)
+        public IActionResult CancelOrder(int id, string cancellationReason)
         {
-            var cancellationReason = string.IsNullOrWhiteSpace(reason) ? "Cancelled by laboratory manager." : reason;
-            _labManagerService.CancelOrder(id, cancellationReason);
-            TempData["StatusMessage"] = "Order cancelled.";
-            return RedirectToAction(nameof(Orders));
+            try
+            {
+                if (string.IsNullOrWhiteSpace(cancellationReason))
+                {
+                    throw new Exception("You must provide a reason for cancellation.");
+                }
+
+                var success = _labManagerService.CancelOrder(id, cancellationReason);
+
+                if (success)
+                {
+                    TempData["StatusMessage"] = "Order was successfully cancelled.";
+                }
+                else
+                {
+                    TempData["StatusMessage"] = "Could not cancel order. It may have already been processed.";
+                }
+
+                return RedirectToAction(nameof(Orders)); // Send them back to the dashboard
+            }
+            catch (Exception ex)
+            {
+                TempData["StatusMessage"] = $"Failed to cancel order: {ex.Message}";
+                return RedirectToAction(nameof(OrderDetails), new { id = id });
+            }
         }
 
         [HttpGet]

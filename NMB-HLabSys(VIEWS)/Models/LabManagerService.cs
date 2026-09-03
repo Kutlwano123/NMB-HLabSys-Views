@@ -458,18 +458,26 @@ namespace NMB_HLabSys_VIEWS_.Models
 
         public bool CancelOrder(int orderId, string reason)
         {
-            var order = _orders.FirstOrDefault(x => x.Id == orderId);
-            if (order == null) return false;
-            order.Status = "Cancelled";
-            order.CancellationReason = reason;
-            order.DateCancelled = DateTime.Today;
-            foreach (var item in order.Items)
+            var order = _orders.FirstOrDefault(o => o.Id == orderId);
+
+            // Only cancel if it exists and hasn't already been received or cancelled
+            if (order != null && order.Status == "Ordered")
             {
-                item.Status = "Cancelled";
-                item.CancellationReason = reason;
-                item.DateCancelled = DateTime.Today;
+                order.Status = "Cancelled";
+                order.CancellationReason = reason;
+                order.DateCancelled = DateTime.Today;
+
+                // Also cancel all the items inside the order
+                foreach (var item in order.Items)
+                {
+                    item.Status = "Cancelled";
+                    item.CancellationReason = reason;
+                    item.DateCancelled = DateTime.Today;
+                }
+
+                return true;
             }
-            return true;
+            return false;
         }
 
         public IEnumerable<DoctorUser> GetDoctors() => _doctors.OrderBy(x => x.Surname).ToList();

@@ -157,13 +157,21 @@
         </table>
     </div>
 
-    <div class="mgr-form-actions">
-        <a asp-action="Orders" class="btn btn-outline-secondary">Back</a>
-
-        <!-- Quick action to Receive right from the Details page! -->
+    <div class="mgr-form-actions d-flex w-100">
+        <!-- Cancel button pushed to the left -->
         @if (Model.Status == "Ordered")
         {
-            <form asp-action="ReceiveOrder" method="post" class="m-0 p-0">
+            <button type="button" class="btn btn-outline-danger me-auto" data-bs-toggle="modal" data-bs-target="#cancelOrderModal">
+                <i class="bi bi-x-circle me-1"></i> Cancel Order
+            </button>
+        }
+
+        <!-- Standard buttons on the right -->
+        <a asp-action="Orders" class="btn btn-outline-secondary ms-auto">Back</a>
+
+        @if (Model.Status == "Ordered")
+        {
+            <form asp-action="ReceiveOrder" method="post" class="m-0 p-0 ms-2">
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="id" value="@Model.Id" />
                 <button type="submit" class="btn btn-success"
@@ -172,5 +180,34 @@
                 </button>
             </form>
         }
+    </div>
+</div> <!-- End of mgr-detail-card -->
+<!-- Cancel Order Modal -->
+<div class="modal fade" id="cancelOrderModal" tabindex="-1" aria-labelledby="cancelOrderModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form asp-action="CancelOrder" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="id" value="@Model.Id" />
+
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title" id="cancelOrderModalLabel">Cancel Order #@Model.OrderNumber</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+                    <p class="text-muted">Are you sure you want to cancel this order? This action cannot be undone.</p>
+                    <div class="mb-3">
+                        <label for="cancellationReason" class="form-label fw-semibold">Reason for Cancellation <span class="text-danger">*</span></label>
+                        <textarea class="form-control" id="cancellationReason" name="cancellationReason" rows="3" required placeholder="e.g., Ordered by mistake, wrong supplier..."></textarea>
+                    </div>
+                </div>
+
+                <div class="modal-footer bg-light">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-danger">Confirm Cancellation</button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>

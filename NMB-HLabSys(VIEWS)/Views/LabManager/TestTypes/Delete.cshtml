@@ -2,86 +2,48 @@
 @{
     ViewData["Title"] = "Delete Test Type";
     Layout = "~/Views/Shared/_ManagersLayout.cshtml";
-
 }
+<div class="row justify-content-center">
+    <div class="col-md-6">
 
-<style>
-    .mgr-delete-card {
-        background: #fff;
-        border: 1px solid var(--mgr-border, #ddd9d2);
-        border-radius: 12px;
-        padding: 24px;
-        max-width: 700px;
-        margin: 0 auto;
-    }
+        <div class="card shadow-sm border-danger">
+            <div class="card-header bg-danger text-white">
+                <h5 class="mb-0">Confirm Deletion</h5>
+            </div>
+            <div class="card-body">
+                <p>Are you sure you want to delete the following test type?</p>
 
-    .mgr-delete-title {
-        font-family: 'DM Serif Display', serif;
-        font-size: 20px;
-        color: var(--mgr-text-dark, #1e2420);
-        margin-bottom: 10px;
-    }
+                <dl class="row">
+                    <dt class="col-sm-4">Test Type</dt>
+                    <dd class="col-sm-8">@Model.TestName</dd>
 
-    .mgr-delete-warning {
-        font-size: 13px;
-        color: var(--mgr-text-mid, #4a5248);
-        margin-bottom: 16px;
-    }
+                    <dt class="col-sm-4">Category</dt>
+                    <dd class="col-sm-8">@Model.CategoryName</dd>
 
-    .mgr-delete-list {
-        list-style: none;
-        padding: 0;
-        margin: 0 0 20px 0;
-        display: grid;
-        gap: 8px;
-    }
+                    <dt class="col-sm-4">Sample Type</dt>
+                    <dd class="col-sm-8">@Model.SampleTypeName</dd>
 
-    .mgr-delete-item {
-        display: flex;
-        justify-content: space-between;
-        padding: 8px 10px;
-        background: var(--mgr-bg, #f4f2ef);
-        border-radius: 8px;
-        font-size: 13px;
-        color: var(--mgr-text-mid, #4a5248);
-    }
+                    <dt class="col-sm-4">Turnaround Time</dt>
+                    <dd class="col-sm-8">@Model.TurnaroundTimeMinutes minutes</dd>
+                </dl>
 
-    .mgr-actions {
-        display: flex;
-        justify-content: flex-end;
-        gap: 10px;
-    }
+                <div class="alert alert-warning">
+                    <i class="bi bi-exclamation-triangle"></i>
+                    This action cannot be undone.
+                </div>
 
-    .mgr-btn-danger {
-        background: #7a3030;
-        border-color: #7a3030;
-        color: #fff;
-    }
+                <form asp-action="DeleteTestType" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="SupplierID" value="@Model.Id" />
 
-        .mgr-btn-danger:hover {
-            background: #9a4040;
-            border-color: #9a4040;
-            color: #fff;
-        }
-</style>
+                    <div class="d-flex justify-content-between">
+                        <a asp-controller="LabManager" asp-action="TestTypes" class="btn btn-secondary">Cancel</a>
+                        <button type="submit" class="btn btn-danger">Yes, Delete</button>
+                    </div>
+                </form>
 
-<div class="mgr-delete-card">
-    <h5 class="mgr-delete-title">Delete Test Type</h5>
-    <p class="mgr-delete-warning">This action cannot be undone. Please confirm you want to delete the test type below.</p>
-
-    <ul class="mgr-delete-list">
-        <li class="mgr-delete-item"><span>Test Name</span><strong>@Model.TestName</strong></li>
-        <li class="mgr-delete-item"><span>Category</span><strong>@Model.CategoryName</strong></li>
-        <li class="mgr-delete-item"><span>Sample Type</span><strong>@Model.SampleTypeName</strong></li>
-        <li class="mgr-delete-item"><span>Turnaround</span><strong>@Model.TurnaroundTimeMinutes mins</strong></li>
-    </ul>
-
-    <form asp-action="DeleteTestType" method="post">
-        @Html.AntiForgeryToken()
-        <input type="hidden" name="TestTypeID" value="@Model.Id" />
-        <div class="mgr-actions">
-            <a asp-action="TestTypes" class="btn btn-outline-secondary">Cancel</a>
-            <button type="submit" class="btn mgr-btn-danger">Delete</button>
+            </div>
         </div>
-    </form>
+
+    </div>
 </div>
